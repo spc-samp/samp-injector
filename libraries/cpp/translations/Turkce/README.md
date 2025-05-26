@@ -76,7 +76,7 @@ Maksimum esneklik ve kolay entegrasyon sağlamak amacıyla geliştirilen bu `hea
 
 ### Neden DLL Enjeksiyonu?
 
-> [!NOTE] DLL Enjeksiyonu: Dinamik yüklemenin özü.
+> [!NOTE]
 > **DLL (Dynamic Link Library) enjeksiyonu**, **Microsoft Windows** işletim sistemlerinde başka bir çalışan sürecin bellek alanına kod çalıştırmayı sağlayan bir yöntemdir. Hata ayıklama ve program izlemeden, uygulamaların davranışlarını değiştirerek işlevselliklerini genişletmeye kadar birçok meşru uygulamaya sahip güçlü bir tekniktir.
 
 **GTA San Andreas** gibi orijinal olarak çok oyunculu işlevsellik için geliştirilmemiş oyunlar bağlamında, **DLL enjeksiyonu**, **SA-MP** ve **OMP** gibi çok oyunculu istemcilerin varlığının temelini oluşturur. Bu istemciler, `gta_sa.exe` sürecine enjekte edildiğinde kontrolü ele alan, oyunun işlevlerini kesen ve çok oyunculu sunucularla iletişim kuran **DLL'ler** olarak uygulanır.
@@ -209,7 +209,7 @@ namespace Utils {
 }
 ```
 
-> [!IMPORTANT] Kodlama Önemlidir!
+> [!IMPORTANT]
 > `WideCharToMultiByte` içinde kullanılan `CP_ACP` **(ANSI Kod Sayfası)**, **Windows** sisteminin varsayılan kod sayfasıdır. Bu, dönüşümün kullanıcının sistem dil ayarlarına bağlı olarak değişebileceği anlamına gelir. **SA-MP**/**OMP**'nin dosya adları ve komut satırı argümanları için (tarihsel olarak **ANSI** dizelerle iyi çalışır) bu yaklaşım genellikle yeterlidir. Ancak, harici sistemler veya küresel girişlerle tam **Unicode** uyumluluğu gerektiren senaryolarda, **UTF-8** (`CP_UTF8`) veya diğer kod sayfalarına dönüşüm gerekli olabilir. Bu projenin kapsamı için `CP_ACP`, işlevsel varsayılandır.
 
 ### `error_utils.hpp`
@@ -255,7 +255,7 @@ namespace Utils {
 }
 ```
 
-> [!NOTE] Hata Mesajlarının Biçimlendirilmesi
+> [!NOTE]
 > `FormatMessageW`, sistem hata kodunun metinsel açıklamasını alan güçlü bir **Windows API**'sidir. Etkili **tanılama** için net mesajlar sağlar ve `DWORD` gibi `ERROR_FILE_NOT_FOUND` (2) kodunu `L"Sistem belirtilen dosyayı bulamıyor."` gibi bir mesaja dönüştürür.
 
 ### `resource_handle.hpp`
@@ -378,7 +378,7 @@ namespace Utils {
 }
 ```
 
-> [!NOTE] C++17 `std::filesystem`
+> [!NOTE]
 > `std::filesystem`, **C++17**'nin güçlü ve platformdan bağımsız bir şekilde dosya sistemiyle etkileşim kurmayı sağlayan modern bir ekidir. **Windows** için bu proje bağlamında, eski **WinAPI**'lere kıyasla dosya yollarının işlenmesini ve dosya varlığının kontrolünü basitleştirir.
 >
 > `std::filesystem`'i kullanmak için derleyicinizin **C++17**'yi desteklediğinden emin olun. Projenizi **C++17** standardını kullanacak şekilde yapılandırmanız gerekir (**Visual Studio**'da `/std:c++17`).
@@ -535,7 +535,7 @@ class Process {
 };
 ```
 
-> [!NOTE] Sağlam Tasarım `std::optional` ve RAII ile
+> [!NOTE]
 > `process.hpp` modülü, sağlam ve güvenli bir tasarımı sergiler. `Create_Game_Process` işlevi, bir `std::optional<Process_Info>` döndürür. Bu, işlevin süreç oluşturma başarısızlıklarını açık ve zarif bir şekilde (bir `std::nullopt` döndürerek) sinyalize etmesini sağlar, istisnalar veya belirsiz hata kodlarına başvurmadan.
 >
 > Daha da önemlisi, `Process_Info` yapısı, **süreç** ve **iş parçacığı** tutamaçlarını kapsüllemek için `Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>>` kullanır. Bu, **RAII (Resource Acquisition Is Initialization)** deseninin bir örneğidir ve `hProcess` ve `hThread` gibi işletim sistemi **tutamaçlarının** `Process_Info` nesnesi kapsam dışına çıktığında otomatik olarak `CloseHandle` ile kapatılmasını sağlar. Bu, **Windows uygulamalarında** uzun süre çalışan uygulamalarda kaynak tüketimi ve kararsızlığa yol açabilecek **tutamaç sızıntılarını** ortadan kaldırır.
@@ -664,7 +664,7 @@ namespace Injector {
 }
 ```
 
-> [!CAUTION] Çift Enjeksiyon (SA-MP ve OMP)
+> [!CAUTION]
 > **OMP** için süreç, `samp.dll`'ye ek olarak `omp-client.dll`'yi enjekte etmeyi içerir; bu, **OMP**'nin genellikle çalışma şekline uygundur. **OMP** istemcisi, bazı işlevsellikler için genellikle `samp.dll`'yi **temel** veya **vekil** olarak kullanır, `omp-client.dll` ise davranışları genişletir veya üzerine yazar.
 >
 > **OMP enjeksiyonunun** başarılı olması için her iki **DLL**'nin de oyun dizininde mevcut ve işlevsel olması çok önemlidir. Biri başarısız olursa, oyun düzgün başlatılamayabilir veya çok oyunculu istemci yüklenmeyebilir.
@@ -710,7 +710,7 @@ inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view
 }
 ```
 
-> [!NOTE] `header-only` için `inline` Tasarımı
+> [!NOTE]
 > Bu dosyadaki ve diğer yardımcı işlevlerdeki tüm işlevler için `inline` anahtar kelimesinin kullanımı, kütüphanenin `header-only` olmasını sağlar. `inline`, işlev gövdesinin çağrı noktalarına doğrudan eklenmesini önerir, ancak buradaki asıl etkisi, **One Definition Rule (ODR)**'yi gevşeterek işlevin birden çok `.obj` dosyasında tanımlanabilmesini sağlamaktır (birden çok `.cpp` dosyası `injector.hpp`'yi dahil ederse). **Bağlama** aşaması, yürütülebilir dosyada yalnızca tek bir nihai sürümün bulunmasını sağlar.
 
 ## Kapsamlı Kullanım Örnekleri
@@ -809,7 +809,7 @@ g++ main.cpp -o my_launcher -std=c++17 -Wall -lstdc++fs -municode -lkernel32
 cl /EHsc /std:c++17 /permissive- /FS /utf-8 main.cpp /link /OUT:my_launcher.exe
 ```
 
-> [!NOTE] Derleyici ve C++ Uyumluluğu
+> [!NOTE]
 > **SA-MP** ve **OMP**, belirli araçlarla derlenen eski projelerdir ve **Application Binary Interface (ABI)**'lerini tanımlar. Bu kütüphane **C++17** kullanırken, **oyun DLL'leriyle** etkileşimde bulunan **SA-MP** ve **OMP** DLL'lerinin, derleyicinizin ve kullandığı C++ çalışma zamanı (CRT) sürümüyle uyumlu olması çok önemlidir.
 >
 > **DLL'lerin** oluşturulduğu derleyici veya **C++** sürümünden çok farklı bir derleyici kullanmak, **bellek ayırma** veya **parametre geçişinde** kolayca teşhis edilemeyen ince sorunlara yol açabilir ve enjektörden açık bir hata çıkmayabilir. Bu nedenle, **C++17** maksimum önerilen sürümdür, çünkü daha yeni sürümler **ABI** veya **CRT**'de eski oyun modüllerinin tolere edemeyeceği değişiklikler getirebilir.
@@ -1118,7 +1118,7 @@ Bu, **DLL'ler** enjekte edildikten sonra oyunu başlatmak için son adımdır.
   - İşlem, **DLL enjeksiyonu** ile ana **thread**'in devam ettirilmesi girişimi arasında harici olarak sonlandırılmış olabilir.
 - **Çözüm**: Eğer önceki tüm adımlar başarılı olduysa ve yalnızca `ResumeThread` başarısız olduysa, bu, işletim sistemi, **GTA:SA** kurulumu veya aşırı katı bir başka **güvenlik yazılımı** ile ilgili bir sorun olabilir. Hata öncesi ve sonrası `gta_sa.exe`'nin durumunu **Görev Yöneticisi** ile yeniden inceleyin. Bilgisayarı yeniden başlatmak, geçici sistem durumu sorunlarını çözebilir.
 
-> [!TIP] Teşhis Araçları
+> [!TIP]
 > Karmaşık hata ayıklama senaryolarında, **Process Monitor (Sysinternals Suite)** veya bir hata ayıklayıcı (örneğin **Visual Studio Debugger**, **WinDbg**, **OllyDbg**) gibi araçlar çok değerli olabilir. Bunlar, **API** çağrılarını gözlemlemeye, erişim hatalarını kontrol etmeye, **handle** durumlarını izlemeye ve hatta işlem belleğini incelemeye yardımcı olarak, perde arkasında neler olup bittiğine dair derinlemesine bir görüş sağlar.
 
 ## Lisans

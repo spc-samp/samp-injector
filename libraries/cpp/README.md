@@ -76,7 +76,7 @@ Desenvolvida com o propósito de oferecer máxima flexibilidade e integração f
 
 ### Por que Injetar DLLs?
 
-> [!NOTE] Injeção de DLLs: O cerne do carregamento dinâmico.
+> [!NOTE]
 > A **injeção de DLL (Dynamic Link Library)** é um método utilizado em sistemas operacionais **Microsoft Windows** que permite a execução de código dentro do espaço de memória de outro processo em execução. É uma técnica poderosa com diversas aplicações legítimas, desde a depuração e monitoramento de programas até a modificação de comportamento de aplicativos para estender suas funcionalidades.
 
 No contexto de jogos como o **GTA San Andreas**, que não foram originalmente desenvolvidos com funcionalidade multiplayer integrada, a **injeção de DLLs** é a base para a existência de clientes multiplayer como **SA-MP** e **OMP**. Esses clientes são implementados como **DLLs** que, uma vez injetadas no processo do `gta_sa.exe`, assumem o controle, interceptam funções do jogo, e estabelecem comunicação com servidores multiplayer.
@@ -209,7 +209,7 @@ namespace Utils {
 }
 ```
 
-> [!IMPORTANT] Encoding Matters!
+> [!IMPORTANT]
 > O `CP_ACP` **(ANSI Code Page)** usado em `WideCharToMultiByte` é a página de código padrão do sistema **Windows**. Isso significa que a conversão pode variar dependendo da configuração de idioma do sistema do usuário. Para a maioria dos casos de uso de nomes de arquivos e argumentos de linha de comando no **SA-MP**/**OMP** (que historicamente lidam bem com strings **ANSI**), essa abordagem é geralmente suficiente. No entanto, em cenários que exigem compatibilidade **Unicode** total com sistemas externos ou entradas globais, seriam necessárias conversões para **UTF-8** (`CP_UTF8`) ou outras páginas de código. Para o escopo deste projeto, o `CP_ACP` é o padrão funcional.
 
 ### `error_utils.hpp`
@@ -255,7 +255,7 @@ namespace Utils {
 }
 ```
 
-> [!NOTE] Formatação de Mensagens de Erro
+> [!NOTE]
 > A função `FormatMessageW` é uma **API Windows** poderosa que recupera a descrição textual de um código de erro do sistema. Ela lida com a localização e fornece mensagens claras que são essenciais para um **diagnóstico** eficaz, transformando um `DWORD` como `ERROR_FILE_NOT_FOUND` (2) em `L"O sistema não pode encontrar o arquivo especificado."`.
 
 ### `resource_handle.hpp`
@@ -378,7 +378,7 @@ namespace Utils {
 }
 ```
 
-> [!NOTE] C++17 `std::filesystem`
+> [!NOTE]
 > A utilização de `std::filesystem` é uma adição moderna ao **C++17** que oferece uma maneira poderosa e plataforma-independente de interagir com o sistema de arquivos. Para este projeto no **Windows**, ela simplifica o tratamento de caminhos e a verificação da existência de arquivos em comparação com **APIs** mais antigas do **WinAPI**.
 >
 > Certifique-se de que seu compilador suporte **C++17** para usar `std::filesystem`. Você precisará configurar seu projeto para usar um padrão **C++17** (`/std:c++17` no **Visual Studio**).
@@ -536,7 +536,7 @@ class Process {
 };
 ```
 
-> [!NOTE] Design Robusto com `std::optional` e RAII
+> [!NOTE]
 > O módulo `process.hpp` demonstra um design robusto e seguro. A função `Create_Game_Process` retorna um `std::optional<Process_Info>`. Isso permite que a função sinalize falhas na criação do processo de forma explícita e elegante (retornando um `std::nullopt`) sem recorrer a exceções ou códigos de erro ambíguos em seu retorno principal.
 >
 > Mais crucialmente, a estrutura `Process_Info` utiliza `Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>>` para encapsular os **handles** do processo e da **thread**. Este é um exemplo do padrão **RAII (Resource Acquisition Is Initialization)**, que garante que os `HANDLE`s do sistema operacional (como `hProcess` e `hThread`) sejam automaticamente fechados via `CloseHandle` quando o objeto `Process_Info` sai de escopo. Isso elimina vazamentos de **handles**, que são uma fonte comum de instabilidade e consumo excessivo de recursos em **aplicativos Windows** de longa duração.
@@ -665,7 +665,7 @@ namespace Injector {
 }
 ```
 
-> [!CAUTION] Injeção Dupla (SA-MP e OMP)
+> [!CAUTION]
 > Embora o processo para **OMP** envolva injetar a `omp-client.dll` *além* da `samp.dll`, isso está de acordo com a maneira como o **OMP** geralmente funciona. O cliente **OMP** muitas vezes usa a `samp.dll` como **base** ou **proxy** para certas funcionalidades, enquanto `omp-client.dll` estende ou sobrescreve comportamentos.
 >
 > É crucial que **ambas as DLLs** estejam presentes e funcionais no diretório do jogo para que a **injeção OMP** seja bem-sucedida. Se uma falhar, o jogo pode não inicializar corretamente ou o cliente multiplayer pode não carregar.
@@ -711,7 +711,7 @@ inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view
 }
 ```
 
-> [!NOTE] Design `inline` para `header-only`
+> [!NOTE]
 > O uso da palavra-chave `inline` para todas as funções neste arquivo e em outros utilitários permite que a biblioteca seja `header-only`. `inline` sugere ao compilador que o corpo da função deve ser inserido diretamente nos pontos de chamada, mas seu principal efeito aqui é relaxar a **One Definition Rule (ODR)** para que a função possa ser definida em múltiplos arquivos `.obj` (o que aconteceria se vários `.cpp` incluíssem `injector.hpp`). A etapa de **linkage** garantirá que apenas uma versão final exista no executável.
 
 ## Exemplos Abrangentes de Utilização
@@ -811,7 +811,7 @@ g++ main.cpp -o my_launcher -std=c++17 -Wall -lstdc++fs -municode -lkernel32
 cl /EHsc /std:c++17 /permissive- /FS /utf-8 main.cpp /link /OUT:my_launcher.exe
 ```
 
-> [!NOTE] Compatibilidade do Compilador e C++
+> [!NOTE]
 > O **SA-MP** e **OMP**, como projetos legados, são compilados com ferramentas específicas que definem sua **Application Binary Interface (ABI)**. Embora esta biblioteca use **C++17**, **é crucial que as DLLs de SA-MP e OMP com as quais ela interage também sejam compatíveis com a ABI do seu compilador e da versão de tempo de execução do C++ (CRT) que você usa**.
 >
 > Usar um compilador ou versão de **C++** muito diferente do que foi usado para **construir as DLLs** do jogo pode levar a problemas sutis (por exemplo, com a alocação de memória ou passagem de parâmetros) que não são facilmente **diagnosticáveis** e não resultarão em um erro explícito do injetor. Por esta razão, **o C++17 é a versão máxima recomendada**, pois versões mais recentes podem introduzir mudanças na **ABI** ou na **CRT** que não são toleradas pelos módulos de jogo mais antigos.
@@ -1120,7 +1120,7 @@ Este é o passo final para iniciar o jogo depois **que as DLLs** são injetadas.
   - O processo pode ter sido encerrado externamente entre a **injeção da DLL** e a tentativa de retomada do **thread** principal.
 - **Solução**: Se todas as etapas anteriores foram bem-sucedidas e apenas `ResumeThread` falhou, pode ser um problema com o sistema operacional, com a própria instalação do **GTA:SA**, ou com outro **software** de segurança muito rigoroso. Reexamine o estado do `gta_sa.exe` via **Gerenciador de Tarefas** logo antes e após o erro. Tentar reiniciar o computador pode resolver problemas de estado temporário do sistema.
 
-> [!TIP] Ferramentas de Diagnóstico
+> [!TIP]
 > Em cenários de depuração complexos, ferramentas como **Process Monitor (Sysinternals Suite)** ou um depurador (como **Visual Studio Debugger**, **WinDbg**, **OllyDbg**) podem ser inestimáveis. Elas podem ajudar a observar as chamadas de **API**, verificar erros de acesso, rastrear o estado dos **handles** e até mesmo inspecionar a memória do processo, fornecendo uma visão aprofundada do que está acontecendo por baixo dos panos.
 
 ## Licença
