@@ -1,0 +1,70 @@
+/* ============================================================================= *
+ * SA-MP Injector - Injection ↓                                                  *
+ * executable for SA-MP (San Andreas Multiplayer) and OMP (Open Multiplayer)     *
+ * ============================================================================= *
+ *                                                                               *
+ * Copyright (c) 2025, SPC (SA-MP Programming Community)                         *
+ * All rights reserved.                                                          *
+ *                                                                               *
+ * Developed by: Calasans                                                        *
+ * Repository: https://github.com/spc-samp/samp-injector                         *
+ *                                                                               *
+ * - This file is part of the SA-MP Injector project.                            *
+ *                                                                               *
+ * ============================================================================= *
+ *                                                                               *
+ * Licensed under the MIT License (MIT);                                         *
+ * you may not use this file except in compliance with the License.              *
+ * You may obtain a copy of the License at:                                      *
+ *                                                                               *
+ *     https://opensource.org/licenses/MIT                                       *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ *                                                                               *
+ * ============================================================================= */
+
+#include <windows.h>
+
+SPC_ICON ICON "icons\spc.ico"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEFLAGSMASK 0x3fL
+
+#ifdef _DEBUG
+    FILEFLAGS 0x1L
+#else
+    FILEFLAGS 0x0L
+#endif
+
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE 0x0L
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "SA-MP Programming Community"
+            VALUE "ProductName", "SA-MP Injector"
+            VALUE "FileDescription", "SA-MP Injector is an executable for SA-MP (San Andreas Multiplayer) and OMP (Open Multiplayer). It injects samp.dll for SA-MP, or both samp.dll and omp-client.dll for OMP, enabling the game to launch via command line with customized parameters to connect to a server."
+            VALUE "FileVersion", "1.0.0"
+            VALUE "ProductVersion", "1.0.0"
+            VALUE "InternalName", "samp-injector"
+            VALUE "OriginalFilename", "samp-injector.exe"
+            VALUE "LegalCopyright", "Copyright (C) 2025 SA-MP Programming Community. All rights reserved."
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
