@@ -95,10 +95,9 @@ class Process {
                 return (error_message = L"Failed to allocate memory in the target process. This might be due to " L"insufficient permissions or process protection mechanisms.", false);
 
             auto memory_guard = Utils::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, [process](LPVOID ptr) {
-                    if (ptr)
-                        VirtualFreeEx(process, ptr, 0, MEM_RELEASE);
-                }
-            );
+                if (ptr)
+                    VirtualFreeEx(process, ptr, 0, MEM_RELEASE);
+            });
 
             if (!WriteProcessMemory(process, remote_memory, DLL_path.data(), DLL_path.size() + 1, nullptr))
                 return (error_message = L"Failed to write DLL path to the target process memory. Verify process " L"permissions and ensure the DLL path is accessible.", false);
