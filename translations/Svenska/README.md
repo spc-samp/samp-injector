@@ -4,7 +4,7 @@
 [![SA-MP | OMP](https://img.shields.io/badge/Support-SA--MP%20%7C%20OMP-yellow)](https://github.com/spc-samp/samp-injector)
 [![x86 Only](https://img.shields.io/badge/Architecture-x86%20(32--bit)-orange)](https://github.com/spc-samp/samp-injector)
 
-SA-MP Injector är ett mångsidigt verktyg designat för **SA-MP (San Andreas Multiplayer)** och **OMP (Open Multiplayer)**, som fungerar både som en **körbar kommandoradsfil** och en **bibliotek för olika programmeringsspråk**. Dess huvudsakliga funktion är att injicera `samp.dll` (för **SA-MP**) eller både `samp.dll` och `omp-client.dll` (för **OMP**) i processen för **GTA:SA**, vilket gör det möjligt att starta spelet med anpassade parametrar för direkt anslutning till en server.
+**SA-MP Injector** är ett mångsidigt verktyg designat för **SA-MP (San Andreas Multiplayer)** och **OMP (Open Multiplayer)**, som fungerar som ett **kommandoradsexekverbart program**, en **dynamisk bibliotek (DLL)** och en **samling bibliotek för olika programmeringsspråk**. Dess huvudsakliga funktion är att injicera `samp.dll` (i fallet med **SA-MP**) eller både `samp.dll` och `omp-client.dll` (i fallet med **OMP**) i processen för **GTA:SA**, vilket gör det möjligt att starta spelet med anpassade parametrar och möjliggöra direkt anslutning till en server.
 
 ## Språk
 
@@ -34,6 +34,16 @@ SA-MP Injector är ett mångsidigt verktyg designat för **SA-MP (San Andreas Mu
     - [Hur man kompilerar](#hur-man-kompilerar)
       - [Krav](#krav)
       - [Kompileringssteg](#kompileringssteg)
+  - [Dynamiskt Bibliotek (**DLL**)](#dynamiskt-bibliotek-dll)
+    - [Funktionalitet](#funktionalitet-1)
+    - [Hur man använder (API-anrop)](#hur-man-använder-api-anrop)
+      - [Kontrakt för Funktionen `Launch_Game`](#kontrakt-för-funktionen-launch_game)
+      - [Parametrar](#parametrar-1)
+    - [Hur man använder (Inbäddat i Applikationer)](#hur-man-använder-inbäddat-i-applikationer)
+    - [Användning av C++-biblioteket i **DLL**](#användning-av-c-biblioteket-i-dll)
+    - [Hur man kompilerar](#hur-man-kompilerar-1)
+      - [Krav](#krav-1)
+      - [Kompileringssteg](#kompileringssteg-1)
   - [Bibliotek](#bibliotek)
     - [Översikt](#översikt)
     - [Lista över bibliotek](#lista-över-bibliotek)
@@ -55,9 +65,8 @@ Den körbara filen `samp-injector.exe` erbjuder ett kommandoradsgränssnitt för
 1. **Miljövalidering:** Kontrollerar existensen av nödvändiga filer (`gta_sa.exe`, `samp.dll`, `omp-client.dll`) i den angivna katalogen samt validerar de angivna anslutningsparametrarna.
 2. **Skapande av suspenderad process:** Startar `gta_sa.exe` i ett suspenderat tillstånd, vilket är ett krav för att **säkert injicera DLL:er** innan spelets huvudprocess körs.
 3. **Dynamisk injektion av DLL:er:**
-    - För **SA-MP**-läget injiceras `samp.dll`.
-    - För **OMP**-läget injiceras både `samp.dll` och `omp-client.dll`.
-    Injektionen underlättas genom fjärranrop av funktionen `LoadLibraryA`, vilket gör att GTA: SA kan ladda multiplayer-modulerna och initiera anslutningen.
+   - För **SA-MP**-läget injiceras `samp.dll`.
+   - För **OMP**-läget injiceras både `samp.dll` och `omp-client.dll`. Injektionen underlättas genom fjärranrop av funktionen `LoadLibraryA`, vilket gör att GTA: SA kan ladda multiplayer-modulerna och initiera anslutningen.
 4. **Konfiguration av argument:** Kommandoradsargument, såsom **smeknamn**, **serverns IP**, **port** och **lösenord (om angivet)**, förbereds och överförs till `gta_sa.exe`.
 5. **Återupptagande av processen:** Efter **lyckad injektion av DLL:er** återupptas spelprocessen för normal körning, vilket gör att **GTA:SA** ansluter direkt till servern.
 
@@ -66,7 +75,6 @@ Den körbara filen `samp-injector.exe` erbjuder ett kommandoradsgränssnitt för
 För att använda den körbara filen, anropa den från **Kommandotolken (CMD)**, **PowerShell** eller **terminalen** och ange de nödvändiga parametrarna.
 
 Det grundläggande formatet är:
-
 ```bash
 samp-injector.exe <läge> <spelkatalog> <smeknamn> <server_IP> <server_port> <server_lösenord (valfritt)>
 ```
@@ -74,7 +82,6 @@ samp-injector.exe <läge> <spelkatalog> <smeknamn> <server_IP> <server_port> <se
 #### SA-MP-läge
 
 För exklusiv injektion av `samp.dll`:
-
 ```bash
 samp-injector.exe "samp" "C:\Games\GTA San Andreas" "Namn" "127.0.0.1" "7777" "lösenord (valfritt)"
 ```
@@ -82,7 +89,6 @@ samp-injector.exe "samp" "C:\Games\GTA San Andreas" "Namn" "127.0.0.1" "7777" "l
 #### OMP-läge
 
 För injektion av `samp.dll` och `omp-client.dll`:
-
 ```bash
 samp-injector.exe "omp" "C:\Games\GTA San Andreas" "Namn" "127.0.0.1" "7777" "lösenord (valfritt)"
 ```
@@ -90,8 +96,8 @@ samp-injector.exe "omp" "C:\Games\GTA San Andreas" "Namn" "127.0.0.1" "7777" "l�
 #### Parametrar
 
 - `<läge>`: Anger typen av injektion.
-    - `samp`: För **SA-MP** (`samp.dll`).
-    - `omp`: För **OMP** (`samp.dll` och `omp-client.dll`).
+   - `samp`: För **SA-MP** (`samp.dll`).
+   - `omp`: För **OMP** (`samp.dll` och `omp-client.dll`).
 - `<spelkatalog>`: Den fullständiga sökvägen till **GTA:SA**-katalogen. Denna katalog måste innehålla `gta_sa.exe` och de respektive **DLL**-filerna.
 - `<smeknamn>`: Ditt smeknamn i spelet (max **20 tecken**).
 - `<server_IP>`: Serverns **IP-adress** eller **domännamn**.
@@ -105,7 +111,6 @@ Om argumenten är felaktiga eller otillräckliga visas ett användningsmeddeland
 `samp-injector.exe` är idealisk för integration i tredjepartsapplikationer, såsom anpassade launchers, som vill automatisera processen att starta spelet med fördefinierade inställningar.
 
 Exempel på anrop av `samp-injector.exe` från en **C#**-applikation:
-
 ```csharp
 using System;
 using System.Diagnostics;
@@ -154,7 +159,6 @@ Den körbara filen `samp-injector.exe` är byggd på biblioteket [SA-MP Injector
 Det huvudsakliga rubrikfilen för **C++**-biblioteket som ska inkluderas är `libraries/samp-injector/cpp/injector.hpp`. Eftersom biblioteket [SA-MP Injector C++](https://github.com/spc-samp/samp-injector/tree/main/libraries/cpp) är **header-only**, kräver dess användning endast inkludering av denna rubrik i källkoden, utan behov av att länka en `.lib`-fil.
 
 Det relevanta avsnittet av `main.cpp` som visar integrationen är följande:
-
 ```cpp
 // Extraherar kommandoradsargument
 int argc;
@@ -191,30 +195,164 @@ Du kan kompilera `samp-injector.exe` från källkoden. Om du inte vill kompilera
 #### Kompileringssteg
 
 1. **Klona repositoriet:**
-    ```bash
-    git clone https://github.com/spc-samp/samp-injector.git
-    cd samp-injector
-    ```
+   ```bash
+   git clone https://github.com/spc-samp/samp-injector.git
+   cd samp-injector
+   ```
 2. **Öppna lösningen:**
-   
-    Navigera till mappen `executable` och öppna lösningsfilen `.sln`:
-    ```bash
-    cd executable
-    start samp-injector.sln
-    ```
-    Detta öppnar projektet i **Visual Studio**.
+   Navigera till mappen `executable` och öppna lösningsfilen `.sln`:
+   ```bash
+   cd executable
+   start samp-injector.sln
+   ```
+   Detta öppnar projektet i **Visual Studio**.
 3. **Konfigurera bygget:**
-    - I **Visual Studio**, kontrollera lösningens konfiguration. Det rekommenderas att använda lägena `Release` och `x86` **(32-bit)**. I sammanhanget för **GTA:SA** och **SA-MP**/**OMP** är **x86 (32-bit)**-arkitekturen obligatorisk.
+   - I **Visual Studio**, kontrollera lösningens konfiguration. Det rekommenderas att använda lägena `Release` och `x86` **(32-bit)**. I sammanhanget för **GTA:SA** och **SA-MP**/**OMP** är **x86 (32-bit)**-arkitekturen obligatorisk.
 4. **Kompilera:**
    - I menyn `Bygg` klicka på `Kompilera lösning` eller `Bygg samp-injector`.
    - Alternativt kan du använda genvägarna:
-     - `Ctrl + Shift + B` för att kompilera hela lösningen.
-     - `Ctrl + B` (om konfigurerat) för att kompilera det aktuella projektet.
-    - Om allt är korrekt konfigurerat genereras den körbara filen `samp-injector.exe` i katalogen `executable\Release` (eller `executable\Debug`, beroende på din **byggkonfiguration**).
+      - `Ctrl + Shift + B` för att kompilera hela lösningen.
+      - `Ctrl + B` (om konfigurerat) för att kompilera det aktuella projektet.
+   - Om allt är korrekt konfigurerat genereras den körbara filen `samp-injector.exe` i katalogen `executable\Release` (eller `executable\Debug`, beroende på din **byggkonfiguration**).
+
+## Dynamiskt Bibliotek (**DLL**)
+
+Biblioteket `samp-injector.dll` erbjuder ett **API (Application Programming Interface)** för att programmatiskt starta **GTA:SA** med **SA-MP** eller **OMP**. Det är det perfekta alternativet till det exekverbara programmet för utvecklare av launchers som vill ha en renare och mer direkt integration genom att anropa en funktion istället för att starta en extern process.
+
+### Funktionalitet
+
+`samp-injector.dll` aktiverar samma robusta arbetsflöde som det interna biblioteket och kapslar in komplexiteten i injektion och spelinitialisering:
+
+1. **Skapande av en Suspenderad Process:** När den anropas startar den `gta_sa.exe` i ett suspenderat tillstånd.
+2. **Dynamisk DLL-injektion:**
+   - För **SA-MP**-läget injiceras `samp.dll`.
+   - För **OMP**-läget injiceras både `samp.dll` och `omp-client.dll`.
+3. **Konfiguration av Argument:** Funktionsparametrarna, såsom **smeknamn**, **IP**, **port** och **lösenord**, förbereds för `gta_sa.exe`.
+4. **Återupptagning av Processen:** Efter injektionen återupptas spelprocessen för körning och ansluter direkt till servern.
+
+### Hur man använder (API-anrop)
+
+För att använda biblioteket behöver du ladda `samp-injector.dll` i din applikation och anropa den exporterade funktionen `Launch_Game`.
+
+#### Kontrakt för Funktionen `Launch_Game`
+
+- **DLL-fil:** `samp-injector.dll`
+- **Exporterat Funktionsnamn:** `Launch_Game`
+- **Anropskonvention:** `__stdcall`
+- **Returtyp:** `int`
+   - `0`: **Framgång.** Begäran om att starta spelet skickades till en bakgrundstråd.
+   - `1`: **Ogiltiga Argument.** En obligatorisk parameter var null eller läget var ogiltigt. Ett felmeddelande visas.
+   - `2`: **Trådfel.** Ett kritiskt fel uppstod vid försök att skapa initialiseringstråden. Ett felmeddelande visas.
+
+#### Parametrar
+
+Alla parametrar är breda teckensträngar (Unicode).
+
+- `mode` (`LPCWSTR`): Definierar typen av injektion (`L"samp"` eller `L"omp"`).
+- `folder` (`LPCWSTR`): Den fullständiga sökvägen till **GTA:SA**-katalogen.
+- `nickname` (`LPCWSTR`): Ditt smeknamn i spelet.
+- `ip` (`LPCWSTR`): **IP**-adressen eller **domännamnet** för servern.
+- `port` (`LPCWSTR`): Serverns anslutningsport.
+- `password` (`LPCWSTR`): Lösenordet för att ansluta till servern. **(Denna parameter är valfri. Du kan skicka `null` eller en tom sträng `L""` om det inte finns något lösenord)**.
+
+### Hur man använder (Inbäddat i Applikationer)
+
+Exempel på anrop av funktionen `Launch_Game` från en **C#-applikation**:
+```csharp
+using System;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+
+public class Launcher {
+    // Importerar funktionen från DLL:en och specificerar API-kontraktet.
+    [DllImport("samp-injector.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall, EntryPoint = "Launch_Game")]
+    private static extern int Launch_Game(string mode, string folder, string nickname, string ip, string port, string password);
+
+    public static void Main(string[] args) {
+        string inject_mode = "samp"; 
+        string gta_folder = "C:\\Games\\GTA San Andreas"; // Obs: Använd den faktiska sökvägen!
+        string nickname = "Namn";
+        string ip = "127.0.0.1";
+        string port = "7777";
+        string password = "lösenord (valfritt)"; // eller null, eller "" om inget finns
+
+        try {
+            int result = Launch_Game(inject_mode, gta_folder, nickname, ip, port, password);
+            
+            if (result != 0) {
+                // DLL:en visar redan ett detaljerat felmeddelande,
+                // men du kan logga eller visa ett annat meddelande här.
+                MessageBox.Show($"Anropet till DLL returnerade en felkod: {result}", "Fel i Launcher", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        catch (DllNotFoundException) {
+            MessageBox.Show("Fel: samp-injector.dll hittades inte! Kontrollera om den finns i samma mapp som launchern.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        catch (Exception ex) {
+            MessageBox.Show($"Ett oväntat fel uppstod: {ex.Message}", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+}
+```
+
+### Användning av C++-biblioteket i **DLL**
+
+Liksom det exekverbara programmet är även `samp-injector.dll` byggd på biblioteket [SA-MP Injector C++](https://github.com/spc-samp/samp-injector/tree/main/libraries/cpp), som finns i katalogen `libraries/cpp/`. Den exporterade funktionen `Launch_Game` fungerar som en wrapper, validerar parametrarna och delegerar den huvudsakliga injektionslogiken till funktionen `Initialize_Game` i biblioteket.
+
+Den huvudsakliga header-filen för **C++**-biblioteket som ska inkluderas är `libraries/samp-injector/cpp/injector.hpp`. Eftersom biblioteket [SA-MP Injector C++](https://github.com/spc-samp/samp-injector/tree/main/libraries/cpp) är **header-only**, kräver dess användning endast inkludering av denna header i källkoden, utan behov av att länka en `.lib`-fil.
+
+Följande kodsnutt från `main.cpp` i **DLL** visar hur uppgiften delegeras till en separat tråd:
+```cpp
+// Arbetarfunktion som körs i en bakgrundstråd
+void Game_Thread_Worker(const std::wstring& mode, const std::wstring& folder, const std::wstring& nickname, const std::wstring& ip, const std::wstring& port, const std::wstring& password) {
+    // Injektionslogiken delegeras till funktionen "Initialize_Game" i biblioteket.
+    Initialize_Game(mode, folder, nickname, ip, port, password);
+}
+
+// Inom den exporterade funktionen `Launch_Game` skapas tråden:
+try {
+    std::thread(Game_Thread_Worker, mode_str, folder_str, nickname_str, ip_str, port_str, password_str).detach();
+}
+// ...
+```
+
+Detta visar att **DLL**:en i grunden är ett API-gränssnitt för samma kärnfunktionalitet som används av det exekverbara programmet.
+
+### Hur man kompilerar
+
+Du kan kompilera `samp-injector.dll` från källkoden. Om du inte vill kompilera kan du ladda ner förkompilerade versioner från sektionen [Releases](https://github.com/spc-samp/samp-injector/releases).
+
+#### Krav
+
+- **Visual Studio:** **Visual Studio 2022** eller senare med arbetsbelastningen **"Skrivbordsutveckling med C++"** installerad rekommenderas.
+- **Git:** För att klona repositoriet (eller ladda ner det enkelt via denna länk: [Ladda ner](https://github.com/spc-samp/samp-injector/archive/refs/heads/main.zip)).
+
+#### Kompileringssteg
+
+1. **Klona Repositoriet:**
+   ```bash
+   git clone https://github.com/spc-samp/samp-injector.git
+   cd samp-injector
+   ```
+2. **Öppna Lösningen:**
+   Navigera till mappen `dll` och öppna lösningsfilen `.sln`:
+   ```bash
+   cd dll
+   start samp-injector.sln
+   ```
+   Detta öppnar projektet i **Visual Studio**.
+3. **Konfigurera Bygget:**
+   - I **Visual Studio**, kontrollera lösningskonfigurationen. Det rekommenderas att använda lägena `Release` och `x86` **(32-bit)**. I sammanhanget för **GTA:SA** och **SA-MP**/**OMP** är **x86 (32-bit)**-arkitekturen obligatorisk.
+4. **Kompilera:**
+   - I menyn `Compilation`, klicka på `Compile Solution` eller `Build samp-injector`.
+   - Alternativt kan du använda genvägarna:
+      - `Ctrl + Shift + B` för att kompilera hela lösningen.
+      - `Ctrl + B` (om det är konfigurerat) för att kompilera det aktuella projektet.
+   - Om allt är korrekt konfigurerat kommer biblioteket `samp-injector.dll` att genereras i katalogen `dll\Release` (eller `dll\Debug`, beroende på din **build**-konfiguration).
 
 ## Bibliotek
 
-Biblioteken är de grundläggande komponenterna i `SA-MP Injector` och innehåller den centrala logiken för processhantering, **injektion av DLL:er** och parameter-validering. Den största fördelen med att använda dessa bibliotek är enkelheten i initiering och injektion, vanligtvis genom en enda funktion (eller anrop med specifika parametrar för skriptspråk).
+Biblioteken är de grundläggande komponenterna i **SA-MP Injector** och innehåller den centrala logiken för processhantering, **injektion av DLL:er** och parameter-validering. Den största fördelen med att använda dessa bibliotek är enkelheten i initiering och injektion, vanligtvis genom en enda funktion (eller anrop med specifika parametrar för skriptspråk).
 
 ### Översikt
 

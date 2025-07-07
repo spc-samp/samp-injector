@@ -4,7 +4,7 @@
 [![SA-MP | OMP](https://img.shields.io/badge/Support-SA--MP%20%7C%20OMP-yellow)](https://github.com/spc-samp/samp-injector)
 [![x86 Only](https://img.shields.io/badge/Architecture-x86%20(32--bit)-orange)](https://github.com/spc-samp/samp-injector)
 
-SA-MP Injector to wszechstronne narzędzie zaprojektowane dla **SA-MP (San Andreas Multiplayer)** oraz **OMP (Open Multiplayer)**, działające zarówno jako **wykonywalny plik wiersza poleceń**, jak i **biblioteka dla różnych języków programowania**. Jego główną funkcją jest wstrzykiwanie `samp.dll` (dla **SA-MP**) lub zarówno `samp.dll`, jak i `omp-client.dll` (dla **OMP**) do procesu **GTA:SA**, umożliwiając uruchomienie gry z niestandardowymi parametrami do bezpośredniego połączenia z serwerem.
+**SA-MP Injector** to wszechstronne narzędzie zaprojektowane dla **SA-MP (San Andreas Multiplayer)** oraz **OMP (Open Multiplayer)**, działające jako **wykonywalny plik wiersza poleceń**, **dynamiczna biblioteka (DLL)** oraz **zbiór bibliotek dla różnych języków programowania**. Jego główną funkcją jest wstrzyknięcie pliku `samp.dll` (w przypadku **SA-MP**) lub obu `samp.dll` i `omp-client.dll` (w przypadku **OMP**) do procesu **GTA:SA**, umożliwiając uruchomienie gry z niestandardowymi parametrami, co pozwala na bezpośrednie połączenie z serwerem.
 
 ## Języki
 
@@ -34,6 +34,16 @@ SA-MP Injector to wszechstronne narzędzie zaprojektowane dla **SA-MP (San Andre
     - [Jak skompilować](#jak-skompilować)
       - [Wymagania](#wymagania)
       - [Kroki kompilacji](#kroki-kompilacji)
+  - [Biblioteka Dynamiczna (**DLL**)](#biblioteka-dynamiczna-dll)
+    - [Funkcjonalność](#funkcjonalność-1)
+    - [Jak Używać (Wywołanie API)](#jak-używać-wywołanie-api)
+      - [Kontrakt Funkcji `Launch_Game`](#kontrakt-funkcji-launch_game)
+      - [Parametry](#parametry-1)
+    - [Jak Używać (Osadzone w Aplikacjach)](#jak-używać-osadzone-w-aplikacjach)
+    - [Użycie Biblioteki C++ w **DLL**](#użycie-biblioteki-c-w-dll)
+    - [Jak Skompilować](#jak-skompilować-1)
+      - [Wymagania](#wymagania-1)
+      - [Kroki Kompilacji](#kroki-kompilacji-1)
   - [Biblioteki](#biblioteki)
     - [Przegląd](#przegląd)
     - [Lista bibliotek](#lista-bibliotek)
@@ -55,9 +65,8 @@ Plik wykonywalny `samp-injector.exe` oferuje interfejs wiersza poleceń do uruch
 1. **Weryfikacja środowiska:** Sprawdza istnienie niezbędnych plików (`gta_sa.exe`, `samp.dll`, `omp-client.dll`) w określonym katalogu oraz poprawność podanych parametrów połączenia.
 2. **Tworzenie procesu w stanie zawieszenia:** Uruchamia `gta_sa.exe` w stanie zawieszonym, co jest warunkiem wstępnym do **bezpiecznego wstrzykiwania bibliotek DLL** przed rozpoczęciem głównego procesu gry.
 3. **Dynamiczne wstrzykiwanie bibliotek DLL:**
-    - W trybie **SA-MP** wstrzykiwana jest `samp.dll`.
-    - W trybie **OMP** wstrzykiwane są `samp.dll` oraz `omp-client.dll`.
-    Wstrzykiwanie jest realizowane poprzez zdalne wywołanie funkcji `LoadLibraryA`, umożliwiając grze GTA: SA załadowanie modułów multiplayer i zainicjowanie połączenia.
+   - W trybie **SA-MP** wstrzykiwana jest `samp.dll`.
+   - W trybie **OMP** wstrzykiwane są `samp.dll` oraz `omp-client.dll`. Wstrzykiwanie jest realizowane poprzez zdalne wywołanie funkcji `LoadLibraryA`, umożliwiając grze GTA: SA załadowanie modułów multiplayer i zainicjowanie połączenia.
 4. **Konfiguracja argumentów:** Argumenty wiersza poleceń, takie jak **pseudonim**, **adres IP serwera**, **port** oraz **hasło (jeśli podane)**, są przygotowywane i przekazywane do `gta_sa.exe`.
 5. **Wznowienie procesu:** Po **pomyślnym wstrzyknięciu bibliotek DLL**, proces gry jest wznawiany, co pozwala grze **GTA:SA** na bezpośrednie połączenie z serwerem.
 
@@ -66,7 +75,6 @@ Plik wykonywalny `samp-injector.exe` oferuje interfejs wiersza poleceń do uruch
 Aby użyć pliku wykonywalnego, wywołaj go z **Wiersza poleceń (CMD)**, **PowerShell** lub **terminala**, podając wymagane parametry.
 
 Podstawowy format to:
-
 ```bash
 samp-injector.exe <tryb> <katalog_gry> <pseudonim> <IP_serwera> <port_serwera> <hasło_serwera (opcjonalne)>
 ```
@@ -74,7 +82,6 @@ samp-injector.exe <tryb> <katalog_gry> <pseudonim> <IP_serwera> <port_serwera> <
 #### Tryb SA-MP
 
 Dla wyłącznego wstrzykiwania `samp.dll`:
-
 ```bash
 samp-injector.exe "samp" "C:\Games\GTA San Andreas" "Nazwa" "127.0.0.1" "7777" "hasło (opcjonalne)"
 ```
@@ -82,7 +89,6 @@ samp-injector.exe "samp" "C:\Games\GTA San Andreas" "Nazwa" "127.0.0.1" "7777" "
 #### Tryb OMP
 
 Dla wstrzykiwania `samp.dll` oraz `omp-client.dll`:
-
 ```bash
 samp-injector.exe "omp" "C:\Games\GTA San Andreas" "Nazwa" "127.0.0.1" "7777" "hasło (opcjonalne)"
 ```
@@ -90,8 +96,8 @@ samp-injector.exe "omp" "C:\Games\GTA San Andreas" "Nazwa" "127.0.0.1" "7777" "h
 #### Parametry
 
 - `<tryb>`: Określa typ wstrzykiwania.
-    - `samp`: Dla **SA-MP** (`samp.dll`).
-    - `omp`: Dla **OMP** (`samp.dll` oraz `omp-client.dll`).
+   - `samp`: Dla **SA-MP** (`samp.dll`).
+   - `omp`: Dla **OMP** (`samp.dll` oraz `omp-client.dll`).
 - `<katalog_gry>`: Pełna ścieżka do katalogu **GTA:SA**. Katalog ten musi zawierać `gta_sa.exe` oraz odpowiednie pliki **DLL**.
 - `<pseudonim>`: Twój pseudonim w grze (maksymalnie **20 znaków**).
 - `<IP_serwera>`: Adres **IP** lub nazwa **domeny** serwera.
@@ -105,7 +111,6 @@ Jeśli argumenty są nieprawidłowe lub niewystarczające, wyświetli się komun
 `samp-injector.exe` jest idealny do integracji z aplikacjami innych firm, takimi jak własne launchery, które chcą zautomatyzować proces uruchamiania gry z predefiniowanymi ustawieniami.
 
 Przykład wywołania `samp-injector.exe` z aplikacji w **C#**:
-
 ```csharp
 using System;
 using System.Diagnostics;
@@ -154,7 +159,6 @@ Plik wykonywalny `samp-injector.exe` jest zbudowany na bazie biblioteki [SA-MP I
 Główny plik nagłówkowy biblioteki **C++** to `libraries/samp-injector/cpp/injector.hpp`. Ponieważ biblioteka [SA-MP Injector C++](https://github.com/spc-samp/samp-injector/tree/main/libraries/cpp) jest typu **header-only**, jej użycie wymaga jedynie włączenia tego nagłówka do kodu źródłowego, bez potrzeby linkowania pliku `.lib`.
 
 Istotny fragment `main.cpp`, który pokazuje integrację, jest następujący:
-
 ```cpp
 // Pobiera argumenty wiersza poleceń
 int argc;
@@ -191,30 +195,164 @@ Możesz skompilować `samp-injector.exe` z kodu źródłowego. Jeśli nie chcesz
 #### Kroki kompilacji
 
 1. **Sklonuj repozytorium:**
-    ```bash
-    git clone https://github.com/spc-samp/samp-injector.git
-    cd samp-injector
-    ```
+   ```bash
+   git clone https://github.com/spc-samp/samp-injector.git
+   cd samp-injector
+   ```
 2. **Otwórz rozwiązanie:**
-   
-    Przejdź do folderu `executable` i otwórz plik rozwiązania `.sln`:
-    ```bash
-    cd executable
-    start samp-injector.sln
-    ```
+   Przejdź do folderu `executable` i otwórz plik rozwiązania `.sln`:
+   ```bash
+   cd executable
+   start samp-injector.sln
+   ```
     Spowoduje to otwarcie projektu w **Visual Studio**.
 3. **Skonfiguruj build:**
-    - W **Visual Studio** sprawdź konfigurację rozwiązania. Zaleca się użycie trybów `Release` i `x86` **(32 bity)**. W kontekście **GTA:SA** oraz **SA-MP**/**OMP** architektura **x86 (32 bity)** jest obowiązkowa.
+   - W **Visual Studio** sprawdź konfigurację rozwiązania. Zaleca się użycie trybów `Release` i `x86` **(32 bity)**. W kontekście **GTA:SA** oraz **SA-MP**/**OMP** architektura **x86 (32 bity)** jest obowiązkowa.
 4. **Skompiluj:**
    - W menu `Kompilacja` kliknij `Skompiluj rozwiązanie` lub `Skompiluj samp-injector`.
    - Alternatywnie możesz użyć skrótów:
-     - `Ctrl + Shift + B`, aby skompilować całe rozwiązanie.
-     - `Ctrl + B` (jeśli skonfigurowane) do kompilacji bieżącego projektu.
-    - Jeśli wszystko jest poprawnie skonfigurowane, plik wykonywalny `samp-injector.exe` zostanie wygenerowany w katalogu `executable\Release` (lub `executable\Debug`, w zależności od konfiguracji **build**).
+      - `Ctrl + Shift + B`, aby skompilować całe rozwiązanie.
+      - `Ctrl + B` (jeśli skonfigurowane) do kompilacji bieżącego projektu.
+   - Jeśli wszystko jest poprawnie skonfigurowane, plik wykonywalny `samp-injector.exe` zostanie wygenerowany w katalogu `executable\Release` (lub `executable\Debug`, w zależności od konfiguracji **build**).
+
+## Biblioteka Dynamiczna (**DLL**)
+
+Biblioteka `samp-injector.dll` oferuje **API (Application Programming Interface)** do programowego uruchamiania **GTA:SA** z **SA-MP** lub **OMP**. Jest to idealna alternatywa dla pliku wykonywalnego dla twórców launcherów, którzy chcą bardziej przejrzystej i bezpośredniej integracji, wywołując funkcję zamiast uruchamiać zewnętrzny proces.
+
+### Funkcjonalność
+
+Biblioteka `samp-injector.dll` aktywuje ten sam solidny przepływ pracy co biblioteka wewnętrzna, ukrywając złożoność wstrzykiwania i inicjalizacji gry:
+
+1. **Tworzenie Zawieszonego Procesu:** Po wywołaniu uruchamia `gta_sa.exe` w stanie zawieszonym.
+2. **Dynamiczne Wstrzykiwanie DLL:**
+   - Dla trybu **SA-MP**, wstrzykiwana jest `samp.dll`.
+   - Dla trybu **OMP**, wstrzykiwane są `samp.dll` i `omp-client.dll`.
+3. **Konfiguracja Argumentów:** Parametry funkcji, takie jak **pseudonim**, **IP**, **port** i **hasło**, są przygotowywane dla `gta_sa.exe`.
+4. **Wznowienie Procesu:** Po wstrzyknięciu proces gry jest wznawiany do wykonania, łącząc się bezpośrednio z serwerem.
+
+### Jak Używać (Wywołanie API)
+
+Aby użyć biblioteki, należy załadować `samp-injector.dll` do aplikacji i wywołać eksportowaną funkcję `Launch_Game`.
+
+#### Kontrakt Funkcji `Launch_Game`
+
+- **Plik DLL:** `samp-injector.dll`
+- **Nazwa Eksportowanej Funkcji:** `Launch_Game`
+- **Konwencja Wywoływania:** `__stdcall`
+- **Typ Zwracany:** `int`
+   - `0`: **Sukces.** Żądanie uruchomienia gry zostało wysłane do wątku w tle.
+   - `1`: **Nieprawidłowe Argumenty.** Wymagany parametr był pusty lub tryb był nieprawidłowy. Zostanie wyświetlony komunikat o błędzie.
+   - `2`: **Błąd Wątku.** Wystąpił krytyczny błąd podczas próby utworzenia wątku inicjalizującego. Zostanie wyświetlony komunikat o błędzie.
+
+#### Parametry
+
+Wszystkie parametry to ciągi znaków szerokich (Unicode).
+
+- `mode` (`LPCWSTR`): Określa typ wstrzykiwania (`L"samp"` lub `L"omp"`).
+- `folder` (`LPCWSTR`): Pełna ścieżka do katalogu **GTA:SA**.
+- `nickname` (`LPCWSTR`): Twój pseudonim w grze.
+- `ip` (`LPCWSTR`): Adres **IP** lub **nazwa domeny** serwera.
+- `port` (`LPCWSTR`): Port połączenia serwera.
+- `password` (`LPCWSTR`): Hasło do połączenia z serwerem. **(Ten parametr jest opcjonalny. Można przekazać `null` lub pusty ciąg `L""`, jeśli nie ma hasła)**.
+
+### Jak Używać (Osadzone w Aplikacjach)
+
+Przykład wywołania funkcji `Launch_Game` z **aplikacji C#**:
+```csharp
+using System;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+
+public class Launcher {
+    // Importuje funkcję z DLL, określając kontrakt API.
+    [DllImport("samp-injector.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall, EntryPoint = "Launch_Game")]
+    private static extern int Launch_Game(string mode, string folder, string nickname, string ip, string port, string password);
+
+    public static void Main(string[] args) {
+        string inject_mode = "samp"; 
+        string gta_folder = "C:\\Games\\GTA San Andreas"; // Uwaga: Użyj prawdziwej ścieżki!
+        string nickname = "Nazwa";
+        string ip = "127.0.0.1";
+        string port = "7777";
+        string password = "hasło (opcjonalne)"; // lub null, lub "" jeśli brak
+
+        try {
+            int result = Launch_Game(inject_mode, gta_folder, nickname, ip, port, password);
+            
+            if (result != 0) {
+                // DLL już wyświetla szczegółowy komunikat o błędzie,
+                // ale możesz tutaj zapisać lub wyświetlić inny komunikat.
+                MessageBox.Show($"Wywołanie DLL zwróciło kod błędu: {result}", "Błąd w Launcherze", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        catch (DllNotFoundException) {
+            MessageBox.Show("Błąd: samp-injector.dll nie znaleziono! Sprawdź, czy znajduje się w tym samym folderze co launcher.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        catch (Exception ex) {
+            MessageBox.Show($"Wystąpił nieoczekiwany błąd: {ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+}
+```
+
+### Użycie Biblioteki C++ w **DLL**
+
+Podobnie jak w przypadku pliku wykonywalnego, `samp-injector.dll` również opiera się na bibliotece [SA-MP Injector C++](https://github.com/spc-samp/samp-injector/tree/main/libraries/cpp), która znajduje się w katalogu `libraries/cpp/`. Eksportowana funkcja `Launch_Game` działa jako wrapper, weryfikując parametry i delegując główną logikę wstrzykiwania do funkcji `Initialize_Game` biblioteki.
+
+Główny plik nagłówkowy biblioteki **C++**, który należy włączyć, to `libraries/samp-injector/cpp/injector.hpp`. Ponieważ biblioteka [SA-MP Injector C++](https://github.com/spc-samp/samp-injector/tree/main/libraries/cpp) jest **header-only**, jej użycie wymaga jedynie włączenia tego nagłówka do kodu źródłowego, bez konieczności linkowania pliku `.lib`.
+
+Poniższy fragment kodu z `main.cpp` w **DLL** pokazuje, jak zadanie jest delegowane do oddzielnego wątku:
+```cpp
+// Funkcja robocza działająca w wątku w tle
+void Game_Thread_Worker(const std::wstring& mode, const std::wstring& folder, const std::wstring& nickname, const std::wstring& ip, const std::wstring& port, const std::wstring& password) {
+    // Logika wstrzykiwania jest delegowana do funkcji "Initialize_Game" biblioteki.
+    Initialize_Game(mode, folder, nickname, ip, port, password);
+}
+
+// Wewnątrz eksportowanej funkcji `Launch_Game`, tworzony jest wątek:
+try {
+    std::thread(Game_Thread_Worker, mode_str, folder_str, nickname_str, ip_str, port_str, password_str).detach();
+}
+// ...
+```
+
+To pokazuje, że **DLL** jest w istocie interfejsem API dla tej samej podstawowej funkcjonalności używanej przez plik wykonywalny.
+
+### Jak Skompilować
+
+Możesz skompilować `samp-injector.dll` z kodu źródłowego. Jeśli nie chcesz kompilować, możesz pobrać wstępnie skompilowane wersje w sekcji [Releases](https://github.com/spc-samp/samp-injector/releases).
+
+#### Wymagania
+
+- **Visual Studio:** Zaleca się **Visual Studio 2022** lub nowszy z zainstalowanym obciążeniem **"Rozwój aplikacji desktopowych w C++"**.
+- **Git:** Do klonowania repozytorium (lub po prostu pobierz je, korzystając z tego linku: [Pobierz](https://github.com/spc-samp/samp-injector/archive/refs/heads/main.zip)).
+
+#### Kroki Kompilacji
+
+1. **Sklonuj Repozytorium:**
+   ```bash
+   git clone https://github.com/spc-samp/samp-injector.git
+   cd samp-injector
+   ```
+2. **Otwórz Rozwiązanie:**
+   Przejdź do folderu `dll` i otwórz plik rozwiązania `.sln`:
+   ```bash
+   cd dll
+   start samp-injector.sln
+   ```
+   Spowoduje to otwarcie projektu w **Visual Studio**.
+3. **Skonfiguruj Kompilację:**
+   - W **Visual Studio** sprawdź konfigurację rozwiązania. Zaleca się użycie trybów `Release` i `x86` **(32-bitowy)**. W kontekście **GTA:SA** oraz **SA-MP**/**OMP**, architektura **x86 (32-bitowa)** jest obowiązkowa.
+4. **Skompiluj:**
+   - W menu `Compilation` kliknij `Compile Solution` lub `Build samp-injector`.
+   - Alternatywnie możesz użyć skrótów:
+      - `Ctrl + Shift + B`, aby skompilować całe rozwiązanie.
+      - `Ctrl + B` (jeśli skonfigurowane) do skompilowania bieżącego projektu.
+   - Jeśli wszystko jest poprawnie skonfigurowane, biblioteka `samp-injector.dll` zostanie wygenerowana w katalogu `dll\Release` (lub `dll\Debug`, w zależności od konfiguracji **build**).
 
 ## Biblioteki
 
-Biblioteki są podstawowymi komponentami `SA-MP Injector`, zawierającymi główną logikę do manipulacji procesami, **wstrzykiwania bibliotek DLL** oraz weryfikacji parametrów. Główną zaletą korzystania z tych bibliotek jest łatwość inicjowania i wstrzykiwania, zwykle za pomocą pojedynczej funkcji (lub wywołań z określonymi parametrami dla języków skryptowych).
+Biblioteki są podstawowymi komponentami **SA-MP Injector**, zawierającymi główną logikę do manipulacji procesami, **wstrzykiwania bibliotek DLL** oraz weryfikacji parametrów. Główną zaletą korzystania z tych bibliotek jest łatwość inicjowania i wstrzykiwania, zwykle za pomocą pojedynczej funkcji (lub wywołań z określonymi parametrami dla języków skryptowych).
 
 ### Przegląd
 
