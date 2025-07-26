@@ -126,7 +126,7 @@ $global:CONSTANTS = @{
     MAX_PORT = 65535
     
     # Takma ad kısıtlamaları
-    MAX_NICKNAME_LENGTH = 20
+    MAX_NICKNAME_LENGTH = 23
     
     # Gerekli dosya adları
     SAMP_DLL_NAME = "samp.dll"
@@ -1204,9 +1204,9 @@ Oyuncunun **takma adı**, oyun istemcisinin onu kabul etmesini sağlamak için d
 
 ![Error 5](screenshots/error_5.png)
 
-- **Görüntülenen Hata Mesajı**: `"Nickname length exceeds the maximum allowed of 20 characters. Please use a shorter nickname."`
-- **Neden**: Sağlanan **takma adın** uzunluğu `$global:CONSTANTS.MAX_NICKNAME_LENGTH` olan `20` karakteri aşıyor.
-- **Çözüm**: En fazla `20` karakter uzunluğunda bir **takma ad** kullanın.
+- **Görüntülenen Hata Mesajı**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
+- **Neden**: Sağlanan **takma adın** uzunluğu `$global:CONSTANTS.MAX_NICKNAME_LENGTH` olan `23` karakteri aşıyor.
+- **Çözüm**: En fazla `23` karakter uzunluğunda bir **takma ad** kullanın.
    ```powershell
    # Doğru:
    Initialize_Game ... -nickname "Kisa" ...

@@ -126,7 +126,7 @@ $global:CONSTANTS = @{
     MAX_PORT = 65535
     
     # Nickname constraints
-    MAX_NICKNAME_LENGTH = 20
+    MAX_NICKNAME_LENGTH = 23
     
     # Required file names
     SAMP_DLL_NAME = "samp.dll"
@@ -1205,9 +1205,9 @@ El **nickname** del jugador se valida para asegurar que el cliente del juego lo 
 
 ![Error 5](screenshots/error_5.png)
 
-- **Mensaje de Error Mostrado**: `"Nickname length exceeds the maximum allowed of 20 characters. Please use a shorter nickname."`
-- **Causa**: La longitud del **nickname** proporcionado excede `$global:CONSTANTS.MAX_NICKNAME_LENGTH`, que es de `20` caracteres.
-- **Solución**: Use un **nickname** que tenga como máximo `20` caracteres.
+- **Mensaje de Error Mostrado**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
+- **Causa**: La longitud del **nickname** proporcionado excede `$global:CONSTANTS.MAX_NICKNAME_LENGTH`, que es de `23` caracteres.
+- **Solución**: Use un **nickname** que tenga como máximo `23` caracteres.
    ```powershell
    # Correcto:
    Initialize_Game ... -nickname "Corto" ...

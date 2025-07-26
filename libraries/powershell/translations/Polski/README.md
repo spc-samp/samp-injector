@@ -126,7 +126,7 @@ $global:CONSTANTS = @{
     MAX_PORT = 65535
     
     # Ograniczenia nazwy użytkownika
-    MAX_NICKNAME_LENGTH = 20
+    MAX_NICKNAME_LENGTH = 23
     
     # Wymagane nazwy plików
     SAMP_DLL_NAME = "samp.dll"
@@ -1205,9 +1205,9 @@ Port jest niezbędnym parametrem numerycznym do połączenia z serwerem. Ten bł
 
 ![Error 5](screenshots/error_5.png)
 
-- **Wyświetlany komunikat o błędzie**: `"Długość nazwy użytkownika przekracza maksymalną dozwoloną liczbę 20 znaków. Proszę użyć krótszej nazwy użytkownika."`
-- **Przyczyna**: Długość podanej **nazwy użytkownika** przekracza `$global:CONSTANTS.MAX_NICKNAME_LENGTH`, czyli `20` znaków.
-- **Rozwiązanie**: Użyj **nazwy użytkownika**, która ma maksymalnie `20` znaków.
+- **Wyświetlany komunikat o błędzie**: `"Długość nazwy użytkownika przekracza maksymalną dozwoloną liczbę 23 znaków. Proszę użyć krótszej nazwy użytkownika."`
+- **Przyczyna**: Długość podanej **nazwy użytkownika** przekracza `$global:CONSTANTS.MAX_NICKNAME_LENGTH`, czyli `23` znaków.
+- **Rozwiązanie**: Użyj **nazwy użytkownika**, która ma maksymalnie `23` znaków.
    ```powershell
    # Poprawnie:
    Initialize_Game ... -nickname "Krotka" ...

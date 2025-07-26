@@ -126,7 +126,7 @@ $global:CONSTANTS = @{
     MAX_PORT = 65535
     
     # Begränsningar för smeknamn
-    MAX_NICKNAME_LENGTH = 20
+    MAX_NICKNAME_LENGTH = 23
     
     # Nödvändiga filnamn
     SAMP_DLL_NAME = "samp.dll"
@@ -1205,9 +1205,9 @@ Spelarens **smeknamn** valideras för att säkerställa att spelklienten accepte
 
 ![Error 5](screenshots/error_5.png)
 
-- **Visat Felmeddelande**: `"Nickname length exceeds the maximum allowed of 20 characters. Please use a shorter nickname."`
-- **Orsak**: Längden på det angivna **smeknamnet** överstiger `$global:CONSTANTS.MAX_NICKNAME_LENGTH`, vilket är `20` tecken.
-- **Lösning**: Använd ett **smeknamn** som har högst `20` tecken.
+- **Visat Felmeddelande**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
+- **Orsak**: Längden på det angivna **smeknamnet** överstiger `$global:CONSTANTS.MAX_NICKNAME_LENGTH`, vilket är `23` tecken.
+- **Lösning**: Använd ett **smeknamn** som har högst `23` tecken.
    ```powershell
    # Korrekt:
    Initialize_Game ... -nickname "Kort" ...
