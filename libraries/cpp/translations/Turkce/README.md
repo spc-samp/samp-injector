@@ -107,7 +107,7 @@ namespace Constants {
     // Game related constants
     inline constexpr int MIN_PORT = 1;
     inline constexpr int MAX_PORT = 65535;
-    inline constexpr int MAX_NICKNAME_LENGTH = 20;
+    inline constexpr int MAX_NICKNAME_LENGTH = 23;
     
     // File names
     inline constexpr const wchar_t* SAMP_DLL_NAME = L"samp.dll";
@@ -354,6 +354,7 @@ namespace Utils {
         if (!std::filesystem::exists(game_path)) {
             error_message_local = L"Oyun yürütülebilir dosyası bulunamadı. Lütfen 'gta_sa.exe' dosyasının belirtilen yolda mevcut olduğundan emin olun: " + game_path.wstring();
             Show_Error(error_message_local, inject_type);
+            
             return false;
         }
 
@@ -415,8 +416,8 @@ class Process {
 
         // Süreç ve iş parçacığı tutamaçlarını UniqueResource ile yönetilen bir yapıda saklar
         struct Process_Info {
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
         };
 
         // GTA:SA oyun sürecini askıya alınmış durumda oluşturur
@@ -449,16 +450,16 @@ class Process {
 
             if (!success) {
                 // Başarısız olursa, sistem hata mesajını al ve göster
-                std::wstring error_msg = Utils::Get_System_Error_Message(GetLastError());
-                Utils::Show_Error(L"Oyun süreci oluşturulamadı. 'gta_sa.exe' dosyasının çalışmadığından ve dosyayı yürütmek için yeterli izniniz olduğundan emin olun. Sistem Hatası: " + error_msg, Types::Inject_Type::SAMP); // Başlık için SAMP varsayılan olarak kullanılır
+                std::wstring error_msg = Error_Utils::Get_System_Error_Message(GetLastError());
+                Error_Utils::Show_Error(L"Oyun süreci oluşturulamadı. 'gta_sa.exe' dosyasının çalışmadığından ve dosyayı yürütmek için yeterli izniniz olduğundan emin olun. Sistem Hatası: " + error_msg, Types::Inject_Type::SAMP); // Başlık için SAMP varsayılan olarak kullanılır
                 
                 return std::nullopt; // Boş bir optional döndür
             }
 
             Process_Info result;
             // Süreç ve iş parçacığı tutamaçlarını otomatik yönetim için UniqueResource'a depolar
-            result.process_handle = Utils::Make_Unique_Handle(process_info.hProcess);
-            result.thread_handle = Utils::Make_Unique_Handle(process_info.hThread);
+            result.process_handle = Resource_Handle::Make_Unique_Handle(process_info.hProcess);
+            result.thread_handle = Resource_Handle::Make_Unique_Handle(process_info.hThread);
 
             return result; // Yönetilen tutamaçlarla yapıyı döndür
         }
@@ -477,7 +478,7 @@ class Process {
 
             // Uzakta ayrılan bellek için kaynak yönetimi.
             // Kapsam dışına çıktığında otomatik olarak serbest bırakılır.
-            auto memory_guard = Utils::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
+            auto memory_guard = Resource_Handle::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
                 [process](LPVOID ptr) { // Deleter olarak lambda
                     if (ptr)
                         VirtualFreeEx(process, ptr, 0, MEM_RELEASE); // Ayrılan belleği serbest bırak
@@ -512,16 +513,16 @@ class Process {
                 nullptr); // İş parçacığı kimliği (dönmemesi için nullptr)
 
             if (!remote_thread)
-                return (error_message = L"DLL enjeksiyonunu yürütmek için hedef süreçte uzak iş parçacığı oluşturulamadı. Bu, güvenlik kısıtlamaları veya süreç durumu nedeniyle olabilir. Sistem Hatası: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                return (error_message = L"DLL enjeksiyonunu yürütmek için hedef süreçte uzak iş parçacığı oluşturulamadı. Bu, güvenlik kısıtlamaları veya süreç durumu nedeniyle olabilir. Sistem Hatası: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
             // Uzak iş parçacığı tutamacı için kaynak yönetimi
-            auto thread_guard = Utils::Make_Unique_Handle(remote_thread);
+            auto thread_guard = Resource_Handle::Make_Unique_Handle(remote_thread);
 
             // Uzak iş parçacığının (DLL enjeksiyonu) tamamlanmasını veya zaman aşımına uğramasını bekler
             DWORD wait_result = WaitForSingleObject(remote_thread, Constants::DLL_INJECTION_TIMEOUT_MS);
 
             if (wait_result != WAIT_OBJECT_0) {
-                return (error_message = L"DLL enjeksiyonunun tamamlanması için beklerken zaman aşımı veya hata oluştu. Sistem Hatası: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                return (error_message = L"DLL enjeksiyonunun tamamlanması için beklerken zaman aşımı veya hata oluştu. Sistem Hatası: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
             // Uzak iş parçacığının çıkış kodunu alır.
             // LoadLibraryA için 0 çıkış kodu başarısızlık anlamına gelir (DLL yüklenemedi).
@@ -538,7 +539,7 @@ class Process {
 > [!NOTE]
 > `process.hpp` modülü, sağlam ve güvenli bir tasarımı sergiler. `Create_Game_Process` işlevi, bir `std::optional<Process_Info>` döndürür. Bu, işlevin süreç oluşturma başarısızlıklarını açık ve zarif bir şekilde (bir `std::nullopt` döndürerek) sinyalize etmesini sağlar, istisnalar veya belirsiz hata kodlarına başvurmadan.
 >
-> Daha da önemlisi, `Process_Info` yapısı, **süreç** ve **iş parçacığı** tutamaçlarını kapsüllemek için `Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>>` kullanır. Bu, **RAII (Resource Acquisition Is Initialization)** deseninin bir örneğidir ve `hProcess` ve `hThread` gibi işletim sistemi **tutamaçlarının** `Process_Info` nesnesi kapsam dışına çıktığında otomatik olarak `CloseHandle` ile kapatılmasını sağlar. Bu, **Windows uygulamalarında** uzun süre çalışan uygulamalarda kaynak tüketimi ve kararsızlığa yol açabilecek **tutamaç sızıntılarını** ortadan kaldırır.
+> Daha da önemlisi, `Process_Info` yapısı, **süreç** ve **iş parçacığı** tutamaçlarını kapsüllemek için `Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>>` kullanır. Bu, **RAII (Resource Acquisition Is Initialization)** deseninin bir örneğidir ve `hProcess` ve `hThread` gibi işletim sistemi **tutamaçlarının** `Process_Info` nesnesi kapsam dışına çıktığında otomatik olarak `CloseHandle` ile kapatılmasını sağlar. Bu, **Windows uygulamalarında** uzun süre çalışan uygulamalarda kaynak tüketimi ve kararsızlığa yol açabilecek **tutamaç sızıntılarını** ortadan kaldırır.
 >
 > Benzer şekilde, `Inject_DLL` işlevinde, `UniqueResource`, uzaktan ayrılan belleği (`VirtualAllocEx`) yönetir ve artık ihtiyaç duyulmadığında veya başarısızlık durumunda `VirtualFreeEx` ile serbest bırakılmasını sağlar. Bu titiz kaynak yönetimi, **SA-MP Injector C++**'nin güvenilirliğine ve kararlılığına önemli ölçüde katkıda bulunur.
 
@@ -572,11 +573,7 @@ namespace Injector {
             ~Injector_Core() = default;
 
             // Oyunu başlatma ve enjeksiyonu orkestre eden ana işlev
-            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, 
-                std::wstring_view nickname, 
-                std::wstring_view ip, 
-                std::wstring_view port, 
-                std::wstring_view password) {
+            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
                 namespace fs = std::filesystem; // std::filesystem için takma ad
 
                 // Temel dosyalar için tam yolları oluştur
@@ -585,29 +582,29 @@ namespace Injector {
                 fs::path omp_DLL_path = fs::path(folder) / Constants::OMP_DLL_NAME; // Ör: C:\GTA\omp-client.dll
 
                 // 1. Dosya Doğrulama
-                if (!Utils::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
+                if (!Validation::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
                     return false; // Hata zaten doğrulama işlevi tarafından gösterildi
                 
                 std::wstring error_message_local; // Doğrulama hata mesajlarını almak için
 
                 // 2. Port Doğrulama
-                if (!Utils::Validate_Port(port, error_message_local))
-                    return (Utils::Show_Error(error_message_local, inject_type), false);
+                if (!Validation::Validate_Port(port, error_message_local))
+                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
 
                 // 3. Kullanıcı Adı Doğrulama
-                if (!Utils::Validate_Nickname(nickname, error_message_local))
-                    return (Utils::Show_Error(error_message_local, inject_type), false);
+                if (!Validation::Validate_Nickname(nickname, error_message_local))
+                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
 
                 // 4. Geniş karakterden yerel 8-bit'e dönüşüm (ANSI API'leri için gerekli)
-                std::string nickname_str = Utils::Wide_To_Local_8Bit(nickname);
-                std::string ip_str = Utils::Wide_To_Local_8Bit(ip);
-                std::string port_str = Utils::Wide_To_Local_8Bit(port);
-                std::string password_str = Utils::Wide_To_Local_8Bit(password);
+                std::string nickname_str = String_Utils::Wide_To_Local_8Bit(nickname);
+                std::string ip_str = String_Utils::Wide_To_Local_8Bit(ip);
+                std::string port_str = String_Utils::Wide_To_Local_8Bit(port);
+                std::string password_str = String_Utils::Wide_To_Local_8Bit(password);
                 // Yollar da CreateProcessA için char* gerektirdiğinden std::string'e dönüştürülür
-                std::string game_path_str = Utils::Wide_To_Local_8Bit(game_path.wstring());
-                std::string folder_str = Utils::Wide_To_Local_8Bit(folder);
-                std::string samp_DLL_path_str = Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
-                std::string omp_DLL_path_str = Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
+                std::string game_path_str = String_Utils::Wide_To_Local_8Bit(game_path.wstring());
+                std::string folder_str = String_Utils::Wide_To_Local_8Bit(folder);
+                std::string samp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
+                std::string omp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
 
                 // 5. Komut Satırı Argümanlarının Oluşturulması
                 std::string args = Build_Command_Args(nickname_str, ip_str, port_str, password_str);
@@ -627,19 +624,19 @@ namespace Injector {
 
                 // 7. samp.dll Enjeksiyonu
                 if (!process_core.Inject_DLL(process_info.process_handle.get(), samp_DLL_path_str, inject_error_message))
-                    return (Utils::Show_Error(L"samp.dll enjeksiyonu başarısız: " + inject_error_message, inject_type), false);
+                    return (Error_Utils::Show_Error(L"samp.dll enjeksiyonu başarısız: " + inject_error_message, inject_type), false);
 
                 // 8. omp-client.dll Koşullu Enjeksiyonu (yalnızca OMP için)
                 if (inject_type == Types::Inject_Type::OMP) {
                     if (!process_core.Inject_DLL(process_info.process_handle.get(), omp_DLL_path_str, inject_error_message))
-                        return (Utils::Show_Error(L"omp-client.dll enjeksiyonu başarısız: " + inject_error_message, inject_type), false);
+                        return (Error_Utils::Show_Error(L"omp-client.dll enjeksiyonu başarısız: " + inject_error_message, inject_type), false);
                 }
 
                 // 9. Oyun Sürecini Sürdürme
                 // Süreç, enjeksiyona izin vermek için askıya alınmış durumda oluşturuldu.
                 // DLL'ler enjekte edildiğine göre süreç devam ettirilebilir.
                 if (ResumeThread(process_info.thread_handle.get()) == static_cast<DWORD>(-1))
-                    return (Utils::Show_Error(L"Oyun süreci iş parçacığını sürdürme başarısız: " + Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
+                    return (Error_Utils::Show_Error(L"Oyun süreci iş parçacığını sürdürme başarısız: " + Error_Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
 
                 return true; // Tüm adımlarda başarı!
             }
@@ -685,11 +682,7 @@ Bu, kütüphanenin arabirim dosyasıdır. Kullanıcıların **SA-MP Injector C++
 
 // Kütüphane için üst düzey arabirim.
 // Kullanımı basitleştirmek için yalnızca bu global işlevi sunar.
-inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, 
-    std::wstring_view nickname, 
-    std::wstring_view ip, 
-    std::wstring_view port, 
-    std::wstring_view password) {
+inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
     Types::Inject_Type type; // Enjeksiyon türünü saklamak için değişken
 
     // Enjeksiyon türü dizesini Inject_Type numaralandırmasına dönüştür
@@ -701,7 +694,7 @@ inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view
     
     else
         // Geçersiz enjeksiyon türü dizesi durumunda hata göster ve false döndür
-        return (Utils::Show_Error(L"Geçersiz enjeksiyon modu belirtildi. Lütfen 'samp' veya 'omp' kullanın.", Types::Inject_Type::SAMP), false); // Başlık için SAMP varsayılan olarak kullanılır
+        return (Error_Utils::Show_Error(L"Geçersiz enjeksiyon modu belirtildi. Lütfen 'samp' veya 'omp' kullanın.", Types::Inject_Type::SAMP), false); // Başlık için SAMP varsayılan olarak kullanılır
 
     Injector::Injector_Core injector; // Merkezi mantığı içeren nesneyi başlat
     
@@ -971,9 +964,9 @@ Oyuncunun **kullanıcı adı**, istemci tarafından kabul edilebilir olduğundan
 
 ![Error 5](screenshots/error_5.png)
 
-- **Görüntülenen Hata Mesajı**: `"Nickname length exceeds the maximum allowed of 20 characters. Please use a shorter nickname."`
-- **Neden**: Sağlanan **kullanıcı adının** uzunluğu `Constants::MAX_NICKNAME_LENGTH` olan `20` karakteri aşıyor.
-- **Çözüm**: En fazla `20` karakterden oluşan bir **kullanıcı adı** kullanın.
+- **Görüntülenen Hata Mesajı**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
+- **Neden**: Sağlanan **kullanıcı adının** uzunluğu `Constants::MAX_NICKNAME_LENGTH` olan `23` karakteri aşıyor.
+- **Çözüm**: En fazla `23` karakterden oluşan bir **kullanıcı adı** kullanın.
     ```cpp
     // Doğru:
     Initialize_Game(/* diğer parametreler */, L"İsim", /* diğer parametreler */);

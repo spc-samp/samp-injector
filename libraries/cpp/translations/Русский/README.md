@@ -107,7 +107,7 @@ namespace Constants {
     // Game related constants
     inline constexpr int MIN_PORT = 1;
     inline constexpr int MAX_PORT = 65535;
-    inline constexpr int MAX_NICKNAME_LENGTH = 20;
+    inline constexpr int MAX_NICKNAME_LENGTH = 23;
     
     // File names
     inline constexpr const wchar_t* SAMP_DLL_NAME = L"samp.dll";
@@ -354,6 +354,7 @@ namespace Utils {
         if (!std::filesystem::exists(game_path)) {
             error_message_local = L"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: " + game_path.wstring();
             Show_Error(error_message_local, inject_type);
+            
             return false;
         }
 
@@ -415,8 +416,8 @@ class Process {
 
         // Структура для хранения дескрипторов процесса и нити, управляемых UniqueResource
         struct Process_Info {
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
         };
 
         // Создает процесс игры GTA:SA в приостановленном состоянии
@@ -449,16 +450,16 @@ class Process {
 
             if (!success) {
                 // Если не удалось, получает и отображает сообщение об ошибке системы
-                std::wstring error_msg = Utils::Get_System_Error_Message(GetLastError());
-                Utils::Show_Error(L"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have " L"sufficient permissions to execute the file. System Error: " + error_msg, Types::Inject_Type::SAMP); // Использует SAMP как заголовок по умолчанию
+                std::wstring error_msg = Error_Utils::Get_System_Error_Message(GetLastError());
+                Error_Utils::Show_Error(L"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have " L"sufficient permissions to execute the file. System Error: " + error_msg, Types::Inject_Type::SAMP); // Использует SAMP как заголовок по умолчанию
                 
                 return std::nullopt; // Возвращает пустой optional
             }
 
             Process_Info result;
             // Сохраняет дескрипторы процесса и нити в UniqueResource для автоматического управления
-            result.process_handle = Utils::Make_Unique_Handle(process_info.hProcess);
-            result.thread_handle = Utils::Make_Unique_Handle(process_info.hThread);
+            result.process_handle = Resource_Handle::Make_Unique_Handle(process_info.hProcess);
+            result.thread_handle = Resource_Handle::Make_Unique_Handle(process_info.hThread);
 
             return result; // Возвращает структуру с управляемыми дескрипторами
         }
@@ -477,7 +478,7 @@ class Process {
 
             // Управление ресурсом для удаленно выделенной памяти.
             // Будет автоматически освобождено при выходе из области видимости.
-            auto memory_guard = Utils::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
+            auto memory_guard = Resource_Handle::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
                 [process](LPVOID ptr) { // Лямбда как удалитель
                     if (ptr)
                         VirtualFreeEx(process, ptr, 0, MEM_RELEASE); // Освобождает выделенную память
@@ -513,16 +514,16 @@ class Process {
 
             if (!remote_thread)
                 return (error_message = L"Failed to create a remote thread in the target process to execute the " L"DLL injection. This could be due to security restrictions or process "
-                    L"state. System Error: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                    L"state. System Error: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
             // Управление ресурсом для дескриптора удаленной нити
-            auto thread_guard = Utils::Make_Unique_Handle(remote_thread);
+            auto thread_guard = Resource_Handle::Make_Unique_Handle(remote_thread);
 
             // Ожидает завершения удаленной нити (инъекции DLL) или достижения тайм-аута
             DWORD wait_result = WaitForSingleObject(remote_thread, Constants::DLL_INJECTION_TIMEOUT_MS);
 
             if (wait_result != WAIT_OBJECT_0) {
-                return (error_message = L"Timeout or error waiting for DLL injection to complete. " L"System Error: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                return (error_message = L"Timeout or error waiting for DLL injection to complete. " L"System Error: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
             // Получает код выхода удаленной нити.
             // Для LoadLibraryA код выхода 0 означает сбой (не удалось загрузить DLL).
@@ -539,7 +540,7 @@ class Process {
 > [!NOTE]
 > Модуль `process.hpp` демонстрирует надежный и безопасный дизайн. Функция `Create_Game_Process` возвращает `std::optional<Process_Info>`. Это позволяет функции явно и элегантно сигнализировать о сбоях в создании процесса (возвращая `std::nullopt`) без использования исключений или неоднозначных кодов ошибок в основном возвращаемом значении.
 >
-> Более того, структура `Process_Info` использует `Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>>` для инкапсуляции **дескрипторов** процесса и **нити**. Это пример шаблона **RAII (Resource Acquisition Is Initialization)**, который гарантирует, что дескрипторы операционной системы (такие как `hProcess` и `hThread`) автоматически закрываются через `CloseHandle`, когда объект `Process_Info` выходит из области видимости. Это устраняет утечки дескрипторов, которые являются распространенной причиной нестабильности и чрезмерного потребления ресурсов в **приложениях Windows** длительного действия.
+> Более того, структура `Process_Info` использует `Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>>` для инкапсуляции **дескрипторов** процесса и **нити**. Это пример шаблона **RAII (Resource Acquisition Is Initialization)**, который гарантирует, что дескрипторы операционной системы (такие как `hProcess` и `hThread`) автоматически закрываются через `CloseHandle`, когда объект `Process_Info` выходит из области видимости. Это устраняет утечки дескрипторов, которые являются распространенной причиной нестабильности и чрезмерного потребления ресурсов в **приложениях Windows** длительного действия.
 >
 > Аналогично, внутри функции `Inject_DLL` используется `UniqueResource` для управления удаленно выделенной памятью (`VirtualAllocEx`), гарантируя, что она освобождается (`VirtualFreeEx`) сразу после того, как перестает быть нужной, или в случае сбоя. Это строгое управление ресурсами значительно способствует надежности и стабильности **SA-MP Injector C++**.
 
@@ -573,11 +574,7 @@ namespace Injector {
             ~Injector_Core() = default;
 
             // Основная функция, оркестрирующая запуск и инъекцию игры
-            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, 
-                std::wstring_view nickname, 
-                std::wstring_view ip, 
-                std::wstring_view port, 
-                std::wstring_view password) {
+            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
                 namespace fs = std::filesystem; // Псевдоним для std::filesystem
 
                 // Строит полные пути к необходимым файлам
@@ -593,22 +590,22 @@ namespace Injector {
 
                 // 2. Проверка порта
                 if (!Utils::Validate_Port(port, error_message_local))
-                    return (Utils::Show_Error(error_message_local, inject_type), false);
+                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
 
                 // 3. Проверка никнейма
                 if (!Utils::Validate_Nickname(nickname, error_message_local))
-                    return (Utils::Show_Error(error_message_local, inject_type), false);
+                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
 
                 // 4. Преобразование Wide-char в Local 8-bit (необходимо для API ANSI)
-                std::string nickname_str = Utils::Wide_To_Local_8Bit(nickname);
-                std::string ip_str = Utils::Wide_To_Local_8Bit(ip);
-                std::string port_str = Utils::Wide_To_Local_8Bit(port);
-                std::string password_str = Utils::Wide_To_Local_8Bit(password);
+                std::string nickname_str = String_Utils::Wide_To_Local_8Bit(nickname);
+                std::string ip_str = String_Utils::Wide_To_Local_8Bit(ip);
+                std::string port_str = String_Utils::Wide_To_Local_8Bit(port);
+                std::string password_str = String_Utils::Wide_To_Local_8Bit(password);
                 // Преобразует также пути в std::string (требуются для CreateProcessA как char*)
-                std::string game_path_str = Utils::Wide_To_Local_8Bit(game_path.wstring());
-                std::string folder_str = Utils::Wide_To_Local_8Bit(folder);
-                std::string samp_DLL_path_str = Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
-                std::string omp_DLL_path_str = Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
+                std::string game_path_str = String_Utils::Wide_To_Local_8Bit(game_path.wstring());
+                std::string folder_str = String_Utils::Wide_To_Local_8Bit(folder);
+                std::string samp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
+                std::string omp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
 
                 // 5. Построение аргументов командной строки
                 std::string args = Build_Command_Args(nickname_str, ip_str, port_str, password_str);
@@ -628,19 +625,19 @@ namespace Injector {
 
                 // 7. Инъекция samp.dll
                 if (!process_core.Inject_DLL(process_info.process_handle.get(), samp_DLL_path_str, inject_error_message))
-                    return (Utils::Show_Error(L"Failed to inject samp.dll: " + inject_error_message, inject_type), false);
+                    return (Error_Utils::Show_Error(L"Failed to inject samp.dll: " + inject_error_message, inject_type), false);
 
                 // 8. Условная инъекция omp-client.dll (только если это OMP)
                 if (inject_type == Types::Inject_Type::OMP) {
                     if (!process_core.Inject_DLL(process_info.process_handle.get(), omp_DLL_path_str, inject_error_message))
-                        return (Utils::Show_Error(L"Failed to inject omp-client.dll: " + inject_error_message, inject_type), false);
+                        return (Error_Utils::Show_Error(L"Failed to inject omp-client.dll: " + inject_error_message, inject_type), false);
                 }
 
                 // 9. Возобновление процесса игры
                 // Процесс был создан в приостановленном состоянии, чтобы позволить инъекцию.
                 // Теперь, когда DLL инъектированы, его можно возобновить.
                 if (ResumeThread(process_info.thread_handle.get()) == static_cast<DWORD>(-1))
-                    return (Utils::Show_Error(L"Failed to resume the game process thread: " + Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
+                    return (Error_Utils::Show_Error(L"Failed to resume the game process thread: " + Error_Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
 
                 return true; // Успех на всех этапах!
             }
@@ -686,11 +683,7 @@ namespace Injector {
 
 // Высокоуровневый интерфейс библиотеки.
 // Упрощает использование, предоставляя только эту глобальную функцию.
-inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, 
-    std::wstring_view nickname, 
-    std::wstring_view ip, 
-    std::wstring_view port, 
-    std::wstring_view password) {
+inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
     Types::Inject_Type type; // Переменная для хранения типа инъекции
 
     // Преобразует строку типа инъекции в enum Inject_Type
@@ -702,7 +695,7 @@ inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view
     
     else
         // Если строка типа инъекции неверна, отображает ошибку и возвращает false
-        return (Utils::Show_Error(L"Invalid injection mode specified. Please use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false); // Использует SAMP как заголовок по умолчанию
+        return (Error_Utils::Show_Error(L"Invalid injection mode specified. Please use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false); // Использует SAMP как заголовок по умолчанию
 
     Injector::Injector_Core injector; // Создает экземпляр объекта, содержащего основную логику
     
@@ -973,9 +966,9 @@ int Main() {
 
 ![Error 5](screenshots/error_5.png)
 
-- **Отображаемое сообщение об ошибке**: `"Nickname length exceeds the maximum allowed of 20 characters. Please use a shorter nickname."`
-- **Причина**: Длина предоставленного **никнейма** превышает `Constants::MAX_NICKNAME_LENGTH`, который составляет `20` символов.
-- **Решение**: Используйте **никнейм** длиной не более `20` символов.
+- **Отображаемое сообщение об ошибке**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
+- **Причина**: Длина предоставленного **никнейма** превышает `Constants::MAX_NICKNAME_LENGTH`, который составляет `23` символов.
+- **Решение**: Используйте **никнейм** длиной не более `23` символов.
     ```cpp
     // Правильно:
     Initialize_Game(/* другие параметры */, L"Имя", /* другие параметры */);

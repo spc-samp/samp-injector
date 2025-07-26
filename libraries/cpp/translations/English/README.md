@@ -107,7 +107,7 @@ namespace Constants {
     // Game related constants
     inline constexpr int MIN_PORT = 1;
     inline constexpr int MAX_PORT = 65535;
-    inline constexpr int MAX_NICKNAME_LENGTH = 20;
+    inline constexpr int MAX_NICKNAME_LENGTH = 23;
     
     // File names
     inline constexpr const wchar_t* SAMP_DLL_NAME = L"samp.dll";
@@ -354,6 +354,7 @@ namespace Utils {
         if (!std::filesystem::exists(game_path)) {
             error_message_local = L"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: " + game_path.wstring();
             Show_Error(error_message_local, inject_type);
+            
             return false;
         }
 
@@ -415,8 +416,8 @@ class Process {
 
         // Structure to store process and thread handles, managed by UniqueResource
         struct Process_Info {
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
         };
 
         // Creates the GTA:SA game process in a suspended state
@@ -449,16 +450,16 @@ class Process {
 
             if (!success) {
                 // If failed, retrieves and displays the system error message
-                std::wstring error_msg = Utils::Get_System_Error_Message(GetLastError());
-                Utils::Show_Error(L"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have " L"sufficient permissions to execute the file. System Error: " + error_msg, Types::Inject_Type::SAMP); // Uses SAMP as fallback for the title
+                std::wstring error_msg = Error_Utils::Get_System_Error_Message(GetLastError());
+                Error_Utils::Show_Error(L"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have " L"sufficient permissions to execute the file. System Error: " + error_msg, Types::Inject_Type::SAMP); // Uses SAMP as fallback for the title
                 
                 return std::nullopt; // Returns an empty optional
             }
 
             Process_Info result;
             // Stores the process and thread handles in UniqueResource for automatic management
-            result.process_handle = Utils::Make_Unique_Handle(process_info.hProcess);
-            result.thread_handle = Utils::Make_Unique_Handle(process_info.hThread);
+            result.process_handle = Resource_Handle::Make_Unique_Handle(process_info.hProcess);
+            result.thread_handle = Resource_Handle::Make_Unique_Handle(process_info.hThread);
 
             return result; // Returns the structure with managed handles
         }
@@ -477,7 +478,7 @@ class Process {
 
             // Resource management for the remotely allocated memory.
             // It will be automatically freed when out of scope.
-            auto memory_guard = Utils::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
+            auto memory_guard = Resource_Handle::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
                 [process](LPVOID ptr) { // Lambda as deleter
                     if (ptr)
                         VirtualFreeEx(process, ptr, 0, MEM_RELEASE); // Frees the allocated memory
@@ -513,16 +514,16 @@ class Process {
 
             if (!remote_thread)
                 return (error_message = L"Failed to create a remote thread in the target process to execute the " L"DLL injection. This could be due to security restrictions or process "
-                    L"state. System Error: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                    L"state. System Error: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
             // Resource management for the remote thread handle
-            auto thread_guard = Utils::Make_Unique_Handle(remote_thread);
+            auto thread_guard = Resource_Handle::Make_Unique_Handle(remote_thread);
 
             // Waits for the remote thread (DLL injection) to complete or reach a timeout
             DWORD wait_result = WaitForSingleObject(remote_thread, Constants::DLL_INJECTION_TIMEOUT_MS);
 
             if (wait_result != WAIT_OBJECT_0) {
-                return (error_message = L"Timeout or error waiting for DLL injection to complete. " L"System Error: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                return (error_message = L"Timeout or error waiting for DLL injection to complete. " L"System Error: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
             // Obtains the exit code of the remote thread.
             // For LoadLibraryA, an exit code of 0 means failure (could not load the DLL).
@@ -539,7 +540,7 @@ class Process {
 > [!NOTE]
 > The `process.hpp` module demonstrates a robust and safe design. The `Create_Game_Process` function returns a `std::optional<Process_Info>`. This allows the function to explicitly and elegantly signal process creation failures (returning a `std::nullopt`) without resorting to exceptions or ambiguous error codes in its main return.
 >
-> More crucially, the `Process_Info` structure uses `Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>>` to encapsulate the process and **thread** **handles**. This is an example of the **RAII (Resource Acquisition Is Initialization)** pattern, which ensures that the operating system's `HANDLE`s (such as `hProcess` and `hThread`) are automatically closed via `CloseHandle` when the `Process_Info` object goes out of scope. This eliminates **handle** leaks, which are a common source of instability and excessive resource consumption in long-running **Windows applications**.
+> More crucially, the `Process_Info` structure uses `Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>>` to encapsulate the process and **thread** **handles**. This is an example of the **RAII (Resource Acquisition Is Initialization)** pattern, which ensures that the operating system's `HANDLE`s (such as `hProcess` and `hThread`) are automatically closed via `CloseHandle` when the `Process_Info` object goes out of scope. This eliminates **handle** leaks, which are a common source of instability and excessive resource consumption in long-running **Windows applications**.
 >
 > Similarly, within the `Inject_DLL` function, `UniqueResource` is used to manage remotely allocated memory (`VirtualAllocEx`), ensuring it is freed (`VirtualFreeEx`) as soon as it is no longer needed or in case of failure. This rigorous resource management significantly contributes to the reliability and stability of the **SA-MP Injector C++**.
 
@@ -573,11 +574,7 @@ namespace Injector {
             ~Injector_Core() = default;
 
             // Main function that orchestrates game initialization and injection
-            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, 
-                std::wstring_view nickname, 
-                std::wstring_view ip, 
-                std::wstring_view port, 
-                std::wstring_view password) {
+            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
                 namespace fs = std::filesystem; // Alias for std::filesystem
 
                 // Builds the full paths for essential files
@@ -586,29 +583,29 @@ namespace Injector {
                 fs::path omp_DLL_path = fs::path(folder) / Constants::OMP_DLL_NAME; // Ex: C:\GTA\omp-client.dll
 
                 // 1. File Validation
-                if (!Utils::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
+                if (!Validation::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
                     return false; // Error already displayed by the validation function
                 
                 std::wstring error_message_local; // To receive error messages from validations
 
                 // 2. Port Validation
-                if (!Utils::Validate_Port(port, error_message_local))
-                    return (Utils::Show_Error(error_message_local, inject_type), false);
+                if (!Validation::Validate_Port(port, error_message_local))
+                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
 
                 // 3. Nickname Validation
-                if (!Utils::Validate_Nickname(nickname, error_message_local))
-                    return (Utils::Show_Error(error_message_local, inject_type), false);
+                if (!Validation::Validate_Nickname(nickname, error_message_local))
+                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
 
                 // 4. Wide-char to Local 8-bit Conversion (required for ANSI APIs)
-                std::string nickname_str = Utils::Wide_To_Local_8Bit(nickname);
-                std::string ip_str = Utils::Wide_To_Local_8Bit(ip);
-                std::string port_str = Utils::Wide_To_Local_8Bit(port);
-                std::string password_str = Utils::Wide_To_Local_8Bit(password);
+                std::string nickname_str = String_Utils::Wide_To_Local_8Bit(nickname);
+                std::string ip_str = String_Utils::Wide_To_Local_8Bit(ip);
+                std::string port_str = String_Utils::Wide_To_Local_8Bit(port);
+                std::string password_str = String_Utils::Wide_To_Local_8Bit(password);
                 // Also converts paths to std::string (required by CreateProcessA as char*)
-                std::string game_path_str = Utils::Wide_To_Local_8Bit(game_path.wstring());
-                std::string folder_str = Utils::Wide_To_Local_8Bit(folder);
-                std::string samp_DLL_path_str = Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
-                std::string omp_DLL_path_str = Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
+                std::string game_path_str = String_Utils::Wide_To_Local_8Bit(game_path.wstring());
+                std::string folder_str = String_Utils::Wide_To_Local_8Bit(folder);
+                std::string samp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
+                std::string omp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
 
                 // 5. Command-Line Argument Construction
                 std::string args = Build_Command_Args(nickname_str, ip_str, port_str, password_str);
@@ -628,19 +625,19 @@ namespace Injector {
 
                 // 7. Injection of samp.dll
                 if (!process_core.Inject_DLL(process_info.process_handle.get(), samp_DLL_path_str, inject_error_message))
-                    return (Utils::Show_Error(L"Failed to inject samp.dll: " + inject_error_message, inject_type), false);
+                    return (Error_Utils::Show_Error(L"Failed to inject samp.dll: " + inject_error_message, inject_type), false);
 
                 // 8. Conditional injection of omp-client.dll (only if OMP)
                 if (inject_type == Types::Inject_Type::OMP) {
                     if (!process_core.Inject_DLL(process_info.process_handle.get(), omp_DLL_path_str, inject_error_message))
-                        return (Utils::Show_Error(L"Failed to inject omp-client.dll: " + inject_error_message, inject_type), false);
+                        return (Error_Utils::Show_Error(L"Failed to inject omp-client.dll: " + inject_error_message, inject_type), false);
                 }
 
                 // 9. Resume Game Process
                 // The process was created in a suspended state to allow injection.
                 // Now that the DLLs have been injected, it can be resumed.
                 if (ResumeThread(process_info.thread_handle.get()) == static_cast<DWORD>(-1))
-                    return (Utils::Show_Error(L"Failed to resume the game process thread: " + Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
+                    return (Error_Utils::Show_Error(L"Failed to resume the game process thread: " + Error_Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
 
                 return true; // Success in all steps!
             }
@@ -686,11 +683,7 @@ This is the library's interface file. It is the only file the end user will need
 
 // The high-level interface for the library.
 // Simplifies usage by exposing only this global function.
-inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, 
-    std::wstring_view nickname, 
-    std::wstring_view ip, 
-    std::wstring_view port, 
-    std::wstring_view password) {
+inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
     Types::Inject_Type type; // Variable to store the injection type
 
     // Converts the injection type string to the Inject_Type enum
@@ -702,7 +695,7 @@ inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view
     
     else
         // If the injection type string is invalid, displays an error and returns false
-        return (Utils::Show_Error(L"Invalid injection mode specified. Please use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false); // Uses SAMP as fallback for the title
+        return (Error_Utils::Show_Error(L"Invalid injection mode specified. Please use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false); // Uses SAMP as fallback for the title
 
     Injector::Injector_Core injector; // Instantiates the object containing the core logic
     
@@ -973,9 +966,9 @@ The player's **nickname** is validated to ensure the game client accepts it.
 
 ![Error 5](screenshots/error_5.png)
 
-- **Displayed Error Message**: `"Nickname length exceeds the maximum allowed of 20 characters. Please use a shorter nickname."`
-- **Cause**: The length of the provided **nickname** exceeds `Constants::MAX_NICKNAME_LENGTH`, which is `20` characters.
-- **Solution**: Use a **nickname** that is at most `20` characters long.
+- **Displayed Error Message**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
+- **Cause**: The length of the provided **nickname** exceeds `Constants::MAX_NICKNAME_LENGTH`, which is `23` characters.
+- **Solution**: Use a **nickname** that is at most `23` characters long.
     ```cpp
     // Correct:
     Initialize_Game(/* other parameters */, L"Name", /* other parameters */);

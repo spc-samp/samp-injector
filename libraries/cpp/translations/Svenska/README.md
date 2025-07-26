@@ -107,7 +107,7 @@ namespace Constants {
     // Game related constants
     inline constexpr int MIN_PORT = 1;
     inline constexpr int MAX_PORT = 65535;
-    inline constexpr int MAX_NICKNAME_LENGTH = 20;
+    inline constexpr int MAX_NICKNAME_LENGTH = 23;
     
     // File names
     inline constexpr const wchar_t* SAMP_DLL_NAME = L"samp.dll";
@@ -354,6 +354,7 @@ namespace Utils {
         if (!std::filesystem::exists(game_path)) {
             error_message_local = L"Spel-exekverbar hittades inte. Säkerställ att 'gta_sa.exe' finns på den angivna sökvägen: " + game_path.wstring();
             Show_Error(error_message_local, inject_type);
+            
             return false;
         }
 
@@ -415,8 +416,8 @@ class Process {
 
         // Struktur för att lagra handtagen för processen och tråden, hanterade av UniqueResource
         struct Process_Info {
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
         };
 
         // Skapar spelprocessen GTA:SA i ett suspenderat tillstånd
@@ -449,16 +450,16 @@ class Process {
 
             if (!success) {
                 // Om det misslyckades, hämta och visa systemets felmeddelande
-                std::wstring error_msg = Utils::Get_System_Error_Message(GetLastError());
-                Utils::Show_Error(L"Misslyckades med att skapa spelprocessen. Säkerställ att 'gta_sa.exe' inte körs och att du har tillräckliga behörigheter för att köra filen. Systemfel: " + error_msg, Types::Inject_Type::SAMP); // Använder SAMP som fallback för titeln
+                std::wstring error_msg = Error_Utils::Get_System_Error_Message(GetLastError());
+                Error_Utils::Show_Error(L"Misslyckades med att skapa spelprocessen. Säkerställ att 'gta_sa.exe' inte körs och att du har tillräckliga behörigheter för att köra filen. Systemfel: " + error_msg, Types::Inject_Type::SAMP); // Använder SAMP som fallback för titeln
                 
                 return std::nullopt; // Returnerar ett tomt optional
             }
 
             Process_Info result;
             // Lagrar process- och trådhandtagen i UniqueResource för automatisk hantering
-            result.process_handle = Utils::Make_Unique_Handle(process_info.hProcess);
-            result.thread_handle = Utils::Make_Unique_Handle(process_info.hThread);
+            result.process_handle = Resource_Handle::Make_Unique_Handle(process_info.hProcess);
+            result.thread_handle = Resource_Handle::Make_Unique_Handle(process_info.hThread);
 
             return result; // Returnerar strukturen med de hanterade handtagen
         }
@@ -477,7 +478,7 @@ class Process {
 
             // Resurshantering för det fjärrallokerade minnet.
             // Frigörs automatiskt när det går ur scope.
-            auto memory_guard = Utils::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
+            auto memory_guard = Resource_Handle::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
                 [process](LPVOID ptr) { // Lambda som deleter
                     if (ptr)
                         VirtualFreeEx(process, ptr, 0, MEM_RELEASE); // Frigör det allokerade minnet
@@ -512,16 +513,16 @@ class Process {
                 nullptr); // Tråd-ID (nullptr för att inte returnera)
 
             if (!remote_thread)
-                return (error_message = L"Misslyckades med att skapa en fjärrtråd i målprocessen för att utföra DLL-injektionen. Detta kan bero på säkerhetsrestriktioner eller processens tillstånd. Systemfel: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                return (error_message = L"Misslyckades med att skapa en fjärrtråd i målprocessen för att utföra DLL-injektionen. Detta kan bero på säkerhetsrestriktioner eller processens tillstånd. Systemfel: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
             // Resurshantering för handtaget till den fjärrtråden
-            auto thread_guard = Utils::Make_Unique_Handle(remote_thread);
+            auto thread_guard = Resource_Handle::Make_Unique_Handle(remote_thread);
 
             // Väntar på att den fjärrtråden (DLL-injektionen) ska slutföras eller nå en timeout
             DWORD wait_result = WaitForSingleObject(remote_thread, Constants::DLL_INJECTION_TIMEOUT_MS);
 
             if (wait_result != WAIT_OBJECT_0) {
-                return (error_message = L"Timeout eller fel vid väntan på att DLL-injektionen ska slutföras. Systemfel: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                return (error_message = L"Timeout eller fel vid väntan på att DLL-injektionen ska slutföras. Systemfel: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
             // Hämtar utgångskoden för den fjärrtråden.
             // För LoadLibraryA betyder en utgångskod på 0 misslyckande (kunde inte ladda DLL:en).
@@ -538,7 +539,7 @@ class Process {
 > [!NOTE]
 > Modulen `process.hpp` visar en robust och säker design. Funktionen `Create_Game_Process` returnerar en `std::optional<Process_Info>`. Detta gör det möjligt för funktionen att explicit och elegant signalera misslyckanden vid processkapande (genom att returnera ett `std::nullopt`) utan att använda undantag eller tvetydiga felkoder i sitt primära returvärde.
 >
-> Ännu viktigare är att strukturen `Process_Info` använder `Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>>` för att kapsla in **handtagen** för processen och **tråden**. Detta är ett exempel på mönstret **RAII (Resource Acquisition Is Initialization)**, som garanterar att operativsystemets `HANDLE`s (som `hProcess` och `hThread`) automatiskt stängs via `CloseHandle` när objektet `Process_Info` går ur scope. Detta eliminerar läckor av **handtag**, som är en vanlig källa till instabilitet och överdriven resursförbrukning i **Windows-applikationer** som körs under lång tid.
+> Ännu viktigare är att strukturen `Process_Info` använder `Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>>` för att kapsla in **handtagen** för processen och **tråden**. Detta är ett exempel på mönstret **RAII (Resource Acquisition Is Initialization)**, som garanterar att operativsystemets `HANDLE`s (som `hProcess` och `hThread`) automatiskt stängs via `CloseHandle` när objektet `Process_Info` går ur scope. Detta eliminerar läckor av **handtag**, som är en vanlig källa till instabilitet och överdriven resursförbrukning i **Windows-applikationer** som körs under lång tid.
 >
 > På liknande sätt, inom funktionen `Inject_DLL`, används `UniqueResource` för att hantera det fjärrallokerade minnet (`VirtualAllocEx`), vilket säkerställer att det frigörs (`VirtualFreeEx`) så snart det inte längre behövs eller vid misslyckande. Denna rigorösa resurshantering bidrar avsevärt till **SA-MP Injector C++**:s tillförlitlighet och stabilitet.
 
@@ -572,11 +573,7 @@ namespace Injector {
             ~Injector_Core() = default;
 
             // Huvudfunktion som orkestrerar initialisering och injektion av spelet
-            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, 
-                std::wstring_view nickname, 
-                std::wstring_view ip, 
-                std::wstring_view port, 
-                std::wstring_view password) {
+            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
                 namespace fs = std::filesystem; // Alias för std::filesystem
 
                 // Bygger de fullständiga sökvägarna till de väsentliga filerna
@@ -585,29 +582,29 @@ namespace Injector {
                 fs::path omp_DLL_path = fs::path(folder) / Constants::OMP_DLL_NAME; // Ex: C:\GTA\omp-client.dll
 
                 // 1. Validering av Filer
-                if (!Utils::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
+                if (!Validation::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
                     return false; // Fel har redan visats av valideringsfunktionen
                 
                 std::wstring error_message_local; // För att ta emot felmeddelanden från valideringar
 
                 // 2. Validering av Port
-                if (!Utils::Validate_Port(port, error_message_local))
-                    return (Utils::Show_Error(error_message_local, inject_type), false);
+                if (!Validation::Validate_Port(port, error_message_local))
+                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
 
                 // 3. Validering av Smeknamn
-                if (!Utils::Validate_Nickname(nickname, error_message_local))
-                    return (Utils::Show_Error(error_message_local, inject_type), false);
+                if (!Validation::Validate_Nickname(nickname, error_message_local))
+                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
 
                 // 4. Konvertering från Wide-char till Local 8-bit (nödvändigt för ANSI API:er)
-                std::string nickname_str = Utils::Wide_To_Local_8Bit(nickname);
-                std::string ip_str = Utils::Wide_To_Local_8Bit(ip);
-                std::string port_str = Utils::Wide_To_Local_8Bit(port);
-                std::string password_str = Utils::Wide_To_Local_8Bit(password);
+                std::string nickname_str = String_Utils::Wide_To_Local_8Bit(nickname);
+                std::string ip_str = String_Utils::Wide_To_Local_8Bit(ip);
+                std::string port_str = String_Utils::Wide_To_Local_8Bit(port);
+                std::string password_str = String_Utils::Wide_To_Local_8Bit(password);
                 // Konverterar också sökvägarna till std::string (krävs av CreateProcessA som char*)
-                std::string game_path_str = Utils::Wide_To_Local_8Bit(game_path.wstring());
-                std::string folder_str = Utils::Wide_To_Local_8Bit(folder);
-                std::string samp_DLL_path_str = Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
-                std::string omp_DLL_path_str = Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
+                std::string game_path_str = String_Utils::Wide_To_Local_8Bit(game_path.wstring());
+                std::string folder_str = String_Utils::Wide_To_Local_8Bit(folder);
+                std::string samp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
+                std::string omp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
 
                 // 5. Konstruktion av Kommandoradsargument
                 std::string args = Build_Command_Args(nickname_str, ip_str, port_str, password_str);
@@ -627,19 +624,19 @@ namespace Injector {
 
                 // 7. Injektion av samp.dll
                 if (!process_core.Inject_DLL(process_info.process_handle.get(), samp_DLL_path_str, inject_error_message))
-                    return (Utils::Show_Error(L"Misslyckades med att injicera samp.dll: " + inject_error_message, inject_type), false);
+                    return (Error_Utils::Show_Error(L"Misslyckades med att injicera samp.dll: " + inject_error_message, inject_type), false);
 
                 // 8. Villkorlig injektion av omp-client.dll (endast om det är OMP)
                 if (inject_type == Types::Inject_Type::OMP) {
                     if (!process_core.Inject_DLL(process_info.process_handle.get(), omp_DLL_path_str, inject_error_message))
-                        return (Utils::Show_Error(L"Misslyckades med att injicera omp-client.dll: " + inject_error_message, inject_type), false);
+                        return (Error_Utils::Show_Error(L"Misslyckades med att injicera omp-client.dll: " + inject_error_message, inject_type), false);
                 }
 
                 // 9. Återuppta Spelprocessen
                 // Processen skapades i ett suspenderat tillstånd för att möjliggöra injektion.
                 // Nu när DLL:erna har injicerats kan den återupptas.
                 if (ResumeThread(process_info.thread_handle.get()) == static_cast<DWORD>(-1))
-                    return (Utils::Show_Error(L"Misslyckades med att återuppta spelprocessens tråd: " + Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
+                    return (Error_Utils::Show_Error(L"Misslyckades med att återuppta spelprocessens tråd: " + Error_Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
 
                 return true; // Framgång i alla steg!
             }
@@ -685,11 +682,7 @@ Detta är bibliotekets gränssnittsfil. Det är den enda filen som slutanvändar
 
 // Hög nivå-gränssnittet för biblioteket.
 // Förenklar användningen genom att endast exponera denna globala funktion.
-inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, 
-    std::wstring_view nickname, 
-    std::wstring_view ip, 
-    std::wstring_view port, 
-    std::wstring_view password) {
+inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
     Types::Inject_Type type; // Variabel för att lagra injektionstypen
 
     // Konverterar strängen för injektionstypen till enum Inject_Type
@@ -701,7 +694,7 @@ inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view
     
     else
         // Om strängen för injektionstypen är ogiltig, visa ett fel och returnera falskt
-        return (Utils::Show_Error(L"Ogiltigt injektionsläge angivet. Använd 'samp' eller 'omp'.", Types::Inject_Type::SAMP), false); // Använder SAMP som fallback för titeln
+        return (Error_Utils::Show_Error(L"Ogiltigt injektionsläge angivet. Använd 'samp' eller 'omp'.", Types::Inject_Type::SAMP), false); // Använder SAMP som fallback för titeln
 
     Injector::Injector_Core injector; // Instansierar objektet som innehåller den centrala logiken
     
@@ -972,9 +965,9 @@ Spelarens **smeknamn** valideras för att säkerställa att spelklienten accepte
 
 ![Error 5](screenshots/error_5.png)
 
-- **Visat Felmeddelande**: `"Smeknamnets längd överstiger det maximalt tillåtna på 20 tecken. Använd ett kortare smeknamn."`
-- **Orsak**: Längden på det angivna **smeknamnet** överstiger `Constants::MAX_NICKNAME_LENGTH`, vilket är `20` tecken.
-- **Lösning**: Använd ett **smeknamn** som har högst `20` tecken.
+- **Visat Felmeddelande**: `"Smeknamnets längd överstiger det maximalt tillåtna på 23 tecken. Använd ett kortare smeknamn."`
+- **Orsak**: Längden på det angivna **smeknamnet** överstiger `Constants::MAX_NICKNAME_LENGTH`, vilket är `23` tecken.
+- **Lösning**: Använd ett **smeknamn** som har högst `23` tecken.
     ```cpp
     // Korrekt:
     Initialize_Game(/* andra parametrar */, L"Namn", /* andra parametrar */);
