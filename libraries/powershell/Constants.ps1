@@ -35,7 +35,7 @@ $global:CONSTANTS = @{
     MAX_PORT = 65535
     
     # Nickname constraints
-    MAX_NICKNAME_LENGTH = 20
+    MAX_NICKNAME_LENGTH = 23
     
     # Required file names
     SAMP_DLL_NAME = "samp.dll"
