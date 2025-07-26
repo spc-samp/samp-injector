@@ -9,8 +9,6 @@
  * Developed by: Calasans                                                        *
  * Repository: https://github.com/spc-samp/samp-injector                         *
  *                                                                               *
- * - This file is part of the SA-MP Injector project.                            *
- *                                                                               *
  * ============================================================================= *
  *                                                                               *
  * Licensed under the MIT License (MIT);                                         *
@@ -53,8 +51,8 @@ class Process {
         ~Process() = default;
 
         struct Process_Info {
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
-            Utils::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
+            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
         };
 
         std::optional<Process_Info> Create_Game_Process(std::string_view game_path, std::string_view command_args, std::string_view working_dir) {
@@ -74,16 +72,16 @@ class Process {
                 working_dir.empty() ? nullptr : working_dir.data(), &startup_info, &process_info);
 
             if (!success) {
-                std::wstring error_msg = Utils::Get_System_Error_Message(GetLastError());
-                Utils::Show_Error(L"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have " L"sufficient permissions to execute the file. System Error: " + error_msg, 
+                std::wstring error_msg = Error_Utils::Get_System_Error_Message(GetLastError());
+                Error_Utils::Show_Error(L"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have " L"sufficient permissions to execute the file. System Error: " + error_msg,
                     Types::Inject_Type::SAMP);
                 
                 return std::nullopt;
             }
 
             Process_Info result;
-            result.process_handle = Utils::Make_Unique_Handle(process_info.hProcess);
-            result.thread_handle = Utils::Make_Unique_Handle(process_info.hThread);
+            result.process_handle = Resource_Handle::Make_Unique_Handle(process_info.hProcess);
+            result.thread_handle = Resource_Handle::Make_Unique_Handle(process_info.hThread);
 
             return result;
         }
@@ -94,7 +92,7 @@ class Process {
             if (!remote_memory)
                 return (error_message = L"Failed to allocate memory in the target process. This might be due to " L"insufficient permissions or process protection mechanisms.", false);
 
-            auto memory_guard = Utils::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, [process](LPVOID ptr) {
+            auto memory_guard = Resource_Handle::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, [process](LPVOID ptr) {
                 if (ptr)
                     VirtualFreeEx(process, ptr, 0, MEM_RELEASE);
             });
@@ -116,14 +114,14 @@ class Process {
 
             if (!remote_thread)
                 return (error_message = L"Failed to create a remote thread in the target process to execute the " L"DLL injection. This could be due to security restrictions or process "
-                    L"state. System Error: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                    L"state. System Error: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
-            auto thread_guard = Utils::Make_Unique_Handle(remote_thread);
+            auto thread_guard = Resource_Handle::Make_Unique_Handle(remote_thread);
 
             DWORD wait_result = WaitForSingleObject(remote_thread, Constants::DLL_INJECTION_TIMEOUT_MS);
 
             if (wait_result != WAIT_OBJECT_0)
-                return (error_message = L"Timeout or error waiting for DLL injection to complete. " L"System Error: " + Utils::Get_System_Error_Message(GetLastError()), false);
+                return (error_message = L"Timeout or error waiting for DLL injection to complete. " L"System Error: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
 
             DWORD exit_code = 0;
 

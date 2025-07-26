@@ -9,8 +9,6 @@
  * Developed by: Calasans                                                        *
  * Repository: https://github.com/spc-samp/samp-injector                         *
  *                                                                               *
- * - This file is part of the SA-MP Injector project.                            *
- *                                                                               *
  * ============================================================================= *
  *                                                                               *
  * Licensed under the MIT License (MIT);                                         *
@@ -35,7 +33,7 @@ namespace Constants {
     // Game related constants
     inline constexpr int MIN_PORT = 1;
     inline constexpr int MAX_PORT = 65535;
-    inline constexpr int MAX_NICKNAME_LENGTH = 20;
+    inline constexpr int MAX_NICKNAME_LENGTH = 23;
     
     // File names
     inline constexpr const wchar_t* SAMP_DLL_NAME = L"samp.dll";

@@ -9,8 +9,6 @@
  * Developed by: Calasans                                                        *
  * Repository: https://github.com/spc-samp/samp-injector                         *
  *                                                                               *
- * - This file is part of the SA-MP Injector project.                            *
- *                                                                               *
  * ============================================================================= *
  *                                                                               *
  * Licensed under the MIT License (MIT);                                         *
@@ -46,7 +44,7 @@ inline bool Initialize_Game(std::wstring_view inject_type, std::wstring_view fol
     else if (inject_type == Constants::INJECT_TYPE_OMP)
         type = Types::Inject_Type::OMP;
     else
-        return (Utils::Show_Error(L"Invalid injection mode specified. Please use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false);
+        return (Error_Utils::Show_Error(L"Invalid injection mode specified. Please use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false);
 
     Injector::Injector_Core injector;
     

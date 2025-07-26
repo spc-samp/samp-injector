@@ -9,8 +9,6 @@
  * Developed by: Calasans                                                        *
  * Repository: https://github.com/spc-samp/samp-injector                         *
  *                                                                               *
- * - This file is part of the SA-MP Injector project.                            *
- *                                                                               *
  * ============================================================================= *
  *                                                                               *
  * Licensed under the MIT License (MIT);                                         *

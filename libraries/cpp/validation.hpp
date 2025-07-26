@@ -9,8 +9,6 @@
  * Developed by: Calasans                                                        *
  * Repository: https://github.com/spc-samp/samp-injector                         *
  *                                                                               *
- * - This file is part of the SA-MP Injector project.                            *
- *                                                                               *
  * ============================================================================= *
  *                                                                               *
  * Licensed under the MIT License (MIT);                                         *
@@ -40,10 +38,10 @@
 #include "string_utils.hpp"
 #include "error_utils.hpp"
 
-namespace Utils {
+namespace Validation {
     inline bool Validate_Port(std::wstring_view port_str, std::wstring& error_message) {
         try {
-            int port_num = std::stoi(Wide_To_Local_8Bit(port_str));
+            int port_num = std::stoi(String_Utils::Wide_To_Local_8Bit(port_str));
 
             if (port_num < Constants::MIN_PORT || port_num > Constants::MAX_PORT)
                 return (error_message = L"The specified port number (" + std::wstring(port_str) + L") is outside the valid range of " +  std::to_wstring(Constants::MIN_PORT) + L" to " + 
@@ -71,21 +69,21 @@ namespace Utils {
         
         if (!std::filesystem::exists(game_path)) {
             error_message = L"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: " + game_path.wstring();
-            Show_Error(error_message, inject_type);
+            Error_Utils::Show_Error(error_message, inject_type);
 
             return false;
         }
 
         if (!std::filesystem::exists(samp_DLL_path)) {
             error_message = L"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: " + samp_DLL_path.wstring();
-            Show_Error(error_message, inject_type);
+            Error_Utils::Show_Error(error_message, inject_type);
 
             return false;
         }
 
         if (inject_type == Types::Inject_Type::OMP && !std::filesystem::exists(omp_DLL_path)) {
             error_message = L"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: " + omp_DLL_path.wstring();
-            Show_Error(error_message, inject_type);
+            Error_Utils::Show_Error(error_message, inject_type);
             
             return false;
         }

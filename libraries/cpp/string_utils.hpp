@@ -9,8 +9,6 @@
  * Developed by: Calasans                                                        *
  * Repository: https://github.com/spc-samp/samp-injector                         *
  *                                                                               *
- * - This file is part of the SA-MP Injector project.                            *
- *                                                                               *
  * ============================================================================= *
  *                                                                               *
  * Licensed under the MIT License (MIT);                                         *
@@ -35,7 +33,7 @@
 #include <string_view>
 #include <windows.h>
 
-namespace Utils {
+namespace String_Utils {
     inline std::string Wide_To_Local_8Bit(std::wstring_view wstr) {
         if (wstr.empty())
             return "";

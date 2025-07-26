@@ -9,8 +9,6 @@
  * Developed by: Calasans                                                        *
  * Repository: https://github.com/spc-samp/samp-injector                         *
  *                                                                               *
- * - This file is part of the SA-MP Injector project.                            *
- *                                                                               *
  * ============================================================================= *
  *                                                                               *
  * Licensed under the MIT License (MIT);                                         *
@@ -38,7 +36,7 @@
 #include "types.hpp"
 #include "constants.hpp"
 
-namespace Utils {
+namespace Error_Utils {
     inline std::wstring Get_System_Error_Message(DWORD error_code) {
         wchar_t buffer[512] = {0};
         DWORD result = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error_code, 0, buffer, 512, nullptr);

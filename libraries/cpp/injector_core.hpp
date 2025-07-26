@@ -9,8 +9,6 @@
  * Developed by: Calasans                                                        *
  * Repository: https://github.com/spc-samp/samp-injector                         *
  *                                                                               *
- * - This file is part of the SA-MP Injector project.                            *
- *                                                                               *
  * ============================================================================= *
  *                                                                               *
  * Licensed under the MIT License (MIT);                                         *
@@ -59,25 +57,25 @@ namespace Injector {
                 fs::path samp_DLL_path = fs::path(folder) / Constants::SAMP_DLL_NAME;
                 fs::path omp_DLL_path = fs::path(folder) / Constants::OMP_DLL_NAME;
 
-                if (!Utils::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
+                if (!Validation::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
                     return false;
                 
                 std::wstring error_message;
 
-                if (!Utils::Validate_Port(port, error_message))
-                    return (Utils::Show_Error(error_message, inject_type), false);
+                if (!Validation::Validate_Port(port, error_message))
+                    return (Error_Utils::Show_Error(error_message, inject_type), false);
 
-                if (!Utils::Validate_Nickname(nickname, error_message))
-                    return (Utils::Show_Error(error_message, inject_type), false);
+                if (!Validation::Validate_Nickname(nickname, error_message))
+                    return (Error_Utils::Show_Error(error_message, inject_type), false);
 
-                std::string nickname_str = Utils::Wide_To_Local_8Bit(nickname);
-                std::string ip_str = Utils::Wide_To_Local_8Bit(ip);
-                std::string port_str = Utils::Wide_To_Local_8Bit(port);
-                std::string password_str = Utils::Wide_To_Local_8Bit(password);
-                std::string game_path_str = Utils::Wide_To_Local_8Bit(game_path.wstring());
-                std::string folder_str = Utils::Wide_To_Local_8Bit(folder);
-                std::string samp_DLL_path_str = Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
-                std::string omp_DLL_path_str = Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
+                std::string nickname_str = String_Utils::Wide_To_Local_8Bit(nickname);
+                std::string ip_str = String_Utils::Wide_To_Local_8Bit(ip);
+                std::string port_str = String_Utils::Wide_To_Local_8Bit(port);
+                std::string password_str = String_Utils::Wide_To_Local_8Bit(password);
+                std::string game_path_str = String_Utils::Wide_To_Local_8Bit(game_path.wstring());
+                std::string folder_str = String_Utils::Wide_To_Local_8Bit(folder);
+                std::string samp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
+                std::string omp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
 
                 std::string args = Build_Command_Args(nickname_str, ip_str, port_str, password_str);
 
@@ -92,15 +90,15 @@ namespace Injector {
                 std::wstring inject_error;
 
                 if (!process_core.Inject_DLL(process_info.process_handle.get(), samp_DLL_path_str, inject_error))
-                    return (Utils::Show_Error(L"Failed to inject samp.dll: " + inject_error, inject_type), false);
+                    return (Error_Utils::Show_Error(L"Failed to inject samp.dll: " + inject_error, inject_type), false);
 
                 if (inject_type == Types::Inject_Type::OMP) {
                     if (!process_core.Inject_DLL(process_info.process_handle.get(), omp_DLL_path_str, inject_error))
-                        return (Utils::Show_Error(L"Failed to inject omp-client.dll: " + inject_error, inject_type), false);
+                        return (Error_Utils::Show_Error(L"Failed to inject omp-client.dll: " + inject_error, inject_type), false);
                 }
 
                 if (ResumeThread(process_info.thread_handle.get()) == static_cast<DWORD>(-1))
-                    return (Utils::Show_Error(L"Failed to resume the game process thread: " + Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
+                    return (Error_Utils::Show_Error(L"Failed to resume the game process thread: " + Error_Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
 
                 return true;
             }

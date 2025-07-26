@@ -9,8 +9,6 @@
  * Developed by: Calasans                                                        *
  * Repository: https://github.com/spc-samp/samp-injector                         *
  *                                                                               *
- * - This file is part of the SA-MP Injector project.                            *
- *                                                                               *
  * ============================================================================= *
  *                                                                               *
  * Licensed under the MIT License (MIT);                                         *
@@ -35,7 +33,7 @@
 #include <functional>
 #include <windows.h>
 
-namespace Utils {
+namespace Resource_Handle {
     template<typename T, typename Deleter>
     using UniqueResource = std::unique_ptr<std::remove_pointer_t<T>, Deleter>;
 
