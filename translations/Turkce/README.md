@@ -360,33 +360,33 @@ Proje, kritik işlevleri kapsülleyen kütüphanelere dayanır. Bu, diğer proje
 
 ### Kütüphane Listesi
 
-| Dil           | İsim                       | Kütüphane/Dokumentasyon Bağlantısı         |
-| ------------- | -------------------------- | ------------------------------------------ |
-| C++           | **SA-MP Injector C++**     | [Kütüphaneyi İncele](libraries/cpp)        |
-| C             | **SA-MP Injector C**       | (Yakında)                                  |
-| C#            | **SA-MP Injector C#**      | (Yakında)                                  |
-| Java          | **SA-MP Injector Java**    | (Yakında)                                  |
-| Python        | **SA-MP Injector Python**  | (Yakında)                                  |
-| Go (Golang)   | **SA-MP Injector Go**      | (Yakında)                                  |
-| Rust          | **SA-MP Injector Rust**    | (Yakında)                                  |
-| Kotlin        | **SA-MP Injector Kotlin**  | (Yakında)                                  |
-| Scala         | **SA-MP Injector Scala**   | (Yakında)                                  |
-| Lua           | **SA-MP Injector Lua**     | (Yakında)                                  |
-| Ruby          | **SA-MP Injector Ruby**    | (Yakında)                                  |
-| Visual Basic  | **SA-MP Injector VB**      | (Yakında)                                  |
-| F#            | **SA-MP Injector F#**      | (Yakında)                                  |
-| Pascal        | **SA-MP Injector Pascal**  | (Yakında)                                  |
-| Delphi        | **SA-MP Injector Delphi**  | (Yakında)                                  |
-| PowerShell    | **SA-MP Injector PS**      | [Kütüphaneyi İncele](libraries/powershell) |
-| D (Dlang)     | **SA-MP Injector D**       | (Yakında)                                  |
-| Nim           | **SA-MP Injector Nim**     | (Yakında)                                  |
-| Zig           | **SA-MP Injector Zig**     | (Yakında)                                  |
-| V (VLang)     | **SA-MP Injector V**       | (Yakında)                                  |
-| Crystal       | **SA-MP Injector Crystal** | (Yakında)                                  |
-| Perl          | **SA-MP Injector Perl**    | (Yakında)                                  |
-| Racket (Lisp) | **SA-MP Injector Racket**  | (Yakında)                                  |
-| Haskell       | **SA-MP Injector Haskell** | (Yakında)                                  |
-| OCaml         | **SA-MP Injector OCaml**   | (Yakında)                                  |
+| Dil           | İsim                       | Kütüphane/Dokumentasyon Bağlantısı               |
+| ------------- | -------------------------- | ------------------------------------------------ |
+| C++           | **SA-MP Injector C++**     | [Kütüphaneyi İncele](../../libraries/cpp)        |
+| C             | **SA-MP Injector C**       | (Yakında)                                        |
+| C#            | **SA-MP Injector C#**      | (Yakında)                                        |
+| Java          | **SA-MP Injector Java**    | (Yakında)                                        |
+| Python        | **SA-MP Injector Python**  | (Yakında)                                        |
+| Go (Golang)   | **SA-MP Injector Go**      | (Yakında)                                        |
+| Rust          | **SA-MP Injector Rust**    | (Yakında)                                        |
+| Kotlin        | **SA-MP Injector Kotlin**  | (Yakında)                                        |
+| Scala         | **SA-MP Injector Scala**   | (Yakında)                                        |
+| Lua           | **SA-MP Injector Lua**     | (Yakında)                                        |
+| Ruby          | **SA-MP Injector Ruby**    | (Yakında)                                        |
+| Visual Basic  | **SA-MP Injector VB**      | (Yakında)                                        |
+| F#            | **SA-MP Injector F#**      | (Yakında)                                        |
+| Pascal        | **SA-MP Injector Pascal**  | (Yakında)                                        |
+| Delphi        | **SA-MP Injector Delphi**  | (Yakında)                                        |
+| PowerShell    | **SA-MP Injector PS**      | [Kütüphaneyi İncele](../../libraries/powershell) |
+| D (Dlang)     | **SA-MP Injector D**       | (Yakında)                                        |
+| Nim           | **SA-MP Injector Nim**     | (Yakında)                                        |
+| Zig           | **SA-MP Injector Zig**     | (Yakında)                                        |
+| V (VLang)     | **SA-MP Injector V**       | (Yakında)                                        |
+| Crystal       | **SA-MP Injector Crystal** | (Yakında)                                        |
+| Perl          | **SA-MP Injector Perl**    | (Yakında)                                        |
+| Racket (Lisp) | **SA-MP Injector Racket**  | (Yakında)                                        |
+| Haskell       | **SA-MP Injector Haskell** | (Yakında)                                        |
+| OCaml         | **SA-MP Injector OCaml**   | (Yakında)                                        |
 
 > [!TIP]
 > Her kütüphane için ayrıntılı dokümantasyon, ilgili **dizininde** bulunacaktır.

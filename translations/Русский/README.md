@@ -360,33 +360,33 @@ try {
 
 ### Список библиотек
 
-| Язык          | Название                   | Ссылка на библиотеку/документацию                  |
-| ------------- | -------------------------- | -------------------------------------------------- |
-| C++           | **SA-MP Injector C++**     | [Ознакомьтесь с библиотекой](libraries/cpp)        |
-| C             | **SA-MP Injector C**       | (Скоро)                                            |
-| C#            | **SA-MP Injector C#**      | (Скоро)                                            |
-| Java          | **SA-MP Injector Java**    | (Скоро)                                            |
-| Python        | **SA-MP Injector Python**  | (Скоро)                                            |
-| Go (Golang)   | **SA-MP Injector Go**      | (Скоро)                                            |
-| Rust          | **SA-MP Injector Rust**    | (Скоро)                                            |
-| Kotlin        | **SA-MP Injector Kotlin**  | (Скоро)                                            |
-| Scala         | **SA-MP Injector Scala**   | (Скоро)                                            |
-| Lua           | **SA-MP Injector Lua**     | (Скоро)                                            |
-| Ruby          | **SA-MP Injector Ruby**    | (Скоро)                                            |
-| Visual Basic  | **SA-MP Injector VB**      | (Скоро)                                            |
-| F#            | **SA-MP Injector F#**      | (Скоро)                                            |
-| Pascal        | **SA-MP Injector Pascal**  | (Скоро)                                            |
-| Delphi        | **SA-MP Injector Delphi**  | (Скоро)                                            |
-| PowerShell    | **SA-MP Injector PS**      | [Ознакомьтесь с библиотекой](libraries/powershell) |
-| D (Dlang)     | **SA-MP Injector D**       | (Скоро)                                            |
-| Nim           | **SA-MP Injector Nim**     | (Скоро)                                            |
-| Zig           | **SA-MP Injector Zig**     | (Скоро)                                            |
-| V (VLang)     | **SA-MP Injector V**       | (Скоро)                                            |
-| Crystal       | **SA-MP Injector Crystal** | (Скоро)                                            |
-| Perl          | **SA-MP Injector Perl**    | (Скоро)                                            |
-| Racket (Lisp) | **SA-MP Injector Racket**  | (Скоро)                                            |
-| Haskell       | **SA-MP Injector Haskell** | (Скоро)                                            |
-| OCaml         | **SA-MP Injector OCaml**   | (Скоро)                                            |
+| Язык          | Название                   | Ссылка на библиотеку/документацию                        |
+| ------------- | -------------------------- | -------------------------------------------------------- |
+| C++           | **SA-MP Injector C++**     | [Ознакомьтесь с библиотекой](../../libraries/cpp)        |
+| C             | **SA-MP Injector C**       | (Скоро)                                                  |
+| C#            | **SA-MP Injector C#**      | (Скоро)                                                  |
+| Java          | **SA-MP Injector Java**    | (Скоро)                                                  |
+| Python        | **SA-MP Injector Python**  | (Скоро)                                                  |
+| Go (Golang)   | **SA-MP Injector Go**      | (Скоро)                                                  |
+| Rust          | **SA-MP Injector Rust**    | (Скоро)                                                  |
+| Kotlin        | **SA-MP Injector Kotlin**  | (Скоро)                                                  |
+| Scala         | **SA-MP Injector Scala**   | (Скоро)                                                  |
+| Lua           | **SA-MP Injector Lua**     | (Скоро)                                                  |
+| Ruby          | **SA-MP Injector Ruby**    | (Скоро)                                                  |
+| Visual Basic  | **SA-MP Injector VB**      | (Скоро)                                                  |
+| F#            | **SA-MP Injector F#**      | (Скоро)                                                  |
+| Pascal        | **SA-MP Injector Pascal**  | (Скоро)                                                  |
+| Delphi        | **SA-MP Injector Delphi**  | (Скоро)                                                  |
+| PowerShell    | **SA-MP Injector PS**      | [Ознакомьтесь с библиотекой](../../libraries/powershell) |
+| D (Dlang)     | **SA-MP Injector D**       | (Скоро)                                                  |
+| Nim           | **SA-MP Injector Nim**     | (Скоро)                                                  |
+| Zig           | **SA-MP Injector Zig**     | (Скоро)                                                  |
+| V (VLang)     | **SA-MP Injector V**       | (Скоро)                                                  |
+| Crystal       | **SA-MP Injector Crystal** | (Скоро)                                                  |
+| Perl          | **SA-MP Injector Perl**    | (Скоро)                                                  |
+| Racket (Lisp) | **SA-MP Injector Racket**  | (Скоро)                                                  |
+| Haskell       | **SA-MP Injector Haskell** | (Скоро)                                                  |
+| OCaml         | **SA-MP Injector OCaml**   | (Скоро)                                                  |
 
 > [!TIP]
 > Подробная документация для каждой библиотеки будет доступна в её **соответствующей директории**.

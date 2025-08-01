@@ -360,33 +360,33 @@ El proyecto está construido sobre bibliotecas que encapsulan las funcionalidade
 
 ### Listado de Bibliotecas
 
-| Lenguaje      | Nombre                     | Enlace a la Biblioteca/Documentación   |
-| ------------- | -------------------------- | -------------------------------------- |
-| C++           | **SA-MP Injector C++**     | [Ver Biblioteca](libraries/cpp)        |
-| C             | **SA-MP Injector C**       | (Próximamente)                         |
-| C#            | **SA-MP Injector C#**      | (Próximamente)                         |
-| Java          | **SA-MP Injector Java**    | (Próximamente)                         |
-| Python        | **SA-MP Injector Python**  | (Próximamente)                         |
-| Go (Golang)   | **SA-MP Injector Go**      | (Próximamente)                         |
-| Rust          | **SA-MP Injector Rust**    | (Próximamente)                         |
-| Kotlin        | **SA-MP Injector Kotlin**  | (Próximamente)                         |
-| Scala         | **SA-MP Injector Scala**   | (Próximamente)                         |
-| Lua           | **SA-MP Injector Lua**     | (Próximamente)                         |
-| Ruby          | **SA-MP Injector Ruby**    | (Próximamente)                         |
-| Visual Basic  | **SA-MP Injector VB**      | (Próximamente)                         |
-| F#            | **SA-MP Injector F#**      | (Próximamente)                         |
-| Pascal        | **SA-MP Injector Pascal**  | (Próximamente)                         |
-| Delphi        | **SA-MP Injector Delphi**  | (Próximamente)                         |
-| PowerShell    | **SA-MP Injector PS**      | [Ver Biblioteca](libraries/powershell) |
-| D (Dlang)     | **SA-MP Injector D**       | (Próximamente)                         |
-| Nim           | **SA-MP Injector Nim**     | (Próximamente)                         |
-| Zig           | **SA-MP Injector Zig**     | (Próximamente)                         |
-| V (VLang)     | **SA-MP Injector V**       | (Próximamente)                         |
-| Crystal       | **SA-MP Injector Crystal** | (Próximamente)                         |
-| Perl          | **SA-MP Injector Perl**    | (Próximamente)                         |
-| Racket (Lisp) | **SA-MP Injector Racket**  | (Próximamente)                         |
-| Haskell       | **SA-MP Injector Haskell** | (Próximamente)                         |
-| OCaml         | **SA-MP Injector OCaml**   | (Próximamente)                         |
+| Lenguaje      | Nombre                     | Enlace a la Biblioteca/Documentación         |
+| ------------- | -------------------------- | -------------------------------------------- |
+| C++           | **SA-MP Injector C++**     | [Ver Biblioteca](../../libraries/cpp)        |
+| C             | **SA-MP Injector C**       | (Próximamente)                               |
+| C#            | **SA-MP Injector C#**      | (Próximamente)                               |
+| Java          | **SA-MP Injector Java**    | (Próximamente)                               |
+| Python        | **SA-MP Injector Python**  | (Próximamente)                               |
+| Go (Golang)   | **SA-MP Injector Go**      | (Próximamente)                               |
+| Rust          | **SA-MP Injector Rust**    | (Próximamente)                               |
+| Kotlin        | **SA-MP Injector Kotlin**  | (Próximamente)                               |
+| Scala         | **SA-MP Injector Scala**   | (Próximamente)                               |
+| Lua           | **SA-MP Injector Lua**     | (Próximamente)                               |
+| Ruby          | **SA-MP Injector Ruby**    | (Próximamente)                               |
+| Visual Basic  | **SA-MP Injector VB**      | (Próximamente)                               |
+| F#            | **SA-MP Injector F#**      | (Próximamente)                               |
+| Pascal        | **SA-MP Injector Pascal**  | (Próximamente)                               |
+| Delphi        | **SA-MP Injector Delphi**  | (Próximamente)                               |
+| PowerShell    | **SA-MP Injector PS**      | [Ver Biblioteca](../../libraries/powershell) |
+| D (Dlang)     | **SA-MP Injector D**       | (Próximamente)                               |
+| Nim           | **SA-MP Injector Nim**     | (Próximamente)                               |
+| Zig           | **SA-MP Injector Zig**     | (Próximamente)                               |
+| V (VLang)     | **SA-MP Injector V**       | (Próximamente)                               |
+| Crystal       | **SA-MP Injector Crystal** | (Próximamente)                               |
+| Perl          | **SA-MP Injector Perl**    | (Próximamente)                               |
+| Racket (Lisp) | **SA-MP Injector Racket**  | (Próximamente)                               |
+| Haskell       | **SA-MP Injector Haskell** | (Próximamente)                               |
+| OCaml         | **SA-MP Injector OCaml**   | (Próximamente)                               |
 
 > [!TIP]
 > La documentación detallada para cada biblioteca estará disponible en su **respectivo directorio**.

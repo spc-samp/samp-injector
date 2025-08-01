@@ -360,33 +360,33 @@ Projektet bygger på bibliotek som kapslar in de kritiska funktionerna. Detta g�
 
 ### Lista över bibliotek
 
-| Språk         | Namn                       | Länk till bibliotek/Dokumentation         |
-| ------------- | -------------------------- | ----------------------------------------- |
-| C++           | **SA-MP Injector C++**     | [Kolla biblioteket](libraries/cpp)        |
-| C             | **SA-MP Injector C**       | (Kommer snart)                            |
-| C#            | **SA-MP Injector C#**      | (Kommer snart)                            |
-| Java          | **SA-MP Injector Java**    | (Kommer snart)                            |
-| Python        | **SA-MP Injector Python**  | (Kommer snart)                            |
-| Go (Golang)   | **SA-MP Injector Go**      | (Kommer snart)                            |
-| Rust          | **SA-MP Injector Rust**    | (Kommer snart)                            |
-| Kotlin        | **SA-MP Injector Kotlin**  | (Kommer snart)                            |
-| Scala         | **SA-MP Injector Scala**   | (Kommer snart)                            |
-| Lua           | **SA-MP Injector Lua**     | (Kommer snart)                            |
-| Ruby          | **SA-MP Injector Ruby**    | (Kommer snart)                            |
-| Visual Basic  | **SA-MP Injector VB**      | (Kommer snart)                            |
-| F#            | **SA-MP Injector F#**      | (Kommer snart)                            |
-| Pascal        | **SA-MP Injector Pascal**  | (Kommer snart)                            |
-| Delphi        | **SA-MP Injector Delphi**  | (Kommer snart)                            |
-| PowerShell    | **SA-MP Injector PS**      | [Kolla biblioteket](libraries/powershell) |
-| D (Dlang)     | **SA-MP Injector D**       | (Kommer snart)                            |
-| Nim           | **SA-MP Injector Nim**     | (Kommer snart)                            |
-| Zig           | **SA-MP Injector Zig**     | (Kommer snart)                            |
-| V (VLang)     | **SA-MP Injector V**       | (Kommer snart)                            |
-| Crystal       | **SA-MP Injector Crystal** | (Kommer snart)                            |
-| Perl          | **SA-MP Injector Perl**    | (Kommer snart)                            |
-| Racket (Lisp) | **SA-MP Injector Racket**  | (Kommer snart)                            |
-| Haskell       | **SA-MP Injector Haskell** | (Kommer snart)                            |
-| OCaml         | **SA-MP Injector OCaml**   | (Kommer snart)                            |
+| Språk         | Namn                       | Länk till bibliotek/Dokumentation               |
+| ------------- | -------------------------- | ----------------------------------------------- |
+| C++           | **SA-MP Injector C++**     | [Kolla biblioteket](../../libraries/cpp)        |
+| C             | **SA-MP Injector C**       | (Kommer snart)                                  |
+| C#            | **SA-MP Injector C#**      | (Kommer snart)                                  |
+| Java          | **SA-MP Injector Java**    | (Kommer snart)                                  |
+| Python        | **SA-MP Injector Python**  | (Kommer snart)                                  |
+| Go (Golang)   | **SA-MP Injector Go**      | (Kommer snart)                                  |
+| Rust          | **SA-MP Injector Rust**    | (Kommer snart)                                  |
+| Kotlin        | **SA-MP Injector Kotlin**  | (Kommer snart)                                  |
+| Scala         | **SA-MP Injector Scala**   | (Kommer snart)                                  |
+| Lua           | **SA-MP Injector Lua**     | (Kommer snart)                                  |
+| Ruby          | **SA-MP Injector Ruby**    | (Kommer snart)                                  |
+| Visual Basic  | **SA-MP Injector VB**      | (Kommer snart)                                  |
+| F#            | **SA-MP Injector F#**      | (Kommer snart)                                  |
+| Pascal        | **SA-MP Injector Pascal**  | (Kommer snart)                                  |
+| Delphi        | **SA-MP Injector Delphi**  | (Kommer snart)                                  |
+| PowerShell    | **SA-MP Injector PS**      | [Kolla biblioteket](../../libraries/powershell) |
+| D (Dlang)     | **SA-MP Injector D**       | (Kommer snart)                                  |
+| Nim           | **SA-MP Injector Nim**     | (Kommer snart)                                  |
+| Zig           | **SA-MP Injector Zig**     | (Kommer snart)                                  |
+| V (VLang)     | **SA-MP Injector V**       | (Kommer snart)                                  |
+| Crystal       | **SA-MP Injector Crystal** | (Kommer snart)                                  |
+| Perl          | **SA-MP Injector Perl**    | (Kommer snart)                                  |
+| Racket (Lisp) | **SA-MP Injector Racket**  | (Kommer snart)                                  |
+| Haskell       | **SA-MP Injector Haskell** | (Kommer snart)                                  |
+| OCaml         | **SA-MP Injector OCaml**   | (Kommer snart)                                  |
 
 > [!TIP]
 > Detaljerad dokumentation för varje bibliotek kommer att finnas tillgänglig i dess **respektive katalog**.
