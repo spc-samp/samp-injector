@@ -1130,7 +1130,7 @@ Här är några av de vanliga felen du kan stöta på och deras troliga orsaker/
 
 Om den angivna `inject_type` inte är `"samp"` eller `"omp"`, kommer biblioteket inte att veta vilken multiplayer-klient du tänker starta.
 
-![Error 1](screenshots/error_1.png)
+![Error 1](../../screenshots/error_1.png)
 
 - **Visat Felmeddelande**: `"Invalid injection mode specified. Please use 'samp' or 'omp'."`
 - **Orsak**: Argumentet `inject_type` matchar inte de förväntade värdena `"samp"` eller `"omp"`. Det kan vara ett stavfel, en tom sträng eller ett okänt värde.
@@ -1151,7 +1151,7 @@ Porten är en väsentlig numerisk parameter för anslutning till servern. Detta 
 
 #### 2.1. Icke-numeriskt Portformat
 
-![Error 2](screenshots/error_2.png)
+![Error 2](../../screenshots/error_2.png)
 
 - **Visat Felmeddelande**: `"Invalid port format. The port must be a numeric value. Please provide a valid integer for the port."`
 - **Orsak**: Argumentet `port` innehåller tecken som inte är siffror eller kan inte konverteras till ett giltigt heltal (t.ex. `"abc"`, `"7777a"`).
@@ -1167,7 +1167,7 @@ Porten är en väsentlig numerisk parameter för anslutning till servern. Detta 
 
 #### 2.2. Port Utanför Giltigt Intervall
 
-![Error 3](screenshots/error_3.png)
+![Error 3](../../screenshots/error_3.png)
 
 - **Visat Felmeddelande**: `"The specified port number (XXXX) is outside the valid range of 1 to 65535. Please provide a valid port."` (**XXXX** kommer att vara det värde du försökte använda).
 - **Orsak**: Den angivna porten är ett giltigt tal, men är lägre än `1` (reserverad eller oanvändbar) eller högre än `65535` (maxgräns för **TCP/UDP-portar**).
@@ -1188,7 +1188,7 @@ Spelarens **smeknamn** valideras för att säkerställa att spelklienten accepte
 
 #### 3.1. Tomt Smeknamn
 
-![Error 4](screenshots/error_4.png)
+![Error 4](../../screenshots/error_4.png)
 
 - **Visat Felmeddelande**: `"Nickname cannot be empty. Please provide a valid nickname."`
 - **Orsak**: Argumentet `nickname` angavs som en tom sträng.
@@ -1203,7 +1203,7 @@ Spelarens **smeknamn** valideras för att säkerställa att spelklienten accepte
 
 #### 3.2. För Långt Smeknamn
 
-![Error 5](screenshots/error_5.png)
+![Error 5](../../screenshots/error_5.png)
 
 - **Visat Felmeddelande**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
 - **Orsak**: Längden på det angivna **smeknamnet** överstiger `$global:CONSTANTS.MAX_NICKNAME_LENGTH`, vilket är `23` tecken.
@@ -1222,7 +1222,7 @@ Detta är en av de vanligaste orsakerna till fel. Biblioteket kräver att `gta_s
 
 #### 4.1. Spel-exekverbar (`gta_sa.exe`) Hittades Inte
 
-![Error 6](screenshots/error_6.png)
+![Error 6](../../screenshots/error_6.png)
 
 - **Visat Felmeddelande**: `"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: [fullständig sökväg]"`. `[fullständig sökväg]` kommer att inkludera mappen och filnamnet.
 - **Orsak**: Filen `gta_sa.exe` hittades inte i mappen som angavs i `folder`-argumentet.
@@ -1232,7 +1232,7 @@ Detta är en av de vanligaste orsakerna till fel. Biblioteket kräver att `gta_s
 
 #### 4.2. SA-MP Bibliotek (`samp.dll`) Hittades Inte
 
-![Error 7](screenshots/error_7.png)
+![Error 7](../../screenshots/error_7.png)
 
 - **Visat Felmeddelande**: `"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: [fullständig sökväg]"`.
 - **Orsak**: Filen `samp.dll` hittades inte i mappen som angavs i `folder`-argumentet. **Denna DLL** är ett krav för **båda** injektionstyperna (`samp` och `omp`).
@@ -1240,7 +1240,7 @@ Detta är en av de vanligaste orsakerna till fel. Biblioteket kräver att `gta_s
 
 #### 4.3. OMP Bibliotek (`omp-client.dll`) Hittades Inte (endast för OMP-injektion)
 
-![Error 8](screenshots/error_8.png)
+![Error 8](../../screenshots/error_8.png)
 
 - **Visat Felmeddelande**: `"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: [fullständig sökväg]"`.
 - **Orsak**: Om du angav `"omp"` som injektionstyp, men filen `omp-client.dll` inte hittades i den angivna mappen.
@@ -1250,7 +1250,7 @@ Detta är en av de vanligaste orsakerna till fel. Biblioteket kräver att `gta_s
 
 Detta är ett mer komplext fel, eftersom det involverar **operativsystembehörigheter** och det aktuella tillståndet för `gta_sa.exe`.
 
-![Error 9](screenshots/error_9.png)
+![Error 9](../../screenshots/error_9.png)
 
 - **Visat Felmeddelande**: `"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have sufficient permissions to execute the file. System Error: [Operativsystemets felmeddelande]"`. Systemmeddelandet kommer att läggas till av `Get_System_Error_Message` (t.ex. `Access is denied.` eller `The requested operation requires elevation.`).
 - **Orsak**: Anropet `CreateProcessA` för att starta `gta_sa.exe` misslyckades. Vanliga orsaker inkluderar:
@@ -1266,7 +1266,7 @@ Detta är ett mer komplext fel, eftersom det involverar **operativsystembehörig
 
 Biblioteket försöker allokera ett litet minnesutrymme i `gta_sa.exe` för att kopiera **DLL-sökvägen**.
 
-![Error 10](screenshots/error_10.png)
+![Error 10](../../screenshots/error_10.png)
 
 - **Visat Felmeddelande**: `"Failed to allocate memory in the target process. This might be due to insufficient permissions or process protection mechanisms. System Error: [Operativsystemets felmeddelande]"`.
 - **Orsak**: Funktionen `VirtualAllocEx` (som används för att allokera minne i en annan process) misslyckades. Detta är mest troligt om:
@@ -1281,7 +1281,7 @@ Biblioteket försöker allokera ett litet minnesutrymme i `gta_sa.exe` för att 
 
 Efter att ha allokerat minnet försöker biblioteket kopiera **DLL-sökvägen** till det.
 
-![Error 11](screenshots/error_11.png)
+![Error 11](../../screenshots/error_11.png)
 
 - **Visat Felmeddelande**: `"Failed to write DLL path to the target process memory. Verify process permissions and ensure the DLL path is accessible. System Error: [Operativsystemets felmeddelande]"`.
 - **Orsak**: Funktionen `WriteProcessMemory` misslyckades med att kopiera **byten av DLL-sökvägen** till det fjärrallokerade minnet i `gta_sa.exe`. Detta pekar vanligtvis på:
@@ -1296,7 +1296,7 @@ Dessa är avgörande Windows-API:er; fel här indikerar ett grundläggande probl
 
 #### 8.1. `kernel32.dll` Hittades Inte
 
-![Error 12](screenshots/error_12.png)
+![Error 12](../../screenshots/error_12.png)
 
 - **Visat Felmeddelande**: `"Failed to obtain a handle to kernel32.dll. This is an essential system library and this error indicates a severe system issue. System Error: [Operativsystemets felmeddelande]"`.
 - **Orsak**: `kernel32.dll` är en av de mest grundläggande DLL-filerna i Windows och innehåller väsentliga funktioner. Om `GetModuleHandleA` inte kan få ett **handtag** till den, har operativsystemet mycket allvarliga problem.
@@ -1304,7 +1304,7 @@ Dessa är avgörande Windows-API:er; fel här indikerar ett grundläggande probl
 
 #### 8.2. `LoadLibraryA` Hittades Inte
 
-![Error 13](screenshots/error_13.png)
+![Error 13](../../screenshots/error_13.png)
 
 - **Visat Felmeddelande**: `"Failed to find the address of the LoadLibraryA function in kernel32.dll. This is critical for injecting the DLL. System Error: [Operativsystemets felmeddelande]"`.
 - **Orsak**: Även om `kernel32.dll` hittades, kunde funktionen `LoadLibraryA` inte lösas via `GetProcAddress`. Även om det är extremt ovanligt, kan det vara resultatet av korruption av **DLL-filen** för `kernel32.dll` eller en mycket icke-standardiserad körmiljö.
@@ -1314,7 +1314,7 @@ Dessa är avgörande Windows-API:er; fel här indikerar ett grundläggande probl
 
 Efter att ha förberett fjärrmiljön och kopierat **DLL-sökvägen**, skapas en ny **tråd** i spelprocessen för att "anropa" `LoadLibraryA`.
 
-![Error 14](screenshots/error_14.png)
+![Error 14](../../screenshots/error_14.png)
 
 - **Visat Felmeddelande**: `"Failed to create a remote thread in the target process to execute the DLL injection. This could be due to security restrictions or process state. System Error: [Operativsystemets felmeddelande]"`.
 - **Orsak**: Anropet `CreateRemoteThread` misslyckades. Detta fel är vanligt på system med robusta **anti-injektions**-försvar eller när ett program intensivt övervakar processens beteende:
@@ -1329,7 +1329,7 @@ Efter att ha förberett fjärrmiljön och kopierat **DLL-sökvägen**, skapas en
 
 Efter att ha skapat den fjärrstyrda **tråden** väntar injektorn på att den ska slutföra **DLL-laddningen**.
 
-![Error 15](screenshots/error_15.png)
+![Error 15](../../screenshots/error_15.png)
 
 - **Visat Felmeddelande**: `"Timeout or error waiting for DLL injection to complete (timeout). System Error: [Operativsystemets felmeddelande]"`.
 - **Orsak**: Den fjärrstyrda **tråden** som kör `LoadLibraryA` tog längre tid än `$global:CONSTANTS.DLL_INJECTION_TIMEOUT_MS` (10 sekunder) att returnera, eller så misslyckades den och `GetExitCodeThread` returnerade 0. Potentiella orsaker inkluderar:
@@ -1343,7 +1343,7 @@ Efter att ha skapat den fjärrstyrda **tråden** väntar injektorn på att den s
 
 Detta är det sista steget för att starta spelet efter att **DLL:erna** har injicerats.
 
-![Error 16](screenshots/error_16.png)
+![Error 16](../../screenshots/error_16.png)
 
 - **Visat Felmeddelande**: `"Failed to resume the game process thread: [Operativsystemets felmeddelande]"`.
 - **Orsak**: Anropet `ResumeThread` misslyckades, vilket innebär att huvud**tråden** i `gta_sa.exe` inte kunde aktiveras för att starta spelets exekvering. Detta är ett sällsynt fel, men kan inträffa om:

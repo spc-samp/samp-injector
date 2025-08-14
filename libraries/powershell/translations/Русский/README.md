@@ -1130,7 +1130,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 Если предоставленный `inject_type` не является `"samp"` или `"omp"`, библиотека не будет знать, какой многопользовательский клиент вы собираетесь запустить.
 
-![Error 1](screenshots/error_1.png)
+![Error 1](../../screenshots/error_1.png)
 
 - **Отображаемое сообщение об ошибке**: `"Invalid injection mode specified. Please use 'samp' or 'omp'."`
 - **Причина**: Аргумент `inject_type` не соответствует ожидаемым значениям `"samp"` или `"omp"`. Это может быть опечатка, пустая строка или нераспознанное значение.
@@ -1151,7 +1151,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 #### 2.1. Нечисловой формат порта
 
-![Error 2](screenshots/error_2.png)
+![Error 2](../../screenshots/error_2.png)
 
 - **Отображаемое сообщение об ошибке**: `"Invalid port format. The port must be a numeric value. Please provide a valid integer for the port."`
 - **Причина**: Аргумент `port` содержит символы, которые не являются цифрами, или не может быть преобразован в допустимое целое число (например, `"abc"`, `"7777a"`).
@@ -1167,7 +1167,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 #### 2.2. Порт вне допустимого диапазона
 
-![Error 3](screenshots/error_3.png)
+![Error 3](../../screenshots/error_3.png)
 
 - **Отображаемое сообщение об ошибке**: `"The specified port number (XXXX) is outside the valid range of 1 to 65535. Please provide a valid port."` (**XXXX** будет значением, которое вы пытались использовать).
 - **Причина**: Предоставленный порт является действительным числом, но он меньше `1` (зарезервирован или не используется) или больше `65535` (максимальный предел для **портов TCP/UDP**).
@@ -1188,7 +1188,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 #### 3.1. Пустой никнейм
 
-![Error 4](screenshots/error_4.png)
+![Error 4](../../screenshots/error_4.png)
 
 - **Отображаемое сообщение об ошибке**: `"Nickname cannot be empty. Please provide a valid nickname."`
 - **Причина**: Аргумент `nickname` был предоставлен как пустая строка.
@@ -1203,7 +1203,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 #### 3.2. Слишком длинный никнейм
 
-![Error 5](screenshots/error_5.png)
+![Error 5](../../screenshots/error_5.png)
 
 - **Отображаемое сообщение об ошибке**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
 - **Причина**: Длина предоставленного **никнейма** превышает `$global:CONSTANTS.MAX_NICKNAME_LENGTH`, что составляет `23` символов.
@@ -1222,7 +1222,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 #### 4.1. Исполняемый файл игры (`gta_sa.exe`) не найден
 
-![Error 6](screenshots/error_6.png)
+![Error 6](../../screenshots/error_6.png)
 
 - **Отображаемое сообщение об ошибке**: `"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: [полный путь]"`. `[полный путь]` будет включать папку и имя файла.
 - **Причина**: Файл `gta_sa.exe` не был найден в папке, указанной в аргументе `folder`.
@@ -1232,7 +1232,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 #### 4.2. Библиотека SA-MP (`samp.dll`) не найдена
 
-![Error 7](screenshots/error_7.png)
+![Error 7](../../screenshots/error_7.png)
 
 - **Отображаемое сообщение об ошибке**: `"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: [полный путь]"`.
 - **Причина**: Файл `samp.dll` не был найден в папке, указанной в аргументе `folder`. **Эта DLL** является требованием для **обоих** типов внедрения (`samp` и `omp`).
@@ -1240,7 +1240,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 #### 4.3. Библиотека OMP (`omp-client.dll`) не найдена (только для внедрения OMP)
 
-![Error 8](screenshots/error_8.png)
+![Error 8](../../screenshots/error_8.png)
 
 - **Отображаемое сообщение об ошибке**: `"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: [полный путь]"`.
 - **Причина**: Если вы указали `"omp"` как тип внедрения, но файл `omp-client.dll` не был найден в указанной папке.
@@ -1250,7 +1250,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 Это более сложная ошибка, так как она связана с **разрешениями операционной системы** и текущим состоянием `gta_sa.exe`.
 
-![Error 9](screenshots/error_9.png)
+![Error 9](../../screenshots/error_9.png)
 
 - **Отображаемое сообщение об ошибке**: `"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have sufficient permissions to execute the file. System Error: [Сообщение об ошибке операционной системы]"`. Сообщение системы будет добавлено `Get_System_Error_Message` (например, `Access is denied.` или `The requested operation requires elevation.`).
 - **Причина**: Вызов `CreateProcessA` для запуска `gta_sa.exe` завершился неудачей. Распространенные причины включают:
@@ -1266,7 +1266,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 Библиотека пытается выделить небольшое пространство памяти в `gta_sa.exe` для копирования **пути DLL**.
 
-![Error 10](screenshots/error_10.png)
+![Error 10](../../screenshots/error_10.png)
 
 - **Отображаемое сообщение об ошибке**: `"Failed to allocate memory in the target process. This might be due to insufficient permissions or process protection mechanisms. System Error: [Сообщение об ошибке операционной системы]"`.
 - **Причина**: Функция `VirtualAllocEx` (используемая для выделения памяти в другом процессе) завершилась неудачей. Это наиболее вероятно, если:
@@ -1281,7 +1281,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 После выделения памяти библиотека пытается скопировать в нее **путь DLL**.
 
-![Error 11](screenshots/error_11.png)
+![Error 11](../../screenshots/error_11.png)
 
 - **Отображаемое сообщение об ошибке**: `"Failed to write DLL path to the target process memory. Verify process permissions and ensure the DLL path is accessible. System Error: [Сообщение об ошибке операционной системы]"`.
 - **Причина**: Функция `WriteProcessMemory` не смогла скопировать **байты пути DLL** в удаленную память, выделенную в `gta_sa.exe`. Это обычно указывает на:
@@ -1296,7 +1296,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 #### 8.1. `kernel32.dll` не найден
 
-![Error 12](screenshots/error_12.png)
+![Error 12](../../screenshots/error_12.png)
 
 - **Отображаемое сообщение об ошибке**: `"Failed to obtain a handle to kernel32.dll. This is an essential system library and this error indicates a severe system issue. System Error: [Сообщение об ошибке операционной системы]"`.
 - **Причина**: `kernel32.dll` — одна из самых базовых DLL Windows, содержащая основные функции. Если `GetModuleHandleA` не может получить для нее **дескриптор**, значит, у операционной системы очень серьезные проблемы.
@@ -1304,7 +1304,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 #### 8.2. `LoadLibraryA` не найден
 
-![Error 13](screenshots/error_13.png)
+![Error 13](../../screenshots/error_13.png)
 
 - **Отображаемое сообщение об ошибке**: `"Failed to find the address of the LoadLibraryA function in kernel32.dll. This is critical for injecting the DLL. System Error: [Сообщение об ошибке операционной системы]"`.
 - **Причина**: Хотя `kernel32.dll` была найдена, функция `LoadLibraryA` не могла быть разрешена через `GetProcAddress`. Хотя это крайне необычно, это может быть результатом повреждения **файла DLL** `kernel32.dll` или очень нестандартной среды выполнения.
@@ -1314,7 +1314,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 После подготовки удаленной среды и копирования **пути DLL**, в процессе игры создается новый **поток** для "вызова" `LoadLibraryA`.
 
-![Error 14](screenshots/error_14.png)
+![Error 14](../../screenshots/error_14.png)
 
 - **Отображаемое сообщение об ошибке**: `"Failed to create a remote thread in the target process to execute the DLL injection. This could be due to security restrictions or process state. System Error: [Сообщение об ошибке операционной системы]"`.
 - **Причина**: Вызов `CreateRemoteThread` завершился неудачей. Эта ошибка распространена в системах с надежной **защитой от внедрения** или когда программа интенсивно отслеживает поведение процесса:
@@ -1329,7 +1329,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 После создания удаленного **потока**, инжектор ожидает, пока он завершит **загрузку DLL**.
 
-![Error 15](screenshots/error_15.png)
+![Error 15](../../screenshots/error_15.png)
 
 - **Отображаемое сообщение об ошибке**: `"Timeout or error waiting for DLL injection to complete (timeout). System Error: [Сообщение об ошибке операционной системы]"`.
 - **Причина**: Удаленный **поток**, выполняющий `LoadLibraryA`, занял больше `$global:CONSTANTS.DLL_INJECTION_TIMEOUT_MS` (10 секунд) для возврата, или он завершился сбоем и `GetExitCodeThread` вернул 0. Возможные причины включают:
@@ -1343,7 +1343,7 @@ Read-Host "`nНажмите Enter для выхода."
 
 Это заключительный шаг для запуска игры после **внедрения DLL**.
 
-![Error 16](screenshots/error_16.png)
+![Error 16](../../screenshots/error_16.png)
 
 - **Отображаемое сообщение об ошибке**: `"Failed to resume the game process thread: [Сообщение об ошибке операционной системы]"`.
 - **Причина**: Вызов `ResumeThread` завершился неудачей, что означает, что основной **поток** `gta_sa.exe` не мог быть активирован для начала выполнения игры. Это редкая ошибка, но она может произойти, если:

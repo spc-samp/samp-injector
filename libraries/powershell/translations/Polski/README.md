@@ -1130,7 +1130,7 @@ Oto niektóre z typowych błędów, które możesz napotkać, oraz ich prawdopod
 
 Jeśli podany `inject_type` nie jest `"samp"` ani `"omp"`, biblioteka nie będzie wiedziała, którego klienta wieloosobowego zamierzasz zainicjować.
 
-![Error 1](screenshots/error_1.png)
+![Error 1](../../screenshots/error_1.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Określono nieprawidłowy tryb wstrzykiwania. Proszę użyć 'samp' lub 'omp'."`
 - **Przyczyna**: Argument `inject_type` nie odpowiada oczekiwanym wartościom `"samp"` lub `"omp"`. Może to być literówka, pusty ciąg znaków lub nierozpoznana wartość.
@@ -1151,7 +1151,7 @@ Port jest niezbędnym parametrem numerycznym do połączenia z serwerem. Ten bł
 
 #### 2.1. Nienumeryczny format portu
 
-![Error 2](screenshots/error_2.png)
+![Error 2](../../screenshots/error_2.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nieprawidłowy format portu. Port musi być wartością numeryczną. Proszę podać prawidłową liczbę całkowitą dla portu."`
 - **Przyczyna**: Argument `port` zawiera znaki, które nie są cyframi numerycznymi lub nie może być przekonwertowany na prawidłową liczbę całkowitą (np. `"abc"`, `"7777a"`).
@@ -1167,7 +1167,7 @@ Port jest niezbędnym parametrem numerycznym do połączenia z serwerem. Ten bł
 
 #### 2.2. Port poza prawidłowym zakresem
 
-![Error 3](screenshots/error_3.png)
+![Error 3](../../screenshots/error_3.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Podany numer portu (XXXX) jest poza prawidłowym zakresem od 1 do 65535. Proszę podać prawidłowy port."` (**XXXX** będzie wartością, którą próbowałeś użyć).
 - **Przyczyna**: Podany port jest prawidłową liczbą, ale jest poniżej `1` (zarezerwowany lub nieużyteczny) lub powyżej `65535` (maksymalny limit dla **portów TCP/UDP**).
@@ -1188,7 +1188,7 @@ Port jest niezbędnym parametrem numerycznym do połączenia z serwerem. Ten bł
 
 #### 3.1. Pusta nazwa użytkownika
 
-![Error 4](screenshots/error_4.png)
+![Error 4](../../screenshots/error_4.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nazwa użytkownika nie może być pusta. Proszę podać prawidłową nazwę użytkownika."`
 - **Przyczyna**: Argument `nickname` został podany jako pusty ciąg znaków.
@@ -1203,7 +1203,7 @@ Port jest niezbędnym parametrem numerycznym do połączenia z serwerem. Ten bł
 
 #### 3.2. Zbyt długa nazwa użytkownika
 
-![Error 5](screenshots/error_5.png)
+![Error 5](../../screenshots/error_5.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Długość nazwy użytkownika przekracza maksymalną dozwoloną liczbę 23 znaków. Proszę użyć krótszej nazwy użytkownika."`
 - **Przyczyna**: Długość podanej **nazwy użytkownika** przekracza `$global:CONSTANTS.MAX_NICKNAME_LENGTH`, czyli `23` znaków.
@@ -1222,7 +1222,7 @@ Jest to jedna z najczęstszych przyczyn niepowodzenia. Biblioteka wymaga, aby `g
 
 #### 4.1. Nie znaleziono pliku wykonywalnego gry (`gta_sa.exe`)
 
-![Error 6](screenshots/error_6.png)
+![Error 6](../../screenshots/error_6.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie znaleziono pliku wykonywalnego gry. Proszę upewnić się, że 'gta_sa.exe' istnieje w podanej ścieżce: [pełna ścieżka]"`. `[pełna ścieżka]` będzie zawierać folder i nazwę pliku.
 - **Przyczyna**: Plik `gta_sa.exe` nie został znaleziony w folderze podanym w argumencie `folder`.
@@ -1232,7 +1232,7 @@ Jest to jedna z najczęstszych przyczyn niepowodzenia. Biblioteka wymaga, aby `g
 
 #### 4.2. Nie znaleziono biblioteki SA-MP (`samp.dll`)
 
-![Error 7](screenshots/error_7.png)
+![Error 7](../../screenshots/error_7.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie znaleziono biblioteki SA-MP. Proszę upewnić się, że 'samp.dll' istnieje w podanej ścieżce: [pełna ścieżka]"`.
 - **Przyczyna**: Plik `samp.dll` nie został znaleziony w folderze podanym w argumencie `folder`. **Ta DLL** jest wymagana dla **obu** typów wstrzykiwania (`samp` i `omp`).
@@ -1240,7 +1240,7 @@ Jest to jedna z najczęstszych przyczyn niepowodzenia. Biblioteka wymaga, aby `g
 
 #### 4.3. Nie znaleziono biblioteki OMP (`omp-client.dll`) (tylko dla wstrzykiwania OMP)
 
-![Error 8](screenshots/error_8.png)
+![Error 8](../../screenshots/error_8.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie znaleziono biblioteki OMP. Proszę upewnić się, że 'omp-client.dll' istnieje w podanej ścieżce dla wstrzykiwania OMP: [pełna ścieżka]"`.
 - **Przyczyna**: Jeśli określiłeś `"omp"` jako typ wstrzykiwania, ale plik `omp-client.dll` nie został znaleziony w podanym folderze.
@@ -1250,7 +1250,7 @@ Jest to jedna z najczęstszych przyczyn niepowodzenia. Biblioteka wymaga, aby `g
 
 Jest to bardziej złożony błąd, ponieważ dotyczy **uprawnień systemu operacyjnego** i aktualnego stanu `gta_sa.exe`.
 
-![Error 9](screenshots/error_9.png)
+![Error 9](../../screenshots/error_9.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie udało się utworzyć procesu gry. Upewnij się, że 'gta_sa.exe' nie jest uruchomiony i masz wystarczające uprawnienia do wykonania pliku. Błąd systemowy: [Komunikat o błędzie systemu operacyjnego]"`. Komunikat systemowy zostanie dodany przez `Get_System_Error_Message` (np. `Odmowa dostępu.` lub `Żądana operacja wymaga podniesienia uprawnień.`).
 - **Przyczyna**: Wywołanie `CreateProcessA` w celu uruchomienia `gta_sa.exe` nie powiodło się. Typowe przyczyny to:
@@ -1266,7 +1266,7 @@ Jest to bardziej złożony błąd, ponieważ dotyczy **uprawnień systemu operac
 
 Biblioteka próbuje zaalokować niewielką przestrzeń pamięci w `gta_sa.exe`, aby skopiować **ścieżkę DLL**.
 
-![Error 10](screenshots/error_10.png)
+![Error 10](../../screenshots/error_10.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie udało się zaalokować pamięci w procesie docelowym. Może to być spowodowane niewystarczającymi uprawnieniami lub mechanizmami ochrony procesu. Błąd systemowy: [Komunikat o błędzie systemu operacyjnego]"`.
 - **Przyczyna**: Funkcja `VirtualAllocEx` (używana do alokowania pamięci w innym procesie) nie powiodła się. Jest to najbardziej prawdopodobne, jeśli:
@@ -1281,7 +1281,7 @@ Biblioteka próbuje zaalokować niewielką przestrzeń pamięci w `gta_sa.exe`, 
 
 Po zaalokowaniu pamięci biblioteka próbuje skopiować do niej **ścieżkę DLL**.
 
-![Error 11](screenshots/error_11.png)
+![Error 11](../../screenshots/error_11.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie udało się zapisać ścieżki DLL do pamięci procesu docelowego. Sprawdź uprawnienia procesu i upewnij się, że ścieżka DLL jest dostępna. Błąd systemowy: [Komunikat o błędzie systemu operacyjnego]"`.
 - **Przyczyna**: Funkcja `WriteProcessMemory` nie powiodła się podczas próby skopiowania **bajtów ścieżki DLL** do zdalnej pamięci zaalokowanej w `gta_sa.exe`. Zazwyczaj wskazuje to na:
@@ -1296,7 +1296,7 @@ Są to kluczowe API systemu Windows; błędy w tym miejscu wskazują na fundamen
 
 #### 8.1. Nie znaleziono `kernel32.dll`
 
-![Error 12](screenshots/error_12.png)
+![Error 12](../../screenshots/error_12.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie udało się uzyskać uchwytu do kernel32.dll. Jest to niezbędna biblioteka systemowa i ten błąd wskazuje na poważny problem systemowy. Błąd systemowy: [Komunikat o błędzie systemu operacyjnego]"`.
 - **Przyczyna**: `kernel32.dll` jest jedną z najbardziej podstawowych bibliotek DLL systemu Windows, zawierającą niezbędne funkcje. Jeśli `GetModuleHandleA` nie może uzyskać do niej **uchwytu**, system operacyjny ma bardzo poważne problemy.
@@ -1304,7 +1304,7 @@ Są to kluczowe API systemu Windows; błędy w tym miejscu wskazują na fundamen
 
 #### 8.2. Nie znaleziono `LoadLibraryA`
 
-![Error 13](screenshots/error_13.png)
+![Error 13](../../screenshots/error_13.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie udało się znaleźć adresu funkcji LoadLibraryA w kernel32.dll. Jest to kluczowe dla wstrzyknięcia DLL. Błąd systemowy: [Komunikat o błędzie systemu operacyjnego]"`.
 - **Przyczyna**: Chociaż `kernel32.dll` został znaleziony, funkcja `LoadLibraryA` nie mogła zostać rozwiązana przez `GetProcAddress`. Chociaż jest to niezwykle rzadkie, może być wynikiem uszkodzenia **pliku DLL** `kernel32.dll` lub wysoce niestandardowego środowiska wykonawczego.
@@ -1314,7 +1314,7 @@ Są to kluczowe API systemu Windows; błędy w tym miejscu wskazują na fundamen
 
 Po przygotowaniu środowiska zdalnego i skopiowaniu **ścieżki DLL**, tworzony jest nowy **wątek** w procesie gry, aby "wywołać" `LoadLibraryA`.
 
-![Error 14](screenshots/error_14.png)
+![Error 14](../../screenshots/error_14.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie udało się utworzyć zdalnego wątku w procesie docelowym w celu wykonania wstrzyknięcia DLL. Może to być spowodowane ograniczeniami bezpieczeństwa lub stanem procesu. Błąd systemowy: [Komunikat o błędzie systemu operacyjnego]"`.
 - **Przyczyna**: Wywołanie `CreateRemoteThread` nie powiodło się. Ten błąd jest powszechny w systemach z solidnymi zabezpieczeniami **anty-wstrzykiwania** lub gdy program intensywnie monitoruje zachowanie procesu:
@@ -1329,7 +1329,7 @@ Po przygotowaniu środowiska zdalnego i skopiowaniu **ścieżki DLL**, tworzony 
 
 Po utworzeniu **zdalnego wątku**, wstrzykiwacz czeka, aż zakończy on **ładowanie DLL**.
 
-![Error 15](screenshots/error_15.png)
+![Error 15](../../screenshots/error_15.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Przekroczono limit czasu lub wystąpił błąd podczas oczekiwania na zakończenie wstrzykiwania DLL (przekroczenie limitu czasu). Błąd systemowy: [Komunikat o błędzie systemu operacyjnego]"`.
 - **Przyczyna**: **Zdalny wątek** wykonujący `LoadLibraryA` zajął więcej niż `$global:CONSTANTS.DLL_INJECTION_TIMEOUT_MS` (10 sekund), aby zakończyć, lub nie powiódł się i `GetExitCodeThread` zwrócił 0. Potencjalne przyczyny to:
@@ -1343,7 +1343,7 @@ Po utworzeniu **zdalnego wątku**, wstrzykiwacz czeka, aż zakończy on **ładow
 
 Jest to ostatni krok do uruchomienia gry po wstrzyknięciu **DLL**.
 
-![Error 16](screenshots/error_16.png)
+![Error 16](../../screenshots/error_16.png)
 
 - **Wyświetlany komunikat o błędzie**: `"Nie udało się wznowić wątku procesu gry: [Komunikat o błędzie systemu operacyjnego]"`.
 - **Przyczyna**: Wywołanie `ResumeThread` nie powiodło się, co oznacza, że **główny wątek** `gta_sa.exe` nie mógł zostać aktywowany, aby rozpocząć wykonywanie gry. Jest to rzadki błąd, ale może się zdarzyć, jeśli:

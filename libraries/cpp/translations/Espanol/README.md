@@ -888,7 +888,7 @@ Aquí están algunos de los errores comunes que puede encontrar y sus probables 
 
 Si el `inject_type` proporcionado en la función `Initialize_Game` no es `L"samp"` o `L"omp"`, la biblioteca no sabrá qué cliente multijugador intenta inicializar.
 
-![Error 1](screenshots/error_1.png)
+![Error 1](../../screenshots/error_1.png)
 
 - **Mensaje de Error Mostrado**: `"Invalid injection mode specified. Please use 'samp' or 'omp'."`
 - **Causa**: El primer argumento de la función `Initialize_Game` (`std::wstring_view inject_type`) no coincide con los valores esperados de `L"samp"` o `L"omp"`. Puede ser un error de tipeo, una string vacía o un valor no reconocido.
@@ -909,7 +909,7 @@ El puerto es un parámetro numérico esencial para la conexión con el servidor.
 
 #### 2.1. Formato de Puerto No Numérico
 
-![Error 2](screenshots/error_2.png)
+![Error 2](../../screenshots/error_2.png)
 
 - **Mensaje de Error Mostrado**: `"Invalid port format. The port must be a numeric value. Please provide a valid integer for the port."`
 - **Causa**: El argumento `port` (`std::wstring_view`) contiene caracteres que no son dígitos numéricos o no puede convertirse a un número entero.
@@ -927,7 +927,7 @@ El puerto es un parámetro numérico esencial para la conexión con el servidor.
 
 #### 2.2. Puerto Fuera del Rango Válido
 
-![Error 3](screenshots/error_3.png)
+![Error 3](../../screenshots/error_3.png)
 
 - **Mensaje de Error Mostrado**: `"The specified port number (XXXX) is outside the valid range of 1 to 65535. Please provide a valid port."` (El **XXXX** será el valor que intentó usar).
 - **Causa**: El puerto proporcionado es un número válido, pero está por debajo de `1` (reservado o no utilizable) o por encima de `65535` (límite máximo para **puertos TCP/UDP**).
@@ -948,7 +948,7 @@ El **nickname** del jugador se valida para garantizar que el cliente del juego l
 
 #### 3.1. Nickname Vacío
 
-![Error 4](screenshots/error_4.png)
+![Error 4](../../screenshots/error_4.png)
 
 - **Mensaje de Error Mostrado**: `"Nickname cannot be empty. Please provide a valid nickname."`
 - **Causa**: El argumento `nickname` (`std::wstring_view`) fue proporcionado como una string vacía.
@@ -963,7 +963,7 @@ El **nickname** del jugador se valida para garantizar que el cliente del juego l
 
 #### 3.2. Nickname Muy Largo
 
-![Error 5](screenshots/error_5.png)
+![Error 5](../../screenshots/error_5.png)
 
 - **Mensaje de Error Mostrado**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
 - **Causa**: El tamaño del **nickname** proporcionado excede `Constants::MAX_NICKNAME_LENGTH`, que es `23` caracteres.
@@ -982,7 +982,7 @@ Esta es una de las causas más comunes de falla. La biblioteca necesita que `gta
 
 #### 4.1. Ejecutable del Juego (`gta_sa.exe`) No Encontrado
 
-![Error 6](screenshots/error_6.png)
+![Error 6](../../screenshots/error_6.png)
 
 - **Mensaje de Error Mostrado**: `"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: [ruta completa]"`. La `[ruta completa]` incluirá la carpeta y el nombre del archivo.
 - **Causa**: El archivo `gta_sa.exe` no fue encontrado en la carpeta proporcionada en el argumento `folder`.
@@ -992,7 +992,7 @@ Esta es una de las causas más comunes de falla. La biblioteca necesita que `gta
 
 #### 4.2. Biblioteca SA-MP (`samp.dll`) No Encontrada
 
-![Error 7](screenshots/error_7.png)
+![Error 7](../../screenshots/error_7.png)
 
 - **Mensaje de Error Mostrado**: `"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: [ruta completa]"`.
 - **Causa**: El archivo `samp.dll` no fue encontrado en la carpeta proporcionada en el argumento `folder`. **Esta DLL** es un requisito para **ambos** tipos de inyección (`samp` y `omp`).
@@ -1000,7 +1000,7 @@ Esta es una de las causas más comunes de falla. La biblioteca necesita que `gta
 
 #### 4.3. Biblioteca OMP (`omp-client.dll`) No Encontrada (solo para inyección OMP)
 
-![Error 8](screenshots/error_8.png)
+![Error 8](../../screenshots/error_8.png)
 
 - **Mensaje de Error Mostrado**: `"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: [ruta completa]"`.
 - **Causa**: Si especificó `L"omp"` como tipo de inyección, pero el archivo `omp-client.dll` no fue encontrado en la carpeta proporcionada.
@@ -1010,7 +1010,7 @@ Esta es una de las causas más comunes de falla. La biblioteca necesita que `gta
 
 Este es un error más complejo, ya que involucra **permisos del sistema operativo** y el estado actual del `gta_sa.exe`.
 
-![Error 9](screenshots/error_9.png)
+![Error 9](../../screenshots/error_9.png)
 
 - **Mensaje de Error Mostrado**: `"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have sufficient permissions to execute the file. System Error: [Mensaje de error del sistema operativo]"`. El mensaje del sistema será añadido por `GetLastError()` (ej: `Access is denied.` o `The requested operation requires elevation.`).
 - **Causa**: La llamada `CreateProcessA` para iniciar el `gta_sa.exe` falló. Las causas comunes incluyen:
@@ -1026,7 +1026,7 @@ Este es un error más complejo, ya que involucra **permisos del sistema operativ
 
 La biblioteca intenta asignar un pequeño espacio de memoria en el `gta_sa.exe` para copiar la **ruta de la DLL**.
 
-![Error 10](screenshots/error_10.png)
+![Error 10](../../screenshots/error_10.png)
 
 - **Mensaje de Error Mostrado**: `"Failed to allocate memory in the target process. This might be due to insufficient permissions or process protection mechanisms."`
 - **Causa**: La función `VirtualAllocEx` (usada para asignar memoria dentro de otro proceso) falló. Esto es más probable si:
@@ -1041,7 +1041,7 @@ La biblioteca intenta asignar un pequeño espacio de memoria en el `gta_sa.exe` 
 
 Tras asignar la memoria, la biblioteca intenta copiar la **ruta de la DLL** a ella.
 
-![Error 11](screenshots/error_11.png)
+![Error 11](../../screenshots/error_11.png)
 
 - **Mensaje de Error Mostrado**: `"Failed to write DLL path to the target process memory. Verify process permissions and ensure the DLL path is accessible."`
 - **Causa**: La función `WriteProcessMemory` falló al intentar copiar los **bytes de la ruta de la DLL** a la memoria remota asignada en el `gta_sa.exe`. Esto generalmente apunta a:
@@ -1056,7 +1056,7 @@ Estas son **APIs** cruciales de **Windows**; errores aquí indican un problema f
 
 #### 8.1. `kernel32.dll` No Encontrado
 
-![Error 12](screenshots/error_12.png)
+![Error 12](../../screenshots/error_12.png)
 
 - **Mensaje de Error Mostrado**: `"Failed to obtain a handle to kernel32.dll. This is an essential system library and this error indicates a severe system issue."`
 - **Causa**: El `kernel32.dll` es una de las **DLLs** más básicas de **Windows**, que contiene funciones esenciales como `CreateProcess`, `VirtualAllocEx`, etc. Si `GetModuleHandleA` no logra obtener un **handle** para ella, el sistema operativo tiene problemas muy serios.
@@ -1064,7 +1064,7 @@ Estas son **APIs** cruciales de **Windows**; errores aquí indican un problema f
 
 #### 8.2. `LoadLibraryA` No Encontrado
 
-![Error 13](screenshots/error_13.png)
+![Error 13](../../screenshots/error_13.png)
 
 - **Mensaje de Error Mostrado**: `"Failed to find the address of the LoadLibraryA function in kernel32.dll. This is critical for injecting the DLL."`
 - **Causa**: Aunque `kernel32.dll` fue encontrado, la función `LoadLibraryA` no pudo resolverse vía `GetProcAddress`. Aunque extremadamente raro, puede ser resultado de corrupción del **archivo DLL** del `kernel32.dll` o un entorno de ejecución altamente no estándar.
@@ -1074,7 +1074,7 @@ Estas son **APIs** cruciales de **Windows**; errores aquí indican un problema f
 
 Tras preparar el entorno remoto y copiar la **ruta de la DLL**, se crea un nuevo **hilo** en el proceso del juego para "llamar" a `LoadLibraryA`.
 
-![Error 14](screenshots/error_14.png)
+![Error 14](../../screenshots/error_14.png)
 
 - **Mensaje de Error Mostrado**: `"Failed to create a remote thread in the target process to execute the DLL injection. This could be due to security restrictions or process state. System Error: [Mensaje de error del sistema operativo]"`.
 - **Causa**: La llamada `CreateRemoteThread` falló. Este error es común en sistemas con defensas **anti-inyección** robustas o cuando un programa está monitoreando intensamente el comportamiento del proceso:
@@ -1089,7 +1089,7 @@ Tras preparar el entorno remoto y copiar la **ruta de la DLL**, se crea un nuevo
 
 Tras crear el **hilo** remoto, el inyector espera que complete la **carga de la DLL**.
 
-![Error 15](screenshots/error_15.png)
+![Error 15](../../screenshots/error_15.png)
 
 - **Mensaje de Error Mostrado**: `"Timeout or error waiting for DLL injection to complete. System Error: [Mensaje de error del sistema operativo]"`.
 - **Causa**: El **hilo** remoto que está ejecutando `LoadLibraryA` tomó más de `Constants::DLL_INJECTION_TIMEOUT_MS` (10 segundos) en regresar, o falló y `GetExitCodeThread` retornó 0. Las causas potenciales incluyen:
@@ -1103,7 +1103,7 @@ Tras crear el **hilo** remoto, el inyector espera que complete la **carga de la 
 
 Este es el paso final para iniciar el juego después de que **las DLLs** son inyectadas.
 
-![Error 16](screenshots/error_16.png)
+![Error 16](../../screenshots/error_16.png)
 
 - **Mensaje de Error Mostrado**: `"Failed to resume the game process thread: [Mensaje de error del sistema operativo]"`.
 - **Causa**: La llamada `ResumeThread` falló, lo que significa que el **hilo** principal de `gta_sa.exe` no pudo ser activado para iniciar la ejecución del juego. Este es un error raro, pero puede ocurrir si:

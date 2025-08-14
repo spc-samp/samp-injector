@@ -887,7 +887,7 @@ Karşılaşabileceğiniz bazı yaygın hatalar, olası nedenleri ve çözümleri
 
 `Initialize_Game` işlevine sağlanan `inject_type` `L"samp"` veya `L"omp"` değilse, kütüphane hangi çok oyunculu istemciyi başlatmak istediğinizi bilemez.
 
-![Error 1](screenshots/error_1.png)
+![Error 1](../../screenshots/error_1.png)
 
 - **Görüntülenen Hata Mesajı**: `"Invalid injection mode specified. Please use 'samp' or 'omp'."`
 - **Neden**: `Initialize_Game` işlevinin ilk argümanı (`std::wstring_view inject_type`) beklenen `L"samp"` veya `L"omp"` değerleriyle eşleşmiyor. Bu, bir yazım hatası, boş bir dize veya tanınmayan bir değer olabilir.
@@ -908,7 +908,7 @@ Port, sunucuya bağlantı için gerekli bir sayısal parametredir. Bu hata, değ
 
 #### 2.1. Sayısal Olmayan Port Formatı
 
-![Error 2](screenshots/error_2.png)
+![Error 2](../../screenshots/error_2.png)
 
 - **Görüntülenen Hata Mesajı**: `"Invalid port format. The port must be a numeric value. Please provide a valid integer for the port."`
 - **Neden**: `port` argümanı (`std::wstring_view`) sayısal olmayan karakterler içeriyor veya tamsayıya dönüştürülemiyor.
@@ -926,7 +926,7 @@ Port, sunucuya bağlantı için gerekli bir sayısal parametredir. Bu hata, değ
 
 #### 2.2. Geçerli Aralık Dışında Port
 
-![Error 3](screenshots/error_3.png)
+![Error 3](../../screenshots/error_3.png)
 
 - **Görüntülenen Hata Mesajı**: `"The specified port number (XXXX) is outside the valid range of 1 to 65535. Please provide a valid port."` (**XXXX**, kullanmaya çalıştığınız değer olacaktır).
 - **Neden**: Sağlanan port geçerli bir sayıdır ancak `1` altında (rezerve veya kullanılamaz) veya `65535` üzerinde (**TCP/UDP portları** için maksimum sınır).
@@ -947,7 +947,7 @@ Oyuncunun **kullanıcı adı**, istemci tarafından kabul edilebilir olduğundan
 
 #### 3.1. Boş Kullanıcı Adı
 
-![Error 4](screenshots/error_4.png)
+![Error 4](../../screenshots/error_4.png)
 
 - **Görüntülenen Hata Mesajı**: `"Nickname cannot be empty. Please provide a valid nickname."`
 - **Neden**: `nickname` argümanı (`std::wstring_view`) boş bir dize olarak sağlandı.
@@ -962,7 +962,7 @@ Oyuncunun **kullanıcı adı**, istemci tarafından kabul edilebilir olduğundan
 
 #### 3.2. Çok Uzun Kullanıcı Adı
 
-![Error 5](screenshots/error_5.png)
+![Error 5](../../screenshots/error_5.png)
 
 - **Görüntülenen Hata Mesajı**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
 - **Neden**: Sağlanan **kullanıcı adının** uzunluğu `Constants::MAX_NICKNAME_LENGTH` olan `23` karakteri aşıyor.
@@ -981,7 +981,7 @@ Bu, en yaygın başarısızlık nedenlerinden biridir. Kütüphane, `gta_sa.exe`
 
 #### 4.1. Oyun Yürütülebilir Dosyası (`gta_sa.exe`) Bulunamadı
 
-![Error 6](screenshots/error_6.png)
+![Error 6](../../screenshots/error_6.png)
 
 - **Görüntülenen Hata Mesajı**: `"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: [tam yol]"`. `[tam yol]`, klasör ve dosya adını içerecektir.
 - **Neden**: `folder` argümanında belirtilen klasörde `gta_sa.exe` dosyası bulunamadı.
@@ -991,7 +991,7 @@ Bu, en yaygın başarısızlık nedenlerinden biridir. Kütüphane, `gta_sa.exe`
 
 #### 4.2. SA-MP Kütüphanesi (`samp.dll`) Bulunamadı
 
-![Error 7](screenshots/error_7.png)
+![Error 7](../../screenshots/error_7.png)
 
 - **Görüntülenen Hata Mesajı**: `"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: [tam yol]"`.
 - **Neden**: `folder` argümanında belirtilen klasörde `samp.dll` dosyası bulunamadı. Bu **DLL**, hem `samp` hem de `omp` enjeksiyon türleri için bir gerekliliktir.
@@ -999,7 +999,7 @@ Bu, en yaygın başarısızlık nedenlerinden biridir. Kütüphane, `gta_sa.exe`
 
 #### 4.3. OMP Kütüphanesi (`omp-client.dll`) Bulunamadı (yalnızca OMP enjeksiyonu için)
 
-![Error 8](screenshots/error_8.png)
+![Error 8](../../screenshots/error_8.png)
 
 - **Görüntülenen Hata Mesajı**: `"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: [tam yol]"`.
 - **Neden**: `L"omp"` enjeksiyon türü olarak belirtildi, ancak `folder` argümanında belirtilen klasörde `omp-client.dll` dosyası bulunamadı.
@@ -1009,7 +1009,7 @@ Bu, en yaygın başarısızlık nedenlerinden biridir. Kütüphane, `gta_sa.exe`
 
 Bu, **işletim sistemi izinleri** ve `gta_sa.exe`'nin mevcut durumuyla ilgili daha karmaşık bir hatadır.
 
-![Error 9](screenshots/error_9.png)
+![Error 9](../../screenshots/error_9.png)
 
 - **Görüntülenen Hata Mesajı**: `"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have sufficient permissions to execute the file. System Error: [işletim sistemi hata mesajı]"`. Sistem mesajı `GetLastError()` tarafından eklenir (örneğin, `Access is denied.` veya `The requested operation requires elevation.`).
 - **Neden**: `gta_sa.exe`'yi başlatmak için `CreateProcessA` çağrısı başarısız oldu. Yaygın nedenler şunlardır:
@@ -1025,7 +1025,7 @@ Bu, **işletim sistemi izinleri** ve `gta_sa.exe`'nin mevcut durumuyla ilgili da
 
 Kütüphane, **DLL yolunu** kopyalamak için `gta_sa.exe` içinde küçük bir bellek alanı ayırmaya çalışır.
 
-![Error 10](screenshots/error_10.png)
+![Error 10](../../screenshots/error_10.png)
 
 - **Görüntülenen Hata Mesajı**: `"Failed to allocate memory in the target process. This might be due to insufficient permissions or process protection mechanisms."`
 - **Neden**: Uzak süreçte bellek ayırmak için kullanılan `VirtualAllocEx` işlevi başarısız oldu. Bu, aşağıdakilerden kaynaklanabilir:
@@ -1040,7 +1040,7 @@ Kütüphane, **DLL yolunu** kopyalamak için `gta_sa.exe` içinde küçük bir b
 
 Bellek ayrıldıktan sonra, kütüphane **DLL yolunu** buraya kopyalamaya çalışır.
 
-![Error 11](screenshots/error_11.png)
+![Error 11](../../screenshots/error_11.png)
 
 - **Görüntülenen Hata Mesajı**: `"Failed to write DLL path to the target process memory. Verify process permissions and ensure the DLL path is accessible."`
 - **Neden**: `WriteProcessMemory` fonksiyonu, **DLL yolunun baytlarını** `gta_sa.exe` içinde ayrılan uzak belleğe kopyalamaya çalışırken başarısız oldu. Bu genellikle şu durumlara işaret eder:
@@ -1055,7 +1055,7 @@ Bunlar, **Windows**'un kritik **API**'leridir; buradaki hatalar, işletim sistem
 
 #### 8.1. `kernel32.dll` Bulunamadı
 
-![Error 12](screenshots/error_12.png)
+![Error 12](../../screenshots/error_12.png)
 
 - **Görüntülenen Hata Mesajı**: `"Failed to obtain a handle to kernel32.dll. This is an essential system library and this error indicates a severe system issue."`
 - **Neden**: `kernel32.dll`, **Windows**'un en temel **DLL**'lerinden biridir ve `CreateProcess`, `VirtualAllocEx` gibi temel fonksiyonları içerir. Eğer `GetModuleHandleA`, bu DLL için bir **handle** elde edemezse, işletim sistemi çok ciddi sorunlarla karşı karşıyadır.
@@ -1063,7 +1063,7 @@ Bunlar, **Windows**'un kritik **API**'leridir; buradaki hatalar, işletim sistem
 
 #### 8.2. `LoadLibraryA` Bulunamadı
 
-![Error 13](screenshots/error_13.png)
+![Error 13](../../screenshots/error_13.png)
 
 - **Görüntülenen Hata Mesajı**: `"Failed to find the address of the LoadLibraryA function in kernel32.dll. This is critical for injecting the DLL."`
 - **Neden**: `kernel32.dll` bulunmuş olsa da, `LoadLibraryA` fonksiyonu `GetProcAddress` ile çözülemedi. Bu, son derece nadir olsa da, `kernel32.dll` **DLL dosyasının** bozulması veya oldukça standart dışı bir yürütme ortamından kaynaklanabilir.
@@ -1073,7 +1073,7 @@ Bunlar, **Windows**'un kritik **API**'leridir; buradaki hatalar, işletim sistem
 
 Uzak ortam hazırlandıktan ve **DLL yolu** kopyalandıktan sonra, `LoadLibraryA`'yı "çağırmak" için oyunun işleminde yeni bir **thread** oluşturulur.
 
-![Error 14](screenshots/error_14.png)
+![Error 14](../../screenshots/error_14.png)
 
 - **Görüntülenen Hata Mesajı**: `"Failed to create a remote thread in the target process to execute the DLL injection. This could be due to security restrictions or process state. System Error: [İşletim sistemi hata mesajı]"`.
 - **Neden**: `CreateRemoteThread` çağrısı başarısız oldu. Bu hata, güçlü **enjeksiyon karşıtı** savunmalara sahip sistemlerde veya bir programın işlemin davranışını yoğun bir şekilde izlediği durumlarda yaygın olabilir:
@@ -1088,7 +1088,7 @@ Uzak ortam hazırlandıktan ve **DLL yolu** kopyalandıktan sonra, `LoadLibraryA
 
 Uzak **thread** oluşturulduktan sonra, enjektör, **DLL yüklemesinin** tamamlanmasını bekler.
 
-![Error 15](screenshots/error_15.png)
+![Error 15](../../screenshots/error_15.png)
 
 - **Görüntülenen Hata Mesajı**: `"Timeout or error waiting for DLL injection to complete. System Error: [İşletim sistemi hata mesajı]"`.
 - **Neden**: `LoadLibraryA`'yı çalıştıran uzak **thread**, `Constants::DLL_INJECTION_TIMEOUT_MS` (10 saniye) süresinden fazla zaman aldı veya başarısız oldu ve `GetExitCodeThread` 0 döndürdü. Olası nedenler şunlardır:
@@ -1102,7 +1102,7 @@ Uzak **thread** oluşturulduktan sonra, enjektör, **DLL yüklemesinin** tamamla
 
 Bu, **DLL'ler** enjekte edildikten sonra oyunu başlatmak için son adımdır.
 
-![Error 16](screenshots/error_16.png)
+![Error 16](../../screenshots/error_16.png)
 
 - **Görüntülenen Hata Mesajı**: `"Failed to resume the game process thread: [İşletim sistemi hata mesajı]"`.
 - **Neden**: `ResumeThread` çağrısı başarısız oldu, yani `gta_sa.exe`'nin ana **thread**'i, oyunun yürütülmesini başlatmak için etkinleştirilemedi. Bu nadir bir hatadır, ancak şu durumlarda gerçekleşebilir:
