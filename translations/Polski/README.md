@@ -360,36 +360,14 @@ Projekt opiera się na bibliotekach, które kapsułkują krytyczne funkcjonalno�
 
 ### Lista bibliotek
 
-| Język         | Nazwa                      | Link do biblioteki/Dokumentacji                  |
-| ------------- | -------------------------- | ------------------------------------------------ |
-| C++           | **SA-MP Injector C++**     | [Sprawdź bibliotekę](../../libraries/cpp)        |
-| C             | **SA-MP Injector C**       | (Wkrótce)                                        |
-| C#            | **SA-MP Injector C#**      | (Wkrótce)                                        |
-| Java          | **SA-MP Injector Java**    | (Wkrótce)                                        |
-| Python        | **SA-MP Injector Python**  | (Wkrótce)                                        |
-| Go (Golang)   | **SA-MP Injector Go**      | (Wkrótce)                                        |
-| Rust          | **SA-MP Injector Rust**    | (Wkrótce)                                        |
-| Kotlin        | **SA-MP Injector Kotlin**  | (Wkrótce)                                        |
-| Scala         | **SA-MP Injector Scala**   | (Wkrótce)                                        |
-| Lua           | **SA-MP Injector Lua**     | (Wkrótce)                                        |
-| Ruby          | **SA-MP Injector Ruby**    | (Wkrótce)                                        |
-| Visual Basic  | **SA-MP Injector VB**      | (Wkrótce)                                        |
-| F#            | **SA-MP Injector F#**      | (Wkrótce)                                        |
-| Pascal        | **SA-MP Injector Pascal**  | (Wkrótce)                                        |
-| Delphi        | **SA-MP Injector Delphi**  | (Wkrótce)                                        |
-| PowerShell    | **SA-MP Injector PS**      | [Sprawdź bibliotekę](../../libraries/powershell) |
-| D (Dlang)     | **SA-MP Injector D**       | (Wkrótce)                                        |
-| Nim           | **SA-MP Injector Nim**     | (Wkrótce)                                        |
-| Zig           | **SA-MP Injector Zig**     | (Wkrótce)                                        |
-| V (VLang)     | **SA-MP Injector V**       | (Wkrótce)                                        |
-| Crystal       | **SA-MP Injector Crystal** | (Wkrótce)                                        |
-| Perl          | **SA-MP Injector Perl**    | (Wkrótce)                                        |
-| Racket (Lisp) | **SA-MP Injector Racket**  | (Wkrótce)                                        |
-| Haskell       | **SA-MP Injector Haskell** | (Wkrótce)                                        |
-| OCaml         | **SA-MP Injector OCaml**   | (Wkrótce)                                        |
+| Język      | Nazwa                  | Link do biblioteki/Dokumentacji                  |
+| ---------- | ---------------------- | ------------------------------------------------ |
+| C++        | **SA-MP Injector C++** | [Sprawdź bibliotekę](../../libraries/cpp)        |
+| C#         | **SA-MP Injector C#**  | [Sprawdź bibliotekę](../../libraries/csharp)     |
+| PowerShell | **SA-MP Injector PS**  | [Sprawdź bibliotekę](../../libraries/powershell) |
 
-> [!TIP]
-> Szczegółowa dokumentacja dla każdej biblioteki będzie dostępna w jej **odpowiednim katalogu**.
+> [!WARNING]
+> Biblioteka **PowerShell** została wycofana i nie będzie już otrzymywać aktualizacji ani wsparcia technicznego. Stało się tak, ponieważ **filtry** **GitHub** uznały, że biblioteka zawiera potencjalnie **złośliwe** zachowanie, gdyż wykonuje operacje **niskiego poziomu**. W takim przypadku konto **autora** oraz profil **SPC** mogą zostać **zawieszone** i **oznaczone**. Jednak **nie martw się**: biblioteka **PowerShell** pozostanie dostępna do użytku, lecz **nie będzie już aktualizowana**.
 
 ## Licencja
 
