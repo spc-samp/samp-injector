@@ -32,6 +32,7 @@
 #include <windows.h>
 #include <string>
 #include <memory>
+//
 #include "libraries/samp-injector/cpp/injector.hpp"
 
 namespace {
@@ -73,8 +74,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     if (!Initialize_Game(inject_type, folder, nickname, ip, port, password))
         return 1;
-
-    Sleep(10000);
 
     return 0;
 }
