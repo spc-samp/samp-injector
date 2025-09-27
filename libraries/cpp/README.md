@@ -57,7 +57,7 @@
     - [3. Verificação de Integridade e Parâmetros](#3-verificação-de-integridade-e-parâmetros)
     - [4. Preparação dos Argumentos para o Jogo](#4-preparação-dos-argumentos-para-o-jogo)
     - [5. Inicialização do Processo do Jogo (Suspenso)](#5-inicialização-do-processo-do-jogo-suspenso)
-      - [6. Injeção da Biblioteca SA-MP (`samp.dll`)](#6-injeção-da-biblioteca-sa-mp-sampdll)
+    - [6. Injeção da Biblioteca SA-MP (`samp.dll`)](#6-injeção-da-biblioteca-sa-mp-sampdll)
     - [7. Injeção da Biblioteca OMP (`omp-client.dll`) - Condicional](#7-injeção-da-biblioteca-omp-omp-clientdll---condicional)
     - [8. Ativação do Jogo](#8-ativação-do-jogo)
   - [Diagnóstico de Erros e Falhas](#diagnóstico-de-erros-e-falhas)
@@ -626,16 +626,16 @@ O componente `Process` (`process.hpp`) é então encarregado de iniciar o execut
 > [!IMPORTANT]
 > A função `Process::Create_Game_Process` utiliza a flag `CREATE_SUSPENDED` (`constants.hpp`) ao chamar a API `CreateProcessW` do Windows. Esta é uma medida de design crítica: o jogo é carregado na memória e sua `thread` principal é criada, mas sua execução é **pausada**. Isso cria um ambiente controlado e estável, ideal para a injeção de DLLs, antes que o jogo possa inicializar suas próprias defesas ou lógicas internas. Os `handles` do processo e da `thread` são obtidos e gerenciados com segurança via `Resource_Handle::Unique_Resource`.
 
-#### 6. Injeção da Biblioteca SA-MP (`samp.dll`)
+### 6. Injeção da Biblioteca SA-MP (`samp.dll`)
 
 Com o processo do jogo em estado de suspensão, a injeção do `samp.dll` pode ser realizada de forma segura. O método `Injector_Core::Inject_DLL_With_Status_Check` delega esta tarefa ao `Process::Inject_DLL`, que executa os seguintes passos da técnica de `remote thread injection`:
 
-1.  **Localização da Função `LoadLibraryW`:** O endereço da função `LoadLibraryW` é identificado. Esta operação utiliza as constantes `Constants::KERNEL32_DLL` e `Constants::LOAD_LIBRARY_FUNC` para obter um `handle` para a `kernel32.dll` e, em seguida, localizar o endereço da função de carregamento de bibliotecas dinâmicas.
-2.  **Alocação de Memória Remota:** `VirtualAllocEx` é utilizada para reservar um bloco de memória no espaço de endereço virtual do processo `gta_sa.exe` (que está suspenso). O tamanho deste bloco é suficiente para armazenar o caminho completo do `samp.dll`.
-3.  **Escrita do Caminho da DLL:** O caminho completo do arquivo `samp.dll` é gravado nesta memória remota recém-alocada por `WriteProcessMemory`.
-4.  **Criação de Thread Remota:** `CreateRemoteThread` é chamada para criar uma nova `thread` dentro do processo `gta_sa.exe`. O ponto de entrada desta nova `thread` é o endereço de `LoadLibraryW`, e o argumento que ela recebe é o ponteiro para o caminho da DLL que acabamos de gravar.
-5.  **Monitoramento da Injeção:** A execução da `thread` remota é monitorada por `WaitForSingleObject` por um período definido por `Constants::DLL_INJECTION_TIMEOUT_MS`.
-6.  **Verificação do Resultado:** O código de saída da `thread` remota é obtido via `GetExitCodeThread`. Um valor de retorno diferente de zero indica que `LoadLibraryW` foi bem-sucedida em carregar o `samp.dll`.
+1. **Localização da Função `LoadLibraryW`:** O endereço da função `LoadLibraryW` é identificado. Esta operação utiliza as constantes `Constants::KERNEL32_DLL` e `Constants::LOAD_LIBRARY_FUNC` para obter um `handle` para a `kernel32.dll` e, em seguida, localizar o endereço da função de carregamento de bibliotecas dinâmicas.
+2. **Alocação de Memória Remota:** `VirtualAllocEx` é utilizada para reservar um bloco de memória no espaço de endereço virtual do processo `gta_sa.exe` (que está suspenso). O tamanho deste bloco é suficiente para armazenar o caminho completo do `samp.dll`.
+3. **Escrita do Caminho da DLL:** O caminho completo do arquivo `samp.dll` é gravado nesta memória remota recém-alocada por `WriteProcessMemory`.
+4. **Criação de Thread Remota:** `CreateRemoteThread` é chamada para criar uma nova `thread` dentro do processo `gta_sa.exe`. O ponto de entrada desta nova `thread` é o endereço de `LoadLibraryW`, e o argumento que ela recebe é o ponteiro para o caminho da DLL que acabamos de gravar.
+5. **Monitoramento da Injeção:** A execução da `thread` remota é monitorada por `WaitForSingleObject` por um período definido por `Constants::DLL_INJECTION_TIMEOUT_MS`.
+6. **Verificação do Resultado:** O código de saída da `thread` remota é obtido via `GetExitCodeThread`. Um valor de retorno diferente de zero indica que `LoadLibraryW` foi bem-sucedida em carregar o `samp.dll`.
 
 > [!WARNING]
 > Em caso de qualquer falha durante a injeção do `samp.dll`, uma mensagem de erro específica (`error_utils.hpp`) é exibida, o processo de injeção é abortado, e os recursos são liberados.
