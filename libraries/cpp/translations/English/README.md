@@ -1,14 +1,15 @@
 # SA-MP Injector C++
 
-![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)
-![C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg?style=flat&logo=cplusplus)
-![Platform](https://img.shields.io/badge/Platform-Windows-0078D6.svg?style=flat&logo=windows)
-[![SA-MP | OMP](https://img.shields.io/badge/Support-SA--MP%20%7C%20OMP-yellow)](https://github.com/spc-samp/samp-injector)
-![Code Quality](https://img.shields.io/badge/Code%20Quality-High-brightgreen.svg?style=flat)
+<div align="center">
 
-The **SA-MP Injector C++** transcends the definition of a simple **DLL injection** tool. It is a carefully architected **C++ library**, designed to provide a robust and comprehensive solution for the programmatic initialization of the game **Grand Theft Auto: San Andreas** (**GTA:SA**) in conjunction with its multiplayer clients, specifically **SA-MP (San Andreas Multiplayer)** and **OMP (Open Multiplayer)**. Its primary goal is to simplify the game launch process, eliminating the complexity inherent in directly manipulating operating system processes and passing command-line arguments.
+![C++](https://img.shields.io/badge/C%2B%2B-14%2F17%2F20-00599C?style=for-the-badge&logo=cplusplus)
+![Platform](https://img.shields.io/badge/Platform-Windows-blue?style=for-the-badge&logo=windows&logoColor=white)
+![Architecture](https://img.shields.io/badge/Architecture-x86%20(32--bit)-lightgrey?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-Developed with the purpose of offering maximum flexibility and easy integration, this `header-only` library eliminates the need for complex pre-compilations, allowing developers to incorporate it directly into their **C++ projects**. It not only orchestrates the **fundamental DLL injection** of the multiplayer client (`samp.dll` or `omp-client.dll`), but also intelligently manages all essential connection parameters (**nickname**, **IP address**, **port**, and **password**), simulating a native initialization through the intrinsic resources of the **Windows API**.
+**A C++ library to launch and automate the connection of SA-MP and OMP clients to servers, via DLL injection.**
+
+</div>
 
 ## Languages
 
@@ -27,44 +28,53 @@ Developed with the purpose of offering maximum flexibility and easy integration,
 - [SA-MP Injector C++](#sa-mp-injector-c)
   - [Languages](#languages)
   - [Table of Contents](#table-of-contents)
-  - [Fundamental Concepts and Motivation](#fundamental-concepts-and-motivation)
-    - [Why Inject DLLs?](#why-inject-dlls)
-    - [SA-MP and OMP: Distinctions and Similarities](#sa-mp-and-omp-distinctions-and-similarities)
-  - [Internal Library Architecture: A Deep Dive](#internal-library-architecture-a-deep-dive)
-    - [`constants.hpp`](#constantshpp)
-    - [`types.hpp`](#typeshpp)
-    - [`string_utils.hpp`](#string_utilshpp)
-    - [`error_utils.hpp`](#error_utilshpp)
-    - [`resource_handle.hpp`](#resource_handlehpp)
-    - [`validation.hpp`](#validationhpp)
-    - [`process.hpp`](#processhpp)
-    - [`injector_core.hpp`](#injector_corehpp)
-    - [`injector.hpp`](#injectorhpp)
-  - [Comprehensive Usage Examples](#comprehensive-usage-examples)
-    - [1. Setting Up the Development Environment](#1-setting-up-the-development-environment)
-    - [2. Basic Scenario: Connecting to an SA-MP Server](#2-basic-scenario-connecting-to-an-sa-mp-server)
-    - [3. Advanced Scenario: Connecting to an OMP Server](#3-advanced-scenario-connecting-to-an-omp-server)
-  - [Handling Common Errors and Messages](#handling-common-errors-and-messages)
-    - [1. Invalid Injection Type](#1-invalid-injection-type)
-    - [2. Invalid Server Port (Format or Range)](#2-invalid-server-port-format-or-range)
-      - [2.1. Non-Numeric Port Format](#21-non-numeric-port-format)
-      - [2.2. Port Out of Valid Range](#22-port-out-of-valid-range)
-    - [3. Invalid Nickname (Empty or Too Long)](#3-invalid-nickname-empty-or-too-long)
-      - [3.1. Empty Nickname](#31-empty-nickname)
-      - [3.2. Nickname Too Long](#32-nickname-too-long)
-    - [4. Game or DLL Files Not Found](#4-game-or-dll-files-not-found)
-      - [4.1. Game Executable (`gta_sa.exe`) Not Found](#41-game-executable-gta_saexe-not-found)
-      - [4.2. SA-MP Library (`samp.dll`) Not Found](#42-sa-mp-library-sampdll-not-found)
-      - [4.3. OMP Library (`omp-client.dll`) Not Found (only for OMP injection)](#43-omp-library-omp-clientdll-not-found-only-for-omp-injection)
-    - [5. Failure to Create Game Process](#5-failure-to-create-game-process)
-    - [6. Failure to Allocate Memory in the Target Process](#6-failure-to-allocate-memory-in-the-target-process)
-    - [7. Failure to Write DLL Path to Process Memory](#7-failure-to-write-dll-path-to-process-memory)
-    - [8. Failure to Find Essential System Functions](#8-failure-to-find-essential-system-functions)
-      - [8.1. `kernel32.dll` Not Found](#81-kernel32dll-not-found)
-      - [8.2. `LoadLibraryA` Not Found](#82-loadlibrarya-not-found)
-    - [9. Failure to Create Remote Thread for Injection](#9-failure-to-create-remote-thread-for-injection)
-    - [10. Timeout or Failure in Injection Completion](#10-timeout-or-failure-in-injection-completion)
-    - [11. Failure to Resume Game Process Thread](#11-failure-to-resume-game-process-thread)
+  - [Overview and Purpose](#overview-and-purpose)
+  - [Design Principles](#design-principles)
+    - [Fully `Header-Only`](#fully-header-only)
+    - [Safe Resource Management (RAII)](#safe-resource-management-raii)
+    - [Robustness and Error Checking](#robustness-and-error-checking)
+    - [C++ Standard Flexibility](#c-standard-flexibility)
+  - [Required Environment](#required-environment)
+    - [For Development](#for-development)
+    - [For Execution](#for-execution)
+  - [Quick Start](#quick-start)
+    - [Project Integration](#project-integration)
+    - [Simplified Usage Example](#simplified-usage-example)
+  - [Library Structure](#library-structure)
+    - [1. `constants.hpp`](#1-constantshpp)
+    - [2. `types.hpp`](#2-typeshpp)
+    - [3. `version.hpp`](#3-versionhpp)
+    - [4. `error_utils.hpp`](#4-error_utilshpp)
+    - [5. `validation.hpp`](#5-validationhpp)
+    - [6. `resource_handle.hpp`](#6-resource_handlehpp)
+    - [7. `privileges.hpp`](#7-privilegeshpp)
+    - [8. `process.hpp`](#8-processhpp)
+    - [9. `injector_core.hpp`](#9-injector_corehpp)
+    - [10. `injector.hpp`](#10-injectorhpp)
+  - [The Detailed Injection Process](#the-detailed-injection-process)
+    - [1. Initialization Request](#1-initialization-request)
+    - [2. Environment Preparation](#2-environment-preparation)
+    - [3. Integrity and Parameter Checks](#3-integrity-and-parameter-checks)
+    - [4. Preparing Arguments for the Game](#4-preparing-arguments-for-the-game)
+    - [5. Initializing the Game Process (Suspended)](#5-initializing-the-game-process-suspended)
+    - [6. Injecting the SA-MP Library (`samp.dll`)](#6-injecting-the-sa-mp-library-sampdll)
+    - [7. Injecting the OMP Library (`omp-client.dll`) - Conditional](#7-injecting-the-omp-library-omp-clientdll---conditional)
+    - [8. Activating the Game](#8-activating-the-game)
+  - [Error and Failure Diagnostics](#error-and-failure-diagnostics)
+    - [Input Validation Failures](#input-validation-failures)
+      - [Invalid Username](#invalid-username)
+      - [Invalid Connection Port](#invalid-connection-port)
+      - [Missing Essential Resources](#missing-essential-resources)
+    - [Process Management Failures](#process-management-failures)
+      - [Difficulty Starting the Game Process](#difficulty-starting-the-game-process)
+    - [DLL Injection Problems](#dll-injection-problems)
+      - [Unable to Locate `LoadLibraryW`](#unable-to-locate-loadlibraryw)
+      - [Failure in Remote Memory Reservation](#failure-in-remote-memory-reservation)
+      - [Inability to Write Data to the Process](#inability-to-write-data-to-the-process)
+      - [Failure to Create Injection Thread](#failure-to-create-injection-thread)
+      - [Timeout Exceeded or Error While Waiting for Injection](#timeout-exceeded-or-error-while-waiting-for-injection)
+      - [Internal DLL Injection Failure](#internal-dll-injection-failure)
+    - [Difficulty Resuming Game Execution](#difficulty-resuming-game-execution)
   - [License](#license)
     - [Terms and Conditions of Use](#terms-and-conditions-of-use)
       - [1. Granted Permissions](#1-granted-permissions)
@@ -72,1049 +82,679 @@ Developed with the purpose of offering maximum flexibility and easy integration,
       - [3. Copyright](#3-copyright)
       - [4. Disclaimer of Warranty and Limitation of Liability](#4-disclaimer-of-warranty-and-limitation-of-liability)
 
-## Fundamental Concepts and Motivation
+## Overview and Purpose
 
-### Why Inject DLLs?
+**SA-MP Injector C++** is a compact and easy-to-integrate C++ library designed to automate the process of launching and connecting to San Andreas Multiplayer (SA-MP) and Open Multiplayer (OMP) servers. Unlike starting `gta_sa.exe` directly, this solution programmatically loads the `samp.dll` or `omp-client.dll` libraries into the Grand Theft Auto: San Andreas game process in a controlled manner.
 
-> [!NOTE]
-> **DLL (Dynamic Link Library) injection** is a method used in **Microsoft Windows** operating systems that allows the execution of code within the memory space of another running process. It is a powerful technique with various legitimate applications, from debugging and monitoring programs to modifying application behavior to extend their functionalities.
+Its main goal is to empower C++ developers to create custom `launchers`, community management tools, or utilities that need to start GTA:SA with predefined connection parameters (such as username, IP address, port, and password), offering a fluid and automated user experience.
 
-In the context of games like **GTA San Andreas**, which were not originally developed with integrated multiplayer functionality, **DLL injection** is the foundation for the existence of multiplayer clients like **SA-MP** and **OMP**. These clients are implemented as **DLLs** that, once injected into the `gta_sa.exe` process, take control, intercept game functions, and establish communication with multiplayer servers.
+## Design Principles
 
-Instead of relying on an external launcher or direct modification of the game executable, **DLL injection** allows for a more flexible and programmable initialization, especially useful in environments where automating the connection to specific servers with predefined settings is desired.
+The architecture of **SA-MP Injector C++** is based on modern design principles, focusing on security, efficiency, and ease of use.
 
-### SA-MP and OMP: Distinctions and Similarities
+### Fully `Header-Only`
 
-**SA-MP** and **OMP** are the two main multiplayer platforms for **GTA San Andreas**. Both function as modifications to the base game, transforming it into a massively multiplayer online environment.
+This library is distributed exclusively through header files (`.hpp`). This drastically simplifies integration into C++ projects, eliminating the need to compile separate libraries, configure `linkers`, or manage binary dependencies.
+- **Instant Integration:** Simply include the relevant `headers`.
+- **Deep Optimization:** The compiler can perform aggressive `inlining` and `link-time` optimizations that result in a more compact and faster final code.
 
-- **SA-MP (San Andreas Multiplayer)**: The original and most established client, widely used for many years. Its architecture requires the `samp.dll` to operate.
-- **OMP (Open Multiplayer)**: An open-source project, often seen as a successor or more modern alternative to **SA-MP**, offering performance improvements, stability, and additional features. It requires the `omp-client.dll`.
+### Safe Resource Management (RAII)
 
-Although they operate similarly (**injecting a DLL** into the **GTA:SA** process), the **SA-MP Injector C++** library was carefully developed to support **both DLLs**, recognizing their distinctions in file names and allowing the developer to choose the desired multiplayer client through a configuration parameter. This ensures that the library can be used with the wide range of servers and projects based on either platform.
+The library extensively employs the **RAII (Resource Acquisition Is Initialization)** pattern. Critical system resources, such as Windows process and thread `handles`, are encapsulated by `std::unique_ptr` with custom `deleters`. This ensures that, regardless of the execution flow or the occurrence of exceptions, resources are always released correctly, preventing leaks and improving application stability.
 
-## Internal Library Architecture: A Deep Dive
+### Robustness and Error Checking
 
-The **SA-MP Injector C++** adopts a modular and object-oriented approach (where applicable) to manage the complexity of the injection process. Each header file is a specialized module, responsible for a specific slice of the overall functionality, promoting code clarity, maintainability, and extensibility.
+Every critical step of the injection is preceded by rigorous validations and followed by Windows API error checks. Detailed error messages are provided to the end-user through dialog boxes, with system descriptions (`GetLastError()`) whenever possible. This approach minimizes the chance of undefined behavior and offers a clear diagnosis in case of failure.
 
-### `constants.hpp`
+### C++ Standard Flexibility
 
-This file is the foundation of all fixed configurations in the library. It defines a `Constants` namespace to encapsulate all literals, ensuring no pollution of the global scope. The use of `inline constexpr` is crucial here: `constexpr` indicates that the values are evaluated at compile time, optimizing performance and ensuring immutability, while `inline` avoids redefinition issues when including the file in multiple compilation units.
+The library was built to be compatible with different C++ standards, from C++14 to C++20. This is achieved through conditional macros that allow the use of modern features (like `std::string_view`, `std::filesystem`, and `std::optional` from C++17+) when available, while maintaining a `fallback` to equivalent constructions in C++14. This approach ensures broad compatibility without sacrificing modernity.
+
+## Required Environment
+
+### For Development
+
+- **C++ Compiler:** Compatible with **C++14 or higher**.
+   - Microsoft Visual C++ (Visual Studio 2015, 2017, 2019, 2022)
+   - GCC (version 5 or newer)
+   - Clang (version 3.6 or newer)
+- **Operating System:** **Windows**.
+- **Windows SDK:** Required for access to the operating system APIs.
+- **Compilation Architecture:** **x86 (32-bit)**. This is a strict requirement, as `gta_sa.exe` and the SA-MP/OMP DLLs operate exclusively on this architecture.
+
+### For Execution
+
+- **Operating System:** Any modern version of **Windows** compatible with the compiled binary.
+- **Grand Theft Auto: San Andreas (GTA:SA):** A valid installation of the game is mandatory.
+- **SA-MP or OMP Client DLLs:** The `samp.dll` or `omp-client.dll` files must be present in the game's root directory, corresponding to the desired injection type.
+
+## Quick Start
+
+The `header-only` nature of the library makes it easy to incorporate into any C++ project.
+
+### Project Integration
+
+1.  **Download the Headers:** Obtain the `.hpp` files of the library (by cloning the repository or downloading them directly).
+2.  **Organize the Files:** It is recommended to create a subfolder in your project for the library's `headers`, for example, `MyProject/libraries/samp-injector/`.
+3.  **Set the Architecture:** Configure your project to compile for the **x86 (32-bit)** architecture.
 
 ```cpp
-#pragma once
+// Example directory structure
+MyProject/
+├── src/
+│   └── main.cpp
+├── libraries/
+│   └── samp-injector/
+│       ├── constants.hpp
+│       ├── error_utils.hpp
+│       ├── injector.hpp // The main header to include
+│       └── ... (other headers)
+└── built/ (your output directory)
+```
 
-namespace Constants {
-    // Game related constants
-    inline constexpr int MIN_PORT = 1;
-    inline constexpr int MAX_PORT = 65535;
-    inline constexpr int MAX_NICKNAME_LENGTH = 23;
-    
-    // File names
-    inline constexpr const wchar_t* SAMP_DLL_NAME = L"samp.dll";
-    inline constexpr const wchar_t* OMP_DLL_NAME = L"omp-client.dll";
-    inline constexpr const wchar_t* GAME_EXE_NAME = L"gta_sa.exe";
-    
-    // System libraries and functions
-    inline constexpr const char* KERNEL32_DLL = "kernel32.dll";
-    inline constexpr const char* LOAD_LIBRARY_FUNC = "LoadLibraryA"; // 'A' for ANSI/8-bit version
-    
-    // Command line arguments used by SA-MP/OMP clients
-    inline constexpr const char* CMD_ARG_CONFIG = "-c";
-    inline constexpr const char* CMD_ARG_NICKNAME = "-n";
-    inline constexpr const char* CMD_ARG_HOST = "-h";
-    inline constexpr const char* CMD_ARG_PORT = "-p";
-    inline constexpr const char* CMD_ARG_PASSWORD = "-z";
-    
-    // Injection types as strings (wide-character)
-    inline constexpr const wchar_t* INJECT_TYPE_SAMP = L"samp";
-    inline constexpr const wchar_t* INJECT_TYPE_OMP = L"omp";
-    
-    // Error message titles for MessageBoxW
-    inline constexpr const wchar_t* ERROR_TITLE_SAMP = L"SA-MP Injector Error - SPC";
-    inline constexpr const wchar_t* ERROR_TITLE_OMP = L"OMP Injector Error - SPC";
-    
-    // Process creation flags for CreateProcessA
-    inline constexpr DWORD PROCESS_CREATION_FLAGS = CREATE_SUSPENDED | DETACHED_PROCESS;
-    
-    // Timeouts for WaitForSingleObject (e.g., waiting for DLL injection)
-    inline constexpr DWORD DLL_INJECTION_TIMEOUT_MS = 10000; // 10 seconds
-    
-    // Memory allocation flags for VirtualAllocEx
-    inline constexpr DWORD MEMORY_ALLOCATION_TYPE = MEM_COMMIT | MEM_RESERVE;
-    inline constexpr DWORD MEMORY_PROTECTION = PAGE_READWRITE; // Needed for writing DLL path
+### Simplified Usage Example
+
+To automate the connection to a server, simply invoke the `Initialize_Game` function and provide the details.
+
+```cpp
+#include <iostream>
+#include <string>
+//
+#include "samp-launcher/injector.hpp" // Include the main header
+
+int main() {
+    // Parameters for game initialization and connection
+    std::wstring inject_type = L"samp"; // Or L"omp" for Open Multiplayer
+    std::wstring game_folder = L"C:\\Games\\GTA San Andreas"; // Full path of the GTA:SA folder
+    std::wstring nickname = L"Name";
+    std::wstring ip = L"127.0.0.1";
+    std::wstring port = L"7777";
+    std::wstring password = L""; // Leave empty if there is no password
+
+    // The main call to start the game and inject the DLL
+    Initialize_Game(inject_type, game_folder, nickname, ip, port, password);
+
+    // In case of failure, a Windows error message box is displayed automatically.
+
+    return 0;
 }
 ```
 
-> [!TIP]
-> The use of `wchar_t` for file names and error message titles is a recommended practice in **Windows development**. This ensures compatibility with all languages and character sets, especially useful for file paths that may contain **Unicode characters**. For **APIs** that expect `char` (such as `LoadLibraryA`), the conversion is explicitly performed in `string_utils.hpp`.
+## Library Structure
 
-### `types.hpp`
+The library is carefully modularized into several header files, each with well-defined responsibilities, facilitating organization, maintenance, and reusability.
 
-A concise yet essential module for defining the enumeration that categorizes the supported injection types. This improves code readability and type safety, preventing errors from string or magic number usage.
+### 1. `constants.hpp`
+
+This file is the **central repository** of the library, serving as a centralized repository of all fixed and unchangeable values that dictate the behavior and interoperability of **SA-MP Injector C++**. Its organization by logical categories promotes not only code clarity and readability but also facilitates maintenance and ensures strict consistency throughout the library's ecosystem.
+
+Each constant is defined with `CONSTEXPR_VAR`, which expands to `inline constexpr` (for C++17+) or `static constexpr` (for C++14), ensuring that these values are evaluated at compile time, optimizing performance and type safety.
+
+The organization of constants by category makes their purpose easier to understand:
+
+- **Game Related Constants**
+   - `MIN_PORT`: An `int` that defines the lowest valid port number for connecting to a server (value: `1`).
+   - `MAX_PORT`: An `int` that establishes the highest valid port number for connecting to a server (value: `65535`).
+   - `MAX_NICKNAME_LENGTH`: An `int` that specifies the maximum allowed length for the player's nickname (value: `23` characters), a limit imposed by the SA-MP/OMP client specifications.
+
+- **Essential File Names**
+   - `SAMP_DLL_NAME`: A `const wchar_t*` containing the file name of the main SA-MP client library (value: `L"samp.dll"`). Essential for injecting the classic client.
+   - `OMP_DLL_NAME`: A `const wchar_t*` containing the file name of the Open Multiplayer client library (value: `L"omp-client.dll"`). Used specifically when the injection is of the OMP type.
+   - `GAME_EXE_NAME`: A `const wchar_t*` storing the name of the base Grand Theft Auto: San Andreas game executable file (value: `L"gta_sa.exe"`). The main target of the injection.
+
+- **System Libraries and Functions**
+   - `KERNEL32_DLL`: A `const wchar_t*` that defines the name of the Windows system library (`L"kernel32.dll"`). This DLL is vital as it hosts the process and memory manipulation functions that the injector uses. The use of `wchar_t` ensures compatibility with API functions that handle wide characters, such as `GetModuleHandleW`.
+   - `LOAD_LIBRARY_FUNC`: A `const char*` with the name of the function to dynamically load a DLL (value: `"LoadLibraryW"`). Although the library primarily operates with wide characters, the `GetProcAddress` function of the Windows API requires a function name in ANSI format (`char*`).
+
+- **Command Line Arguments**
+   - These constants define the prefixes for the arguments that are passed to `gta_sa.exe` to configure the client's connection. They are provided in `Wide Character` (`const wchar_t*`) for compatibility with `CreateProcessW`.
+      - `CMD_ARG_CONFIG`: Argument for general settings (value: `L"-c"`).
+      - `CMD_ARG_NICKNAME`: Argument for the player's nickname (value: `L"-n"`).
+      - `CMD_ARG_HOST`: Argument for the server's IP address (value: `L"-h"`).
+      - `CMD_ARG_PORT`: Argument for the server's port (value: `L"-p"`).
+      - `CMD_ARG_PASSWORD`: Argument for the server's password (value: `L"-z"`). Used only if a password is provided.
+
+- **Injection types as strings**
+   - `INJECT_TYPE_SAMP`: A `const wchar_t*` for the string representation of the SA-MP injection type (value: `L"samp"`).
+   - `INJECT_TYPE_OMP`: A `const wchar_t*` for the string representation of the OMP injection type (value: `L"omp"`).
+
+- **Error message titles**
+   - `ERROR_TITLE_SAMP`: A `const wchar_t*` that defines the default title for error dialog boxes related to SA-MP failures (value: `L"SA-MP Injector Error - SPC"`).
+   - `ERROR_TITLE_OMP`: A `const wchar_t*` that defines the default title for error dialog boxes related to OMP failures (value: `L"OMP Injector Error - SPC"`).
+
+- **Process creation flags**
+   - `PROCESS_CREATION_FLAGS`: A `DWORD` that encapsulates the flags passed to `CreateProcessW`. Crucially, it includes `CREATE_SUSPENDED` (`0x00000004`), which starts the game process in a paused state, and `DETACHED_PROCESS` (`0x00000008`), which detaches the new process from the parent process's console.
+
+- **Timeouts**
+   - `DLL_INJECTION_TIMEOUT_MS`: A `DWORD` that specifies the maximum time (in milliseconds) the library will wait for the completion of the remote thread responsible for DLL injection (value: `10000ms`, or 10 seconds).
+
+- **Memory allocation flags**
+   - These constants are used for memory manipulation API calls, such as `VirtualAllocEx` and `VirtualProtect`.
+      - `MEM_COMMIT`: A `DWORD` that reserves pages in virtual memory and "commits" them (allocates physical memory) (value: `0x1000`).
+      - `MEM_RESERVE`: A `DWORD` that only reserves a range of virtual address space for later use (value: `0x2000`).
+      - `MEM_RELEASE`: A `DWORD` that decommits and releases a region of pages (value: `0x8000`).
+      - `MEMORY_ALLOCATION_TYPE`: A combination of `MEM_COMMIT` and `MEM_RESERVE`, used to allocate initial memory for the DLL path in the remote process.
+      - `MEMORY_PROTECTION`: A `DWORD` that defines memory protection permissions (value: `PAGE_READWRITE` or `0x04` in the Windows API), allowing reading and writing to the allocated memory.
+
+### 2. `types.hpp`
+
+This concise file introduces an `enum class` to type the different injection modalities. The use of an enumerated type, instead of string literals, enhances code safety, prevents typos, and improves readability.
+
+- **`Inject_Type`:** An `enum class` with two members: `SAMP` and `OMP`, representing the client types to be injected.
 
 ```cpp
-#pragma once
-
+// Example of types.hpp
 namespace Types {
-    // Enumerations for supported injection types
     enum class Inject_Type {
-        SAMP, // San Andreas Multiplayer
-        OMP // Open Multiplayer
+        SAMP, // Indicates injection for the SA-MP client
+        OMP   // Indicates injection for the Open Multiplayer client
     };
 }
 ```
 
-### `string_utils.hpp`
+### 3. `version.hpp`
 
-Operating with the **Windows API** often requires conversion between different string encodings. This file provides a vital utility function for converting **wide-character** strings (`std::wstring_view`, used in the library's inputs) to **ANSI/8-bit** strings (`std::string`), which are required for **WinAPI** functions that operate with `char*` (such as `CreateProcessA` or `GetProcAddress`).
+Acting as a compatibility adapter, this header dynamically detects the C++ standard in use by the compiler. It defines conditional macros (`SAMP_INJECTOR_CXX_14`, `SAMP_INJECTOR_CXX_MODERN`) that guide the library to use the most advanced C++ features (like `std::string_view` or `std::filesystem`) when available, while ensuring full functionality in C++14 environments.
+
+- **`SAMP_INJECTOR_CXX_14`:** Defined if the C++ standard is C++14.
+- **`SAMP_INJECTOR_CXX_MODERN`:** Defined for C++17 or higher, enabling more recent language features.
+- **`SAMP_INJECTOR_NODISCARD`:** Adapts the `[[nodiscard]]` attribute for C++ versions that support it, encouraging the checking of return values.
 
 ```cpp
-#pragma once
+// Example of a relevant snippet from version.hpp
+#if (defined(_MSC_VER) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L
+    #define SAMP_INJECTOR_CXX_MODERN // Enables modern C++17+ features
+#endif
 
-#include <string>
-#include <string_view>
-#include <windows.h> // Necessary for WideCharToMultiByte
-
-namespace Utils {
-    inline std::string Wide_To_Local_8Bit(std::wstring_view wstr) {
-        if (wstr.empty())
-            return "";
-        
-        // Determines the required size for the resulting char string buffer
-        int size = WideCharToMultiByte(CP_ACP, // ANSI Code Page (system locale dependent)
-            0, // No additional flags
-            wstr.data(), 
-            static_cast<int>(wstr.size()), 
-            nullptr, // Calculates size, does not fill buffer
-            0, // Size 0, just for calculation
-            nullptr, // Default character for unrepresentable characters
-            nullptr); // Pointer to bool indicating if a default character was used
-
-        if (size <= 0) // Returns an empty string in case of error or invalid size
-            return "";
-
-        std::string result(size, 0); // Allocates the string with the determined size
-        // Performs the actual conversion, filling the 'result' buffer
-        WideCharToMultiByte(CP_ACP, 
-            0, 
-            wstr.data(), 
-            static_cast<int>(wstr.size()), 
-            result.data(), // Destination buffer
-            size, // Size of the destination buffer
-            nullptr, 
-            nullptr);
-
-        return result;
-    }
-}
+#if defined(SAMP_INJECTOR_CXX_MODERN)
+    #define SAMP_INJECTOR_NODISCARD [[nodiscard]] // Uses the nodiscard attribute from C++17
+#elif defined(SAMP_INJECTOR_CXX_14)
+    #define SAMP_INJECTOR_NODISCARD // For C++14, the attribute is disabled
+#endif
 ```
 
-> [!IMPORTANT]
-> The `CP_ACP` **(ANSI Code Page)** used in `WideCharToMultiByte` is the default code page of the **Windows** system. This means that the conversion may vary depending on the user's system language settings. For most use cases of file names and command-line arguments in **SA-MP**/**OMP** (which historically handle **ANSI** strings well), this approach is generally sufficient. However, in scenarios requiring full **Unicode** compatibility with external systems or global inputs, conversions to **UTF-8** (`CP_UTF8`) or other code pages would be necessary. For the scope of this project, `CP_ACP` is the functional standard.
+### 4. `error_utils.hpp`
 
-### `error_utils.hpp`
+This utility is dedicated to managing and presenting error feedback. It abstracts the Windows mechanisms for retrieving system error messages and provides a unified interface for notifying the user about problems.
 
-A fundamental component for the library's usability, responsible for providing clear **feedback** to the user in case of failure. It centralizes the logic for retrieving system error messages and displaying dialog boxes.
+- **`Get_System_Error_Message`:** Translates a Windows error code (`GetLastError()`) into a readable `std::wstring`, crucial for accurate diagnosis.
+- **`Show_Error`:** Displays a dialog box (`MessageBoxW`) containing the provided error message, with a specific title for SA-MP or OMP, ensuring clear communication with the user.
 
 ```cpp
-#pragma once
-
-#include <string>
-#include <string_view>
-#include <windows.h> // For FormatMessageW and MessageBoxW
-//
-#include "types.hpp"
-#include "constants.hpp"
-
-namespace Utils {
-    // Returns the Windows system error message for a specific error code
+// Example of a relevant snippet from error_utils.hpp
+namespace Error_Utils {
+    SAMP_INJECTOR_NODISCARD
     inline std::wstring Get_System_Error_Message(DWORD error_code) {
-        wchar_t buffer[512] = {0}; // Buffer for the message
-        // FormatMessageW fills the buffer with the system error description
-        DWORD result = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, 
-            nullptr, // Message source (from the system)
-            error_code, 
-            0, // Language (use default)
-            buffer, 
-            512, // Buffer size
-            nullptr);
+        if (error_code == 0)
+            return L"No error occurred.";
         
-        // If the function succeeded, return the buffer string; otherwise, a generic message
-        return result ? std::wstring(buffer) : L"Unknown error (Code: " + std::to_wstring(error_code) + L")";
+        // ... Logic to format the system message ...
     }
 
-    // Displays an error message box to the user
-    inline void Show_Error(std::wstring_view message, Types::Inject_Type injectType) {
-        // Chooses the dialog box title based on the injection type
-        std::wstring title = (injectType == Types::Inject_Type::SAMP) ? Constants::ERROR_TITLE_SAMP : Constants::ERROR_TITLE_OMP;
-        MessageBoxW(nullptr, // Parent window handle (nullptr for desktop)
-            message.data(), 
-            title.c_str(), 
-            MB_OK | MB_ICONERROR); // OK button and error icon
+    inline void Show_Error(std::wstring_view message, Types::Inject_Type inject_type) {
+        const std::wstring title = (inject_type == Types::Inject_Type::SAMP) ? Constants::ERROR_TITLE_SAMP : Constants::ERROR_TITLE_OMP;
+        MessageBoxW(nullptr, message.data(), title.c_str(), MB_OK | MB_ICONERROR);
     }
 }
 ```
 
-> [!NOTE]
-> The `FormatMessageW` function is a powerful **Windows API** that retrieves the textual description of a system error code. It handles localization and provides clear messages that are essential for effective **diagnosis**, transforming a `DWORD` like `ERROR_FILE_NOT_FOUND` (2) into `L"The system cannot find the file specified."`.
+### 5. `validation.hpp`
 
-### `resource_handle.hpp`
+Acting as the library's front line of robustness, this header provides rigorous routines to verify the validity of input data and the presence of necessary files. These checks are performed before any low-level interaction with the system, mitigating runtime risks and providing proactive feedback.
 
-Safe resource management (such as **Windows** `HANDLE`s) is critical to avoid resource leaks and undefined behaviors. This file defines a `UniqueResource` using `std::unique_ptr` and a customized function for `CloseHandle`. This follows the **RAII (Resource Acquisition Is Initialization)** principle, ensuring that `HANDLE`s are automatically closed when their **wrappers** go out of scope, even in case of exceptions.
+- **`Validate_Port`:** Validates if the port string represents an integer and if it falls within the configured range (`MIN_PORT` to `MAX_PORT`).
+- **`Validate_Nickname`:** Checks if the nickname is not empty and if its length does not exceed `MAX_NICKNAME_LENGTH`.
+- **`Validate_Files`:** Confirms the physical existence of `gta_sa.exe`, `samp.dll`, and, conditionally for OMP injection, `omp-client.dll`. The implementation adapts to `std::filesystem` (C++17+) or `GetFileAttributesW` (C++14).
 
 ```cpp
-#pragma once
+// Example of a relevant snippet from validation.hpp
+namespace Validation {
+    inline bool Validate_Nickname(std::wstring_view nickname_str, std::wstring& error_message) {
+        if (nickname_str.empty())
+            return (error_message = L"Nickname cannot be empty. Please provide a valid nickname.", false);
+        
+        if (nickname_str.length() > Constants::MAX_NICKNAME_LENGTH)
+            return (error_message = L"Nickname length exceeds the maximum allowed of " + std::to_wstring(Constants::MAX_NICKNAME_LENGTH) + L" characters. Please use a shorter nickname.", false);
+        
+        return true;
+    }
 
-#include <memory> // For std::unique_ptr
-#include <functional> // For std::function
-#include <windows.h> // For HANDLE and CloseHandle
+    inline bool Validate_Files(const std::filesystem::path& game_path, const std::filesystem::path& samp_DLL_path, const std::filesystem::path& omp_DLL_path, Types::Inject_Type inject_type) {
+        if (!std::filesystem::exists(game_path))
+            return (Error_Utils::Show_Error(L"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: " + game_path.wstring(), inject_type), false);
+        
+        // ... Other file checks ...
+        return true;
+    }
+}
+```
 
-namespace Utils {
-    // Type alias for a std::unique_ptr that manages a HANDLE (or pointer) with a custom deleter
-    // T: The type of resource to be managed (e.g., HANDLE, LPVOID)
-    // Deleter: A class or lambda that knows how to release the resource
+### 6. `resource_handle.hpp`
+
+Implements an elegant and safe strategy for managing operating system resources, such as Windows `HANDLE`s. Using the RAII principle, it ensures that all allocated resources are properly released, preventing leaks and strengthening the application's stability.
+
+- **`Unique_Resource`:** A `template alias` that adapts `std::unique_ptr` to work with custom `deleters`, allowing the management of any type of resource that requires a specific release function.
+- **`Make_Unique_Handle`:** A convenient `factory` function that constructs and returns a `Unique_Resource` pre-configured for Windows `HANDLE`s. The associated `deleter` automatically invokes `CloseHandle` when the `Unique_Resource` goes out of scope, ensuring the immediate deallocation of the resource.
+
+```cpp
+// Example of a relevant snippet from resource_handle.hpp
+namespace Resource_Handle {
+    // A custom std::unique_ptr for managing system resources.
     template<typename T, typename Deleter>
-    using UniqueResource = std::unique_ptr<std::remove_pointer_t<T>, Deleter>;
+    using Unique_Resource = std::unique_ptr<std::remove_pointer_t<T>, Deleter>;
 
-    // Helper function to create a UniqueResource instance for HANDLEs
-    // It assumes T is a handle type and uses CloseHandle as the deleter.
+    // Creates a Unique_Resource for a HANDLE, with a deleter that calls CloseHandle.
     template<typename T>
     inline auto Make_Unique_Handle(T handle) {
-        return UniqueResource<T, std::function<void(T)>>(handle, [](T h) {
-            // Condition to ensure the handle is valid before attempting to close it
-            // 0 and INVALID_HANDLE_VALUE are considered invalid for most handles
-            if (h && h != INVALID_HANDLE_VALUE)
-                CloseHandle(h); // Releases the HANDLE from the operating system
+        return Unique_Resource<T, std::function<void(T)>>(handle, [](T h) {
+            if (h && h != INVALID_HANDLE_VALUE) // Ensures the handle is valid before closing
+                CloseHandle(h);
         });
     }
 }
 ```
 
-> [!IMPORTANT]
-> The use of `UniqueResource` is a demonstration of good practices in **modern C++** and safe **Windows** development. It drastically simplifies the management of **handle** lifecycles, which, if not properly closed, can lead to memory or **kernel** resource leaks, impacting system stability over time.
+### 7. `privileges.hpp`
 
-### `validation.hpp`
+This component is responsible for configuring the security environment of the application process. It contains the functionality to elevate privileges, specifically enabling the debug privilege (`SE_DEBUG_NAME`), which is a fundamental requirement for the library to perform DLL injection operations into external Windows processes.
 
-The robustness of the injection begins with validating user inputs and checking file dependencies. This module contains functions that ensure all prerequisites and parameters are correct before attempting to start the injection process, preventing more complex errors later.
+- **`Enable_Debug_Privilege`:** This function attempts to acquire and enable the `SE_DEBUG_NAME` privilege for the running process. It is a crucial initial step to grant the application the necessary permissions to manipulate other processes, such as allocating memory and creating remote threads. Returns `true` on success.
 
 ```cpp
-#pragma once
+// Example of a relevant snippet from privileges.hpp
+namespace Privileges {
+    inline bool Enable_Debug_Privilege() {
+        HANDLE token_handle;
 
-#include <string>
-#include <string_view>
-#include <filesystem> // For std::filesystem::exists
-//
-#include "constants.hpp"
-#include "types.hpp"
-#include "string_utils.hpp" // For Wide_To_Local_8Bit
-#include "error_utils.hpp" // For Show_Error
+        // Tries to open the current process token to adjust privileges
+        if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token_handle))
+            return false;
 
-namespace Utils {
-    // Validates if a port string is a valid number and within the allowed range
-    inline bool Validate_Port(std::wstring_view port_str, std::wstring& error_message) {
-        try {
-            // Attempts to convert the wide-character string to std::string and then to int
-            int port_num = std::stoi(Wide_To_Local_8Bit(port_str));
+        auto handle_guard = Resource_Handle::Make_Unique_Handle(token_handle); // Safe management of the handle
 
-            // Checks if the port is within the valid range (1-65535)
-            if (port_num < Constants::MIN_PORT || port_num > Constants::MAX_PORT)
-                return (error_message = L"The specified port number (" + std::wstring(port_str) + 
-                L") is outside the valid range of " +  std::to_wstring(Constants::MIN_PORT) + 
-                L" to " + std::to_wstring(Constants::MAX_PORT) + 
-                L". Please provide a valid port.", false);
+        TOKEN_PRIVILEGES tp;
+        LUID luid;
 
-            return true;
-        }
-        catch (...) { // Catches any exception (e.g., std::invalid_argument for non-numeric)
-            return (error_message = L"Invalid port format. The port must be a numeric value. Please provide a valid integer for the port.", false);
-        }
-    }
-
-    // Validates the nickname, checking if it is not empty and if the length is acceptable
-    inline bool Validate_Nickname(std::wstring_view nickname_str, std::wstring& error_message) {
-        if (nickname_str.empty())
-            return (error_message = L"Nickname cannot be empty. Please provide a valid nickname.", false);
+        // Looks up the LUID value for the SE_DEBUG_NAME privilege
+        if (!LookupPrivilegeValue(nullptr, SE_DEBUG_NAME, &luid))
+            return false;
         
-        if (nickname_str.size() > Constants::MAX_NICKNAME_LENGTH)
-            return (error_message = L"Nickname length exceeds the maximum allowed of " + 
-                std::to_wstring(Constants::MAX_NICKNAME_LENGTH) + 
-                L" characters. Please use a shorter nickname.", false);
+        tp.PrivilegeCount = 1;
+        tp.Privileges[0].Luid = luid;
+        tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; // Enables the privilege
 
-        return true;
-    }
-
-    // Validates the existence of critical files (gta_sa.exe, samp.dll, omp-client.dll)
-    inline bool Validate_Files(const std::filesystem::path& game_path, 
-        const std::filesystem::path& samp_DLL_path, 
-        const std::filesystem::path& omp_DLL_path, 
-        Types::Inject_Type inject_type) {
-        std::wstring error_message_local; // Local variable used before passing to Show_Error
-        
-        // Checks the existence of the game executable
-        if (!std::filesystem::exists(game_path)) {
-            error_message_local = L"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: " + game_path.wstring();
-            Show_Error(error_message_local, inject_type);
-            
+        // Adjusts the process privileges
+        if (!AdjustTokenPrivileges(token_handle, FALSE, &tp, sizeof(TOKEN_PRIVILEGES), nullptr, nullptr))
             return false;
-        }
 
-        // Checks the existence of samp.dll (essential for both injection types)
-        if (!std::filesystem::exists(samp_DLL_path)) {
-            error_message_local = L"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: " + samp_DLL_path.wstring();
-            Show_Error(error_message_local, inject_type);
-
-            return false;
-        }
-
-        // If the injection type is OMP, checks the existence of omp-client.dll
-        if (inject_type == Types::Inject_Type::OMP && !std::filesystem::exists(omp_DLL_path)) {
-            error_message_local = L"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: " + omp_DLL_path.wstring();
-            Show_Error(error_message_local, inject_type);
-
-            return false;
-        }
-
-        return true; // All required files were found
+        return GetLastError() == ERROR_SUCCESS; // Returns true if the operation was successful (no pending error)
     }
 }
 ```
 
-> [!NOTE]
-> The use of `std::filesystem` is a modern addition to **C++17** that offers a powerful and platform-independent way to interact with the file system. For this project on **Windows**, it simplifies the handling of paths and file existence checks compared to older **WinAPI** functions.
->
-> Ensure that your compiler supports **C++17** to use `std::filesystem`. You will need to configure your project to use the **C++17** standard (`/std:c++17` in **Visual Studio**).
+### 8. `process.hpp`
 
-### `process.hpp`
+This is one of the most critical components of the library, containing the low-level implementation for interacting with Windows processes. It encapsulates the complex operations of creating the game process, allocating memory, writing data, and the DLL injection technique through the creation of remote threads.
 
-This is the main module responsible for direct interaction with low-level **Windows APIs** to manipulate processes. It encapsulates the critical operations of process creation and **DLL injection**, handling **handles**, **memory**, and **threads**.
+- **`Process_Info` struct:** An internal structure that stores the `Unique_Resource`s for the process `HANDLE` (`process_handle`) and the main thread `HANDLE` (`thread_handle`) of the game. It includes a `Resume()` method to reactivate the game's main thread when the injection is complete.
+- **`Injection_Status` enum class:** Defines a detailed list of possible outcomes for the DLL injection operation, allowing for precise failure diagnosis.
+- **`Create_Game_Process`:**
+   - Uses the `CreateProcessW` function from the Windows API to start the `gta_sa.exe` executable.
+   - It is crucial that the process is created with the `CREATE_SUSPENDED` flag (included in `Constants::PROCESS_CREATION_FLAGS`). This ensures that the game is paused immediately after its creation, before any code is executed, allowing the DLL injection to occur in a safe state.
+   - Returns an `std::optional<Process_Info>` (for C++17+) or a `std::unique_ptr<Process_Info>` (for C++14), containing the encapsulated handles of the process and thread.
+- **`Inject_DLL`:**
+   - Implements the standard DLL injection technique via `CreateRemoteThread`:
+      1.  **Address Acquisition:** Using the constants from `constants.hpp`, it locates the address of the `LoadLibraryW` function (from `kernel32.dll`), which Windows uses to dynamically load libraries.
+      2.  **Memory Allocation:** `VirtualAllocEx` is used to reserve a block of virtual memory within the game process (`gta_sa.exe`). This block is sized to contain the full path of the DLL to be injected.
+      3.  **Path Writing:** The DLL path (e.g., `L"C:\\path\\to\\samp.dll"`) is then copied to the remotely allocated memory in the game process via `WriteProcessMemory`.
+      4.  **Remote Thread Creation:** `CreateRemoteThread` starts a new thread in the context of the game process. The entry point of this thread is the address of `LoadLibraryW`, and the argument passed is the address of the DLL path string we just wrote.
+      5.  **Monitoring:** The execution of the remote thread is monitored by `WaitForSingleObject` until it completes or `DLL_INJECTION_TIMEOUT_MS` is reached.
+      6.  **Success Verification:** `GetExitCodeThread` is used to check the return value of the remote thread. If `LoadLibraryW` was successful, it will return the base address of the loaded DLL (a non-zero value).
+      7.  **Cleanup:** The memory allocated in the remote process is freed by `VirtualFreeEx`.
+   - Returns an `Injection_Status` indicating the success or the specific type of injection failure.
 
 ```cpp
-#pragma once
-
-#include <string_view>
-#include <optional> // For std::optional
-#include <functional> // For std::function (used in UniqueResource)
-#include <windows.h> // Windows APIs
-#include <memory> // For std::unique_ptr
-#include <vector> // For std::vector (args buffer)
-//
-#include "resource_handle.hpp" // Our wrapper for HANDLEs
-#include "error_utils.hpp" // For Get_System_Error_Message and Show_Error
-#include "constants.hpp" // Global constants
-#include "types.hpp" // Injection types
-
+// Example of a relevant snippet from process.hpp
 class Process {
-    public:
-        // Constructors/Destructors and assignment operators
-        // Explicitly default and delete to ensure value semantics and move-only.
-        Process() = default;
-        Process(const Process&) = delete; // No copy
-        Process& operator=(const Process&) = delete; // No copy assignment
-        Process(Process&&) = default; // Move semantics
-        Process& operator=(Process&&) = default; // Move assignment
-        ~Process() = default;
+public:
+    struct Process_Info {
+        Resource_Handle::Unique_Resource<HANDLE, std::function<void(HANDLE)>> process_handle; // Process handle with RAII management
+        Resource_Handle::Unique_Resource<HANDLE, std::function<void(HANDLE)>> thread_handle;  // Thread handle with RAII management
 
-        // Structure to store process and thread handles, managed by UniqueResource
-        struct Process_Info {
-            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
-            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
-        };
-
-        // Creates the GTA:SA game process in a suspended state
-        std::optional<Process_Info> Create_Game_Process(std::string_view game_path, std::string_view command_args, std::string_view working_dir) {
-            STARTUPINFOA startup_info{}; // Structure for process startup information
-            startup_info.cb = sizeof(STARTUPINFOA); // Sets the structure size
-
-            PROCESS_INFORMATION process_info{}; // Structure to receive information about the new process
-
-            // Creates a mutable buffer for command-line arguments.
-            // CreateProcessA modifies the command-line buffer, so std::string_view directly won't work.
-            std::vector<char> args_buffer(command_args.size() + 1); // +1 for null terminator
-
-            if (!command_args.empty()) {
-                std::memcpy(args_buffer.data(), command_args.data(), command_args.size());
-                args_buffer[command_args.size()] = '\0'; // Ensures null terminator
-            }
-
-            // Creates the process
-            bool success = CreateProcessA(game_path.data(), // Executable module name
-                args_buffer.empty() ? nullptr : args_buffer.data(), // Command-line arguments
-                nullptr, // Process security attributes
-                nullptr, // Thread security attributes
-                FALSE, // Do not inherit handles
-                Constants::PROCESS_CREATION_FLAGS, // CREATE_SUSPENDED | DETACHED_PROCESS
-                nullptr, // New process environment
-                working_dir.empty() ? nullptr : working_dir.data(), // Working directory
-                &startup_info, // Startup information
-                &process_info); // Created process information
-
-            if (!success) {
-                // If failed, retrieves and displays the system error message
-                std::wstring error_msg = Error_Utils::Get_System_Error_Message(GetLastError());
-                Error_Utils::Show_Error(L"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have " L"sufficient permissions to execute the file. System Error: " + error_msg, Types::Inject_Type::SAMP); // Uses SAMP as fallback for the title
-                
-                return std::nullopt; // Returns an empty optional
-            }
-
-            Process_Info result;
-            // Stores the process and thread handles in UniqueResource for automatic management
-            result.process_handle = Resource_Handle::Make_Unique_Handle(process_info.hProcess);
-            result.thread_handle = Resource_Handle::Make_Unique_Handle(process_info.hThread);
-
-            return result; // Returns the structure with managed handles
+        bool Resume() { // Resumes the execution of the game's main thread
+            return thread_handle && ResumeThread(thread_handle.get()) != static_cast<DWORD>(-1);
         }
+    };
+    
+    enum class Injection_Status { // Detailed status codes for DLL injection
+        SUCCESS,
+        ALLOCATION_FAILED,
+        WRITE_FAILED,
+        KERNEL32_HANDLE_FAILED,
+        LOADLIBRARY_ADDRESS_FAILED,
+        THREAD_CREATION_FAILED,
+        THREAD_WAIT_FAILED,
+        GET_EXIT_CODE_FAILED,
+        INJECTION_RETURNED_ERROR
+    };
 
-        // Injects a DLL into the remote process
-        bool Inject_DLL(HANDLE process, std::string_view DLL_path, std::wstring& error_message) {
-            // Allocates memory in the remote process for the DLL path
-            LPVOID remote_memory = VirtualAllocEx(process, // Target process handle
-            nullptr, // Preferred address (nullptr to let the system choose)
-            DLL_path.size() + 1, // Path size + null terminator
-            Constants::MEMORY_ALLOCATION_TYPE, // MEM_COMMIT | MEM_RESERVE
-            Constants::MEMORY_PROTECTION); // PAGE_READWRITE
+    // Creates the game process in a suspended state
+    std::optional<Process_Info> Create_Game_Process(const std::wstring& game_path, std::wstring& command_args, const std::wstring& working_dir) {
+        // ... Logic of CreateProcessW with CREATE_SUSPENDED ...
+    }
+    
+    SAMP_INJECTOR_NODISCARD // Ensures the return value is used
+    Injection_Status Inject_DLL(HANDLE process, const std::wstring& DLL_path) {
+        static const LPVOID load_library_addr = reinterpret_cast<LPVOID>(GetProcAddress(GetModuleHandleW(Constants::KERNEL32_DLL), Constants::LOAD_LIBRARY_FUNC));
 
-            if (!remote_memory)
-                return (error_message = L"Failed to allocate memory in the target process. This might be due to " L"insufficient permissions or process protection mechanisms.", false);
+        if (!load_library_addr)
+            return Injection_Status::LOADLIBRARY_ADDRESS_FAILED;
 
-            // Resource management for the remotely allocated memory.
-            // It will be automatically freed when out of scope.
-            auto memory_guard = Resource_Handle::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
-                [process](LPVOID ptr) { // Lambda as deleter
-                    if (ptr)
-                        VirtualFreeEx(process, ptr, 0, MEM_RELEASE); // Frees the allocated memory
-                }
-            );
+        LPVOID remote_memory = VirtualAllocEx(process, nullptr, (DLL_path.length() + 1) * sizeof(wchar_t), Constants::MEMORY_ALLOCATION_TYPE, Constants::MEMORY_PROTECTION);
 
-            // Writes the DLL path to the remotely allocated memory
-            if (!WriteProcessMemory(process, remote_memory, DLL_path.data(), DLL_path.size() + 1, nullptr))
-                return (error_message = L"Failed to write DLL path to the target process memory. Verify process " L"permissions and ensure the DLL path is accessible.", false);
+        if (!remote_memory)
+            return Injection_Status::ALLOCATION_FAILED;
 
-            // Obtains the handle for kernel32.dll (loaded in the injector's own process)
-            HMODULE kernel32 = GetModuleHandleA(Constants::KERNEL32_DLL);
-            
-            if (!kernel32)
-                return (error_message = L"Failed to obtain a handle to kernel32.dll. This is an essential system " L"library and this error indicates a severe system issue.", false);
+        auto memory_guard = Resource_Handle::Unique_Resource<LPVOID, std::function<void(LPVOID)>>(remote_memory, [process](LPVOID ptr) {
+            if (ptr)
+                VirtualFreeEx(process, ptr, 0, MEM_RELEASE); // Frees the memory in the remote process
+        });
 
-            // Obtains the address of the LoadLibraryA function in kernel32.dll.
-            // This address is consistent across processes in the same OS and is key to injection.
-            LPVOID load_library_addr = reinterpret_cast<LPVOID>(GetProcAddress(kernel32, Constants::LOAD_LIBRARY_FUNC));
+        if (!WriteProcessMemory(process, remote_memory, DLL_path.c_str(), (DLL_path.length() + 1) * sizeof(wchar_t), nullptr))
+            return Injection_Status::WRITE_FAILED;
 
-            if (!load_library_addr)
-                return (error_message = L"Failed to find the address of the LoadLibraryA function in kernel32.dll. " L"This is critical for injecting the DLL.", false);
+        HANDLE remote_thread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(load_library_addr), remote_memory, 0, nullptr);
 
-            // Creates a remote thread in the target process to execute LoadLibraryA
-            // The argument for LoadLibraryA will be the remote address of the DLL path
-            HANDLE remote_thread = CreateRemoteThread(process, // Target process handle
-                nullptr, // Thread security attributes
-                0, // Stack size (0 for default)
-                reinterpret_cast<LPTHREAD_START_ROUTINE>(load_library_addr), // Address of LoadLibraryA
-                remote_memory, // Argument for LoadLibraryA (DLL path)
-                0, // Creation flags (0 to start immediately)
-                nullptr); // Thread ID (nullptr to not return)
+        if (!remote_thread)
+            return Injection_Status::THREAD_CREATION_FAILED;
 
-            if (!remote_thread)
-                return (error_message = L"Failed to create a remote thread in the target process to execute the " L"DLL injection. This could be due to security restrictions or process "
-                    L"state. System Error: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
+        auto thread_guard = Resource_Handle::Make_Unique_Handle(remote_thread); // Safe management of the remote thread handle
 
-            // Resource management for the remote thread handle
-            auto thread_guard = Resource_Handle::Make_Unique_Handle(remote_thread);
+        if (WaitForSingleObject(remote_thread, Constants::DLL_INJECTION_TIMEOUT_MS) != WAIT_OBJECT_0)
+            return Injection_Status::THREAD_WAIT_FAILED;
 
-            // Waits for the remote thread (DLL injection) to complete or reach a timeout
-            DWORD wait_result = WaitForSingleObject(remote_thread, Constants::DLL_INJECTION_TIMEOUT_MS);
+        DWORD exit_code = 0;
 
-            if (wait_result != WAIT_OBJECT_0) {
-                return (error_message = L"Timeout or error waiting for DLL injection to complete. " L"System Error: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
+        if (!GetExitCodeThread(remote_thread, &exit_code))
+            return Injection_Status::GET_EXIT_CODE_FAILED;
 
-            // Obtains the exit code of the remote thread.
-            // For LoadLibraryA, an exit code of 0 means failure (could not load the DLL).
-            DWORD exit_code = 0;
+        if (exit_code == 0)
+            return Injection_Status::INJECTION_RETURNED_ERROR;
 
-            if (!GetExitCodeThread(remote_thread, &exit_code) || exit_code == 0)
-                return (error_message = L"DLL injection failed or returned an error. The LoadLibrary call " L"may have failed in the target process.", false);
-
-            return true; // Injection successful
-        }
+        return Injection_Status::SUCCESS;
+    }
 };
 ```
 
-> [!NOTE]
-> The `process.hpp` module demonstrates a robust and safe design. The `Create_Game_Process` function returns a `std::optional<Process_Info>`. This allows the function to explicitly and elegantly signal process creation failures (returning a `std::nullopt`) without resorting to exceptions or ambiguous error codes in its main return.
->
-> More crucially, the `Process_Info` structure uses `Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>>` to encapsulate the process and **thread** **handles**. This is an example of the **RAII (Resource Acquisition Is Initialization)** pattern, which ensures that the operating system's `HANDLE`s (such as `hProcess` and `hThread`) are automatically closed via `CloseHandle` when the `Process_Info` object goes out of scope. This eliminates **handle** leaks, which are a common source of instability and excessive resource consumption in long-running **Windows applications**.
->
-> Similarly, within the `Inject_DLL` function, `UniqueResource` is used to manage remotely allocated memory (`VirtualAllocEx`), ensuring it is freed (`VirtualFreeEx`) as soon as it is no longer needed or in case of failure. This rigorous resource management significantly contributes to the reliability and stability of the **SA-MP Injector C++**.
+### 9. `injector_core.hpp`
 
-### `injector_core.hpp`
+This header defines the `Injector_Core` class, which serves as the library's command center. It orchestrates the logical sequence of injection operations, connecting the input validation, privilege management, and process manipulation modules. It is here that the complete injection workflow is defined.
 
-This is the orchestrating class that ties together all the functionalities of the previous modules. It coordinates validation, command-line argument construction, process creation, and **DLL injection** calls.
+- **`Injector_Core`:** The constructor of this class is where `Privileges::Enable_Debug_Privilege()` is called. This ensures that the application process has the necessary privileges to perform DLL injection operations before any other critical logic is executed.
+- **`Initialize_Game`:**
+   1.  **Comprehensive Validation:** Starts by calling the validation functions (`Validation::Validate_Port`, `Validation::Validate_Nickname`, `Validation::Validate_Files`) to ensure all parameters and essential resources are in order. If any validation fails, an error is immediately reported.
+   2.  **Argument Preparation:** Constructs the complete command line (`std::wstring`) that will be passed to `gta_sa.exe`, incorporating the provided nickname, IP, port, and password.
+   3.  **Suspended Process Creation:** Invokes `Process::Create_Game_Process` to start `gta_sa.exe` in a suspended state, obtaining the handles to the process and its main thread.
+   4.  **`samp.dll` Injection:** Calls `Inject_DLL_With_Status_Check` to inject `samp.dll` into the game process. This wrapper function is also responsible for interpreting the returned `Injection_Status` and displaying informative error messages.
+   5.  **Conditional `omp-client.dll` Injection:** If the `inject_type` is `Types::Inject_Type::OMP`, `omp-client.dll` is then injected in the same way as `samp.dll`.
+   6.  **Game Resumption:** After all successful injections, `process_info.Resume()` is called to allow the game's main thread to continue its execution.
+   7.  **Error Handling in the Cycle:** Any failure in any of these critical steps will result in a call to `Error_Utils::Show_Error`, providing clear feedback to the user and ensuring that the process is terminated correctly (the handles are automatically released by the `Unique_Resource`s).
+- **`Build_Command_Args`:** A helper function that organizes and concatenates the command-line arguments, adding quotes where necessary for parameters containing spaces.
+- **`Inject_DLL_With_Status_Check`:** A private function that acts as a wrapper for `Process::Inject_DLL`. It maps the different `Injection_Status` to understandable error messages, facilitating error handling and communication with the user.
 
 ```cpp
-#pragma once
-
-#include <string_view>
-#include <sstream> // For building strings with stringstream
-#include <filesystem> // For path manipulation
-//
-#include "process.hpp" // Process creation/injection functions
-#include "validation.hpp" // Input validation functions
-#include "string_utils.hpp" // String conversion functions
-#include "error_utils.hpp" // Error handling functions
-#include "constants.hpp" // Library constants
-#include "types.hpp" // Injection types
-
+// Example of a relevant snippet from injector_core.hpp
 namespace Injector {
     class Injector_Core {
-        public:
-            // Constructors/Destructors for move semantics
-            Injector_Core() = default;
-            Injector_Core(const Injector_Core&) = delete; // Disables copy
-            Injector_Core& operator=(const Injector_Core&) = delete; // Disables copy assignment
-            Injector_Core(Injector_Core&&) = default; // Enables move
-            Injector_Core& operator=(Injector_Core&&) = default; // Enables move assignment
-            ~Injector_Core() = default;
+    public:
+        Injector_Core() { // The constructor enables the debug privilege
+            Privileges::Enable_Debug_Privilege();
+        }
 
-            // Main function that orchestrates game initialization and injection
-            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
-                namespace fs = std::filesystem; // Alias for std::filesystem
+        bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
+            std::wstring error_message;
 
-                // Builds the full paths for essential files
-                fs::path game_path = fs::path(folder) / Constants::GAME_EXE_NAME; // Ex: C:\GTA\gta_sa.exe
-                fs::path samp_DLL_path = fs::path(folder) / Constants::SAMP_DLL_NAME; // Ex: C:\GTA\samp.dll
-                fs::path omp_DLL_path = fs::path(folder) / Constants::OMP_DLL_NAME; // Ex: C:\GTA\omp-client.dll
+            // Sequence of input validations
+            if (!Validation::Validate_Port(port, error_message))
+                return (Error_Utils::Show_Error(error_message, inject_type), false);
+            // ... other validations ...
 
-                // 1. File Validation
-                if (!Validation::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
-                    return false; // Error already displayed by the validation function
-                
-                std::wstring error_message_local; // To receive error messages from validations
+            // Builds the command-line arguments
+            std::wstring args = Build_Command_Args({
+                Command_Arg{Constants::CMD_ARG_NICKNAME, std::wstring(nickname)},
+                // ... other arguments ...
+            });
 
-                // 2. Port Validation
-                if (!Validation::Validate_Port(port, error_message_local))
-                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
+            Process process_core;
+            // Creates the game process in a suspended state
+            auto process_info_opt = process_core.Create_Game_Process(game_path, args, std::wstring(folder));
 
-                // 3. Nickname Validation
-                if (!Validation::Validate_Nickname(nickname, error_message_local))
-                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
+            if (!process_info_opt)
+                return false;
 
-                // 4. Wide-char to Local 8-bit Conversion (required for ANSI APIs)
-                std::string nickname_str = String_Utils::Wide_To_Local_8Bit(nickname);
-                std::string ip_str = String_Utils::Wide_To_Local_8Bit(ip);
-                std::string port_str = String_Utils::Wide_To_Local_8Bit(port);
-                std::string password_str = String_Utils::Wide_To_Local_8Bit(password);
-                // Also converts paths to std::string (required by CreateProcessA as char*)
-                std::string game_path_str = String_Utils::Wide_To_Local_8Bit(game_path.wstring());
-                std::string folder_str = String_Utils::Wide_To_Local_8Bit(folder);
-                std::string samp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
-                std::string omp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
+            auto& process_info = *process_info_opt;
 
-                // 5. Command-Line Argument Construction
-                std::string args = Build_Command_Args(nickname_str, ip_str, port_str, password_str);
-
-                // Instantiates the Process class to manage process operations
-                Process process_core;
-                
-                // 6. Game Process Creation (Suspended)
-                auto process_info_opt = process_core.Create_Game_Process(game_path_str, args, folder_str);
-
-                if (!process_info_opt)
-                    return false; // Error already displayed by the process creation function
-
-                // Dereferences the optional to obtain the Process_Info structure
-                auto& process_info = *process_info_opt; 
-                std::wstring inject_error_message; // To receive error messages from injection
-
-                // 7. Injection of samp.dll
-                if (!process_core.Inject_DLL(process_info.process_handle.get(), samp_DLL_path_str, inject_error_message))
-                    return (Error_Utils::Show_Error(L"Failed to inject samp.dll: " + inject_error_message, inject_type), false);
-
-                // 8. Conditional injection of omp-client.dll (only if OMP)
-                if (inject_type == Types::Inject_Type::OMP) {
-                    if (!process_core.Inject_DLL(process_info.process_handle.get(), omp_DLL_path_str, inject_error_message))
-                        return (Error_Utils::Show_Error(L"Failed to inject omp-client.dll: " + inject_error_message, inject_type), false);
-                }
-
-                // 9. Resume Game Process
-                // The process was created in a suspended state to allow injection.
-                // Now that the DLLs have been injected, it can be resumed.
-                if (ResumeThread(process_info.thread_handle.get()) == static_cast<DWORD>(-1))
-                    return (Error_Utils::Show_Error(L"Failed to resume the game process thread: " + Error_Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
-
-                return true; // Success in all steps!
+            // Injects samp.dll and, conditionally, omp-client.dll
+            if (!Inject_DLL_With_Status_Check(process_core, process_info.process_handle.get(), Constants::SAMP_DLL_NAME, samp_DLL_path.wstring(), inject_type))
+                return false;
+            
+            if (inject_type == Types::Inject_Type::OMP) {
+                if (!Inject_DLL_With_Status_Check(process_core, process_info.process_handle.get(), Constants::OMP_DLL_NAME, omp_DLL_path.wstring(), inject_type))
+                    return false;
             }
-        private:
-            // Builds the command-line argument string for the game executable
-            std::string Build_Command_Args(const std::string& nickname, const std::string& ip, const std::string& port, const std::string& password) {
-                std::stringstream command_args_stream; // Uses stringstream for efficient construction
+            
+            // Resumes the game's main thread
+            if (!process_info.Resume())
+                return (Error_Utils::Show_Error(L"Failed to resume the game process thread: " + Error_Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
 
-                // SA-MP and OMP expect the arguments "-c -n [nickname] -h [ip] -p [port]"
-                command_args_stream << Constants::CMD_ARG_CONFIG << " " 
-                    << Constants::CMD_ARG_NICKNAME << " " << nickname << " " 
-                    << Constants::CMD_ARG_HOST << " " << ip << " " 
-                    << Constants::CMD_ARG_PORT << " " << port;
-
-                // Adds the password only if it is not empty
-                if (!password.empty())
-                    command_args_stream << " " << Constants::CMD_ARG_PASSWORD << " " << password;
-
-                return command_args_stream.str();
-            }
+            return true;
+        }
     };
 }
 ```
 
-> [!CAUTION]
-> Although the process for **OMP** involves injecting the `omp-client.dll` *in addition* to the `samp.dll`, this is in line with how **OMP** typically works. The **OMP** client often uses the `samp.dll` as a **base** or **proxy** for certain functionalities, while `omp-client.dll` extends or overrides behaviors.
->
-> It is crucial that **both DLLs** are present and functional in the game directory for the **OMP injection** to succeed. If one fails, the game may not initialize correctly, or the multiplayer client may not load.
+### 10. `injector.hpp`
 
-### `injector.hpp`
+This header acts as the main `Facade` of the library, offering a simplified entry point for any application wishing to use the injection functionality. It abstracts the internal complexity of `Injector_Core` into a single, convenient function.
 
-This is the library's interface file. It is the only file the end user will need to include to use the **SA-MP Injector C++**. It acts as a wrapper for the `Injector::Injector_Core` class, simplifying the interface to a single global function, `Initialize_Game`.
+- **`Initialize_Game`:**
+   - This static function is the library's public interface.
+   - First, it validates the `inject_type_str` (if it is `L"samp"` or `L"omp"`) and converts it to the `enum class Types::Inject_Type`. In case of an invalid string, it displays an error and terminates.
+   - Then, it creates an instance of `Injector::Injector_Core`.
+   - Finally, it delegates the execution of the main logic to `Injector_Core::Initialize_Game`, which is where the entire process of validation, process creation, and DLL injection is orchestrated.
 
 ```cpp
-#pragma once
+// Example of a relevant snippet from injector.hpp
+// The public interface to start the game
+#if defined(SAMP_INJECTOR_CXX_MODERN)
+inline bool Initialize_Game(std::wstring_view inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
+#elif defined(SAMP_INJECTOR_CXX_14)
+inline bool Initialize_Game(const std::wstring& inject_type, const std::wstring& folder, const std::wstring& nickname, const std::wstring& ip, const std::wstring& port, const std::wstring& password) {
+#endif
+    Types::Inject_Type type;
 
-#include <string_view>
-//
-#include "injector_core.hpp" // The main class with the logic
-#include "error_utils.hpp" // For error display (in case of invalid injection type)
-#include "types.hpp" // Injection type enumeration
-#include "constants.hpp" // Constants (for injection type names)
-
-// The high-level interface for the library.
-// Simplifies usage by exposing only this global function.
-inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
-    Types::Inject_Type type; // Variable to store the injection type
-
-    // Converts the injection type string to the Inject_Type enum
-    if (inject_type_str == Constants::INJECT_TYPE_SAMP)
+    // Converts the injection type string to the corresponding enum
+    if (inject_type == Constants::INJECT_TYPE_SAMP)
         type = Types::Inject_Type::SAMP;
-    
-    else if (inject_type_str == Constants::INJECT_TYPE_OMP)
+    else if (inject_type == Constants::INJECT_TYPE_OMP)
         type = Types::Inject_Type::OMP;
-    
     else
-        // If the injection type string is invalid, displays an error and returns false
-        return (Error_Utils::Show_Error(L"Invalid injection mode specified. Please use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false); // Uses SAMP as fallback for the title
+        // Displays an error if the injection type is invalid
+        return (Error_Utils::Show_Error(L"Invalid injection mode. Use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false);
 
-    Injector::Injector_Core injector; // Instantiates the object containing the core logic
-    
-    // Delegates the call to the Initialize_Game function of the Injector_Core class
+    Injector::Injector_Core injector; // Creates the injector core instance
+
+    // Delegates the main logic to the Injector_Core
     return injector.Initialize_Game(type, folder, nickname, ip, port, password);
 }
 ```
 
-> [!NOTE]
-> The use of the `inline` keyword for all functions in this file and other utilities allows the library to be `header-only`. `inline` suggests to the compiler that the function body should be inserted directly at the call sites, but its main effect here is to relax the **One Definition Rule (ODR)** so that the function can be defined in multiple `.obj` files (which would happen if multiple `.cpp` files include `injector.hpp`). The **linkage** step will ensure that only one final version exists in the executable.
+## The Detailed Injection Process
 
-## Comprehensive Usage Examples
+The core functionality of this library is to orchestrate a precise sequence of operations to inject the SA-MP or OMP client DLLs into the GTA:SA process. This cycle is carefully planned to ensure stability and compatibility.
 
-To integrate the **SA-MP Injector C++** into your project, follow the instructions and review the scenarios below.
+### 1. Initialization Request
 
-### 1. Setting Up the Development Environment
+The process begins with a call to the global function `Initialize_Game` (`injector.hpp`), which acts as the main point of contact for the application using the library. This function receives all crucial parameters, such as the desired injection type (SA-MP or OMP), the game directory, and the server connection data (nickname, IP, port, password).
 
-- **C++ Compiler**: A compiler that **supports C++17** is recommended. **Visual Studio** with `vcpkg` (for `std::filesystem`) or **GCC/Clang (version 17+)** are options.
-- **Project Configuration**:
-  - Create a new **C++** project (e.g., a console project).
-  - Copy **all** `.hpp` files from the **SA-MP Injector C++** to a folder accessible to your project (e.g., in the **headers** folder).
-  - Ensure the **C++ standard** is set to **C++17**. It is essential to maintain this version for maximum compatibility with **SA-MP** and **OMP** libraries. In **Visual Studio**: `Project Properties > Configuration Properties > C/C++ > Language > C++ Language Standard -> "ISO C++17 Standard (/std:c++17)"`
-- **Permissions**: Your executable will likely need to be run as **Administrator (not necessarily)** to create processes and **inject DLLs** in the system environment. In **Visual Studio**, this can be done in: `Project Properties > Configuration Properties > Linker > Manifest File > UAC Execution Level -> "requireAdministrator (/LEVEL='requireAdministrator')"`
+### 2. Environment Preparation
 
-### 2. Basic Scenario: Connecting to an SA-MP Server
-
-This is the most common use case, starting **GTA:SA** and connecting to an **SA-MP** server with a specific **nickname** and **IP**/**port**.
-
-```cpp
-// main.cpp
-#include <iostream>
-#include <string>
-#include <codecvt> // For std::wstring_convert (legacy, but functional for this case)
-#include <locale> // For std::codecvt_utf8_to_utf16
-//
-#include "injector.hpp" // The only inclusion needed from the library!
-
-int Main(int argc, char* argv[]) {
-    // Define the configuration variables
-    // Change these paths and server details to match your local setup
-    std::wstring folder = L"C:\\Games\\GTA San Andreas"; // Where gta_sa.exe, samp.dll are located
-    std::wstring nickname = L"Name";
-    std::wstring ip = L"127.0.0.1"; // Example: your local server
-    std::wstring port = L"7777";
-    std::wstring password = L""; // Leave empty if no password
-
-    // Optional: Allow the user to provide settings via command line (simplified)
-    // For more robust argument parsing, use an argument parsing library.
-    if (argc > 1) {
-        // Example: if the first arg is a path
-        if (argc > 1)
-            folder = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[1]);
-        
-        if (argc > 2)
-            nickname = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[2]);
-
-        if (argc > 3)
-            ip = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[3]);
-
-        if (argc > 4)
-            port = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[4]);
-        
-        if (argc > 5)
-            password = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[5]);
-    }
-
-    std::wcout << L"Starting SA-MP..." << std::endl;
-    std::wcout << L"Game folder: " << folder << std::endl;
-    std::wcout << L"Nickname: " << nickname << std::endl;
-    std::wcout << L"Server: " << ip << L":" << port << std::endl;
-
-    // Call to the library function to start the game
-    if (Initialize_Game(L"samp", // Injection type: SA-MP
-        folder, // Game folder path
-        nickname, // Desired nickname
-        ip, // Server IP
-        port, // Server port (string)
-        password)) { // Server password (string, can be empty)
-        std::wcout << L"\n--- SA-MP started successfully! ---" << std::endl;
-        std::wcout << L"The game was started in a separate process." << std::endl;
-    }
-    else {
-        std::wcout << L"\n--- FAILED to start SA-MP! ---" << std::endl;
-        std::wcout << L"Check the displayed error messages." << std::endl;
-    }
-
-    // Keeps the console open to view output messages
-    std::wcout << L"\nPress Enter to close the program." << std::endl;
-    std::wcin.ignore();
-
-    return 0;
-}
-```
-
-**To compile and run:**
-
-```bash
-# Example with g++ (Linux/MinGW/MSYS2) - Requires libstdc++fs for filesystem
-# It is important to ensure that the toolchain does not use a C++ version
-# that introduces incompatibilities in the injection process.
-# Check your compiler's specific documentation for binary compatibility (ABI) flags.
-g++ main.cpp -o my_launcher -std=c++17 -Wall -lstdc++fs -municode -lkernel32
-
-# Example with MSVC (Visual Studio Developer Command Prompt)
-# The '/std:c++17' flag ensures compliance with C++17.
-cl /EHsc /std:c++17 /permissive- /FS /utf-8 main.cpp /link /OUT:my_launcher.exe
-```
+When invoked, the `Initialize_Game` function creates an instance of `Injector::Injector_Core`. In the constructor of this class (`injector_core.hpp`), the first and essential step of environment setup is executed: privilege elevation.
 
 > [!NOTE]
-> **SA-MP** and **OMP**, as legacy projects, are compiled with specific tools that define their **Application Binary Interface (ABI)**. Although this library uses **C++17**, **it is crucial that the SA-MP and OMP DLLs it interacts with are also compatible with your compiler's ABI and the C++ runtime version (CRT) you use**.
->
-> Using a compiler or **C++** version significantly different from what was used to **build the game DLLs** can lead to subtle issues (e.g., with memory allocation or parameter passing) that are not easily **diagnosable** and will not result in an explicit injector error. For this reason, **C++17 is the maximum recommended version**, as newer versions may introduce changes in the **ABI** or **CRT** that are not tolerated by older game modules.
+> `Privileges::Enable_Debug_Privilege()`: This call (`privileges.hpp`) grants the application process the `SE_DEBUG_NAME` privilege. This privilege is vital as it allows the application to perform low-level operations on other Windows processes, such as reading and writing to their memory and creating remote threads – fundamental actions for the DLL injection technique.
 
-### 3. Advanced Scenario: Connecting to an OMP Server
+### 3. Integrity and Parameter Checks
 
-For **OMP**, the logic is identical to **SA-MP**, but you specify `L"omp"` as the `inject_type` and ensure that the `omp-client.dll` is present in the game directory.
+With the privileges adjusted, the `Injector_Core::Initialize_Game` method proceeds with a series of rigorous validations. This is a preventive phase that minimizes the chance of failures in later stages and provides immediate feedback to the user.
 
-```cpp
-// main.cpp
-#include <iostream>
-#include <string>
-#include <codecvt> // For std::wstring_convert (legacy, but functional for this case)
-#include <locale> // For std::codecvt_utf8_to_utf16
-//
-#include "injector.hpp" // The only inclusion needed from the library!
+- **Port Validation:** `Validation::Validate_Port` checks if the connection port number is correctly formatted and falls within the range of `1` to `65535` (`constants.hpp`).
+- **Nickname Validation:** `Validation::Validate_Nickname` ensures that the player's nickname is not empty and does not exceed the limit of `23` characters.
+- **Essential Files Check:** `Validation::Validate_Files` inspects the game directory to confirm the presence of `gta_sa.exe`, `samp.dll`, and, if the injection is of the OMP type, also `omp-client.dll`.
 
-int Main() {
-    // Define the configuration variables
-    // Change these paths and server details to match your local setup
-    std::wstring folder = L"C:\\Games\\GTA San Andreas"; // Where gta_sa.exe, samp.dll, and omp-client.dll are located
-    std::wstring nickname = L"Name";
-    std::wstring ip = L"127.0.0.1"; // Example: your local server
-    std::wstring port = L"7777";
-    std::wstring password = L""; // Leave empty if no password
+> [!WARNING]
+> Any failure at this stage results in the immediate display of a `MessageBox` with a detailed error message (`error_utils.hpp`) and the interruption of the injection process. This avoids futile attempts to proceed with an invalid configuration.
 
-    // Optional: Allow the user to provide settings via command line (simplified)
-    // For more robust argument parsing, use an argument parsing library.
-    if (argc > 1) {
-        // Example: if the first arg is a path
-        if (argc > 1)
-            folder = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[1]);
-        
-        if (argc > 2)
-            nickname = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[2]);
+### 4. Preparing Arguments for the Game
 
-        if (argc > 3)
-            ip = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[3]);
+After successful validation, the `Injector_Core::Build_Command_Args` function is responsible for building the formatted command line that will be passed to `gta_sa.exe`. This command line includes all the necessary parameters for the SA-MP/OMP client to automatically connect to a server, such as `-n "nickname" -h "IP" -p "Port" -z "Password"`.
 
-        if (argc > 4)
-            port = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[4]);
-        
-        if (argc > 5)
-            password = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[5]);
-    }
+### 5. Initializing the Game Process (Suspended)
 
-    std::wcout << L"Starting OMP..." << std::endl;
-    std::wcout << L"Game folder: " << folder << std::endl;
-    std::wcout << L"Nickname: " << nickname << std::endl;
-    std::wcout << L"Server: " << ip << L":" << port << std::endl;
+The `Process` component (`process.hpp`) is then tasked with starting the GTA:SA executable.
 
-    // Call to the library function to start the game
-    if (Initialize_Game(L"omp", // Injection type: OMP
-        folder, // Game folder path
-        nickname, // Desired nickname
-        ip, // Server IP
-        port, // Server port (string)
-        password)) { // Server password (string, can be empty)
-        std::wcout << L"\n--- OMP started successfully! ---" << std::endl;
-        std::wcout << L"The game was started in a separate process." << std::endl;
-    }
-    else {
-        std::wcout << L"\n--- FAILED to start OMP! ---" << std::endl;
-        std::wcout << L"Check the displayed error messages." << std::endl;
-    }
+> [!IMPORTANT]
+> The `Process::Create_Game_Process` function uses the `CREATE_SUSPENDED` flag (`constants.hpp`) when calling the Windows `CreateProcessW` API. This is a critical design measure: the game is loaded into memory and its main thread is created, but its execution is **paused**. This creates a controlled and stable environment, ideal for injecting DLLs, before the game can initialize its own defenses or internal logic. The process and thread `handles` are obtained and safely managed via `Resource_Handle::Unique_Resource`.
 
-    // Keeps the console open to view output messages
-    std::wcout << L"\nPress Enter to close the program." << std::endl;
-    std::wcin.ignore();
+### 6. Injecting the SA-MP Library (`samp.dll`)
 
-    return 0;
-}
-```
+With the game process in a suspended state, the injection of `samp.dll` can be performed safely. The `Injector_Core::Inject_DLL_With_Status_Check` method delegates this task to `Process::Inject_DLL`, which executes the following steps of the `remote thread injection` technique:
 
-## Handling Common Errors and Messages
+1.  **Locating the `LoadLibraryW` Function:** The address of the `LoadLibraryW` function is identified. This operation uses the `Constants::KERNEL32_DLL` and `Constants::LOAD_LIBRARY_FUNC` constants to get a `handle` to `kernel32.dll` and then locate the address of the dynamic library loading function.
+2.  **Remote Memory Allocation:** `VirtualAllocEx` is used to reserve a block of memory in the virtual address space of the `gta_sa.exe` process (which is suspended). The size of this block is sufficient to store the full path of `samp.dll`.
+3.  **Writing the DLL Path:** The full path of the `samp.dll` file is written to this newly allocated remote memory by `WriteProcessMemory`.
+4.  **Remote Thread Creation:** `CreateRemoteThread` is called to create a new thread within the `gta_sa.exe` process. The entry point of this new thread is the address of `LoadLibraryW`, and the argument it receives is the pointer to the DLL path we just wrote.
+5.  **Monitoring the Injection:** The execution of the remote thread is monitored by `WaitForSingleObject` for a period defined by `Constants::DLL_INJECTION_TIMEOUT_MS`.
+6.  **Verifying the Result:** The exit code of the remote thread is obtained via `GetExitCodeThread`. A return value other than zero indicates that `LoadLibraryW` was successful in loading `samp.dll`.
 
-The **SA-MP Injector C++** prioritizes usability, and a fundamental part of this is providing clear **feedback** to the user in case of failure. Error messages are presented through **Windows dialog boxes** (`MessageBoxW`) and are categorized by the **injection type (SA-MP or OMP)** for greater context. This ensures that you know exactly what went wrong and how to address the resolution.
+> [!WARNING]
+> In case of any failure during the injection of `samp.dll`, a specific error message (`error_utils.hpp`) is displayed, the injection process is aborted, and the resources are released.
 
-Here are some of the common errors you may encounter and their likely causes/solutions, accompanied by visual examples of how these dialog boxes appear to the end user:
+### 7. Injecting the OMP Library (`omp-client.dll`) - Conditional
 
-### 1. Invalid Injection Type
-
-If the `inject_type` provided in the `Initialize_Game` function is not `L"samp"` or `L"omp"`, the library will not know which multiplayer client you intend to initialize.
-
-![Error 1](../../screenshots/error_1.png)
-
-- **Displayed Error Message**: `"Invalid injection mode specified. Please use 'samp' or 'omp'."`
-- **Cause**: The first argument of the `Initialize_Game` function (`std::wstring_view inject_type`) does not match the expected values of `L"samp"` or `L"omp"`. It could be a typo, an empty string, or an unrecognized value.
-- **Solution**: Ensure that the `std::wstring_view inject_type_str` is correctly set to `L"samp"` or `L"omp"`. It is essential to use the `L` prefix for **wide-character** literals to match the library's constants.
-    ```cpp
-    // Correct:
-    Initialize_Game(L"samp", /* other parameters */);
-    Initialize_Game(L"omp", /* other parameters */);
-
-    // Incorrect (will cause error):
-    // Initialize_Game(L"invalid", /* other parameters */);
-    // Initialize_Game(L"", /* other parameters */);
-    ```
-
-### 2. Invalid Server Port (Format or Range)
-
-The port is a critical numeric parameter for connecting to the server. This error occurs if the value cannot be interpreted as a valid number or is outside the acceptable range **(1 to 65535)**.
-
-#### 2.1. Non-Numeric Port Format
-
-![Error 2](../../screenshots/error_2.png)
-
-- **Displayed Error Message**: `"Invalid port format. The port must be a numeric value. Please provide a valid integer for the port."`
-- **Cause**: The `port` argument (`std::wstring_view`) contains characters that are not numeric digits or cannot be converted to an integer.
-- **Solution**: Provide a string that contains only digits and represents a valid integer.
-    ```cpp
-    // Correct:
-    Initialize_Game(/* other parameters */, L"7777", /* other parameters */);
-
-    // Incorrect (invalid format):
-    // Initialize_Game(/* other parameters */, L"port7777", /* other parameters */);
-
-    // Incorrect (invalid):
-    // Initialize_Game(/* other parameters */, L"invalid", /* other parameters */);
-    ```
-
-#### 2.2. Port Out of Valid Range
-
-![Error 3](../../screenshots/error_3.png)
-
-- **Displayed Error Message**: `"The specified port number (XXXX) is outside the valid range of 1 to 65535. Please provide a valid port."` (The **XXXX** will be the value you attempted to use).
-- **Cause**: The provided port is a valid number but is below `1` (reserved or unusable) or above `65535` (the maximum limit for **TCP/UDP ports**).
-- **Solution**: Provide a port within the range of `1` to `65535`. Common ports for **SA-MP**/**OMP** are `7777` or `7778`.
-    ```cpp
-    // Correct:
-    Initialize_Game(/* other parameters */, L"7777", /* other parameters */);
-
-    // Incorrect (out of range):
-    // Initialize_Game(/* other parameters */, L"0", /* other parameters */); // Too low
-    // Initialize_Game(/* other parameters */, L"65536", /* other parameters */); // Too high
-    // Initialize_Game(/* other parameters */, L"-1", /* other parameters */); // Negative value
-    ```
-
-### 3. Invalid Nickname (Empty or Too Long)
-
-The player's **nickname** is validated to ensure the game client accepts it.
-
-#### 3.1. Empty Nickname
-
-![Error 4](../../screenshots/error_4.png)
-
-- **Displayed Error Message**: `"Nickname cannot be empty. Please provide a valid nickname."`
-- **Cause**: The `nickname` argument (`std::wstring_view`) was provided as an empty string.
-- **Solution**: Ensure the nickname is not empty.
-    ```cpp
-    // Correct:
-    Initialize_Game(/* other parameters */, L"Name", /* other parameters */);
-
-    // Incorrect (empty):
-    // Initialize_Game(/* other parameters */, L"", /* other parameters */);
-    ```
-
-#### 3.2. Nickname Too Long
-
-![Error 5](../../screenshots/error_5.png)
-
-- **Displayed Error Message**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
-- **Cause**: The length of the provided **nickname** exceeds `Constants::MAX_NICKNAME_LENGTH`, which is `23` characters.
-- **Solution**: Use a **nickname** that is at most `23` characters long.
-    ```cpp
-    // Correct:
-    Initialize_Game(/* other parameters */, L"Name", /* other parameters */);
-
-    // Incorrect (too long):
-    // Initialize_Game(/* other parameters */, L"ThisNicknameIsTooLongAndExceedsTwentyCharacters", /* other parameters */);
-    ```
-
-### 4. Game or DLL Files Not Found
-
-This is one of the most common causes of failure. The library requires `gta_sa.exe`, `samp.dll`, and, for **OMP**, `omp-client.dll` to be present in the expected locations.
-
-#### 4.1. Game Executable (`gta_sa.exe`) Not Found
-
-![Error 6](../../screenshots/error_6.png)
-
-- **Displayed Error Message**: `"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: [full path]"`. The `[full path]` will include the folder and file name.
-- **Cause**: The `gta_sa.exe` file was not found in the folder provided in the `folder` argument.
-- **Solution**:
-  1. Verify that the `folder` (`std::wstring_view`) points to the correct **GTA San Andreas** installation directory.
-  2. Confirm that `gta_sa.exe` exists in that folder and that its name has not been altered.
-
-#### 4.2. SA-MP Library (`samp.dll`) Not Found
-
-![Error 7](../../screenshots/error_7.png)
-
-- **Displayed Error Message**: `"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: [full path]"`.
-- **Cause**: The `samp.dll` file was not found in the folder provided in the `folder` argument. **This DLL** is a requirement for **both** injection types (`samp` and `omp`).
-- **Solution**: Ensure that `samp.dll` is present in the **GTA San Andreas** installation folder.
-
-#### 4.3. OMP Library (`omp-client.dll`) Not Found (only for OMP injection)
-
-![Error 8](../../screenshots/error_8.png)
-
-- **Displayed Error Message**: `"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: [full path]"`.
-- **Cause**: If you specified `L"omp"` as the injection type, but the `omp-client.dll` file was not found in the provided folder.
-- **Solution**: Download the latest **OMP** client and ensure that `omp-client.dll` (and `samp.dll`) are present in the **GTA San Andreas** installation folder.
-
-### 5. Failure to Create Game Process
-
-This is a more complex error, as it involves **operating system permissions** and the current state of `gta_sa.exe`.
-
-![Error 9](../../screenshots/error_9.png)
-
-- **Displayed Error Message**: `"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have sufficient permissions to execute the file. System Error: [Operating system error message]"`. The system message will be appended by `GetLastError()` (e.g., `Access is denied.` or `The requested operation requires elevation.`).
-- **Cause**: The `CreateProcessA` call to start `gta_sa.exe` failed. Common causes include:
-  - **Process already running**: An instance of `gta_sa.exe` is already active and blocking a new execution.
-  - **Insufficient permissions**: Your application does not have the necessary privileges (e.g., administrator) to create a process in certain system configurations (**UAC** enabled, protected folders, etc.).
-  - **Issues with the executable**: The `gta_sa.exe` may be corrupted or blocked by another program (e.g., a misconfigured antivirus).
-- **Solution**:
-  1. Check the Task Manager and ensure no instance of `gta_sa.exe` is running. Terminate any if present.
-  2. Run your application that uses the library with **Administrator** privileges. Right-click the executable and select **"Run as administrator"**.
-  3. If an **antivirus** or security software is interfering, add your application and/or the **GTA:SA** folder to the antivirus exceptions (do this cautiously and only if you are sure of the integrity of your files).
-
-### 6. Failure to Allocate Memory in the Target Process
-
-The library attempts to allocate a small memory space in `gta_sa.exe` to copy the **DLL path**.
-
-![Error 10](../../screenshots/error_10.png)
-
-- **Displayed Error Message**: `"Failed to allocate memory in the target process. This might be due to insufficient permissions or process protection mechanisms."`
-- **Cause**: The `VirtualAllocEx` function (used to allocate memory within another process) failed. This is more likely if:
-  - The **GTA:SA** process (even in a suspended state) has security defenses or **anti-injection patches** that prevent memory allocation by external processes.
-  - Your application does not have the necessary elevated permissions to manipulate another process's memory.
-  - (Less common) There is an extreme shortage of virtual memory in the system.
-- **Solution**:
-  1. Run your application with **Administrator** privileges.
-  2. Ensure the game does not have any modifications or **security patches** that might block injection or memory manipulation attempts (this is more common in modified environments or with certain third-party anti-cheat tools).
-
-### 7. Failure to Write DLL Path to Process Memory
-
-After allocating memory, the library attempts to copy the **DLL path** to it.
-
-![Error 11](../../screenshots/error_11.png)
-
-- **Displayed Error Message**: `"Failed to write DLL path to the target process memory. Verify process permissions and ensure the DLL path is accessible."`
-- **Cause**: The `WriteProcessMemory` function failed to copy the **DLL path bytes** to the remotely allocated memory in `gta_sa.exe`. This usually points to:
-  - **Write permissions**: Your application does not have permission to write to that memory region or the **GTA:SA** process.
-  - **Invalid handle**: The process **handle** (`process_handle`) somehow became invalid between allocation and writing, which is very rare due to the use of `UniqueResource` but can occur under extreme system conditions.
-  - **Memory Protection Issues**: Some memory protection (either from the **OS** or game modifications) prevented the write.
-- **Solution**: Run as **Administrator**. Verify that `gta_sa.exe` and its environment are "clean" of tools that could block memory operations.
-
-### 8. Failure to Find Essential System Functions
-
-These are critical **Windows APIs**; errors here indicate a fundamental issue with the operating system or execution environment.
-
-#### 8.1. `kernel32.dll` Not Found
-
-![Error 12](../../screenshots/error_12.png)
-
-- **Displayed Error Message**: `"Failed to obtain a handle to kernel32.dll. This is an essential system library and this error indicates a severe system issue."`
-- **Cause**: The `kernel32.dll` is one of the most basic **DLLs** in **Windows**, containing essential functions like `CreateProcess`, `VirtualAllocEx`, etc. If `GetModuleHandleA` cannot obtain a **handle** for it, the operating system has very serious issues.
-- **Solution**: This is a **critical** error that is rarely caused by the library or your application. It suggests system file corruption, severe **Windows** issues, or a highly unusual **OS** installation. It is recommended to run system integrity checks (such as `sfc /scannow` in the **Command Prompt** as **Administrator**) or, as a last resort, reinstall **Windows**.
-
-#### 8.2. `LoadLibraryA` Not Found
-
-![Error 13](../../screenshots/error_13.png)
-
-- **Displayed Error Message**: `"Failed to find the address of the LoadLibraryA function in kernel32.dll. This is critical for injecting the DLL."`
-- **Cause**: Although `kernel32.dll` was found, the `LoadLibraryA` function could not be resolved via `GetProcAddress`. While extremely uncommon, this could result from corruption of the `kernel32.dll` **file** or a highly non-standard execution environment.
-- **Solution**: As with the `kernel32.dll` error above, this indicates a serious operating system issue.
-
-### 9. Failure to Create Remote Thread for Injection
-
-After preparing the remote environment and copying the **DLL path**, a new **thread** is created in the game process to "call" `LoadLibraryA`.
-
-![Error 14](../../screenshots/error_14.png)
-
-- **Displayed Error Message**: `"Failed to create a remote thread in the target process to execute the DLL injection. This could be due to security restrictions or process state. System Error: [Operating system error message]"`.
-- **Cause**: The `CreateRemoteThread` call failed. This error is common in systems with robust **anti-injection** defenses or when a program is heavily monitoring the process's behavior:
-  - **Security Mechanisms**: **Anti-cheat** tools, security **software**, or certain **Windows** policies may detect and block attempts to create **threads** in third-party processes.
-  - **Inconsistent Target Process**: If the **GTA:SA** process is in an unexpected or unstable state (although started in `CREATE_SUSPENDED`), this may affect the ability to create **threads** in it.
-- **Solution**:
-  1. Run your application with **Administrator** privileges.
-  2. Check for **anti-cheat** tools, aggressive **antivirus**, or **firewalls** configured to inspect and block process manipulation that may be conflicting. Add your application and the `gta_sa.exe` to exceptions, if applicable (with caution).
-  3. The system error message (`GetLastError()`) may provide additional details to investigate the specific cause (e.g., **"A process has been denied access to create threads for other processes."**).
-
-### 10. Timeout or Failure in Injection Completion
-
-After creating the remote **thread**, the injector waits for it to complete the **DLL load**.
-
-![Error 15](../../screenshots/error_15.png)
-
-- **Displayed Error Message**: `"Timeout or error waiting for DLL injection to complete. System Error: [Operating system error message]"`.
-- **Cause**: The remote **thread** executing `LoadLibraryA` took longer than `Constants::DLL_INJECTION_TIMEOUT_MS` (10 seconds) to return, or it failed, and `GetExitCodeThread` returned 0. Potential causes include:
-  - **Issues in the Injected DLL**: The `DllMain` of `samp.dll` or `omp-client.dll` is taking too long to execute, contains an **infinite loop**, a **crash**, or an error that **prevents the DLL** from loading correctly (e.g., missing **DLL dependencies**).
-  - **Silent Blocking**: A security mechanism may have blocked `LoadLibraryA` but did not notify with an obvious thread creation error.
-- **Solution**:
-  1. Verify the integrity of the `samp.dll` and `omp-client.dll` files. They may be corrupted or from a version incompatible with your `gta_sa.exe`.
-  2. Ensure **that the injected DLL** does not depend on **other DLLs** that may be missing or inaccessible in the system.
-
-### 11. Failure to Resume Game Process Thread
-
-This is the final step to start the game after **the DLLs** are injected.
-
-![Error 16](../../screenshots/error_16.png)
-
-- **Displayed Error Message**: `"Failed to resume the game process thread: [Operating system error message]"`.
-- **Cause**: The `ResumeThread` call failed, meaning the main **thread** of `gta_sa.exe` could not be activated to start the game's execution. This is a rare error but can occur if:
-  - The **thread handle** of the process became invalid.
-  - The operating system prevented resumption for some reason, possibly related to a security interruption or inconsistent process state.
-  - The process may have been terminated externally between **DLL injection** and the attempt to resume the main **thread**.
-- **Solution**: If all previous steps were successful and only `ResumeThread` failed, it may be an issue with the operating system, the **GTA:SA** installation itself, or overly strict security **software**. Re-examine the state of `gta_sa.exe` via **Task Manager** just before and after the error. Restarting the computer may resolve temporary system state issues.
+If the specified injection type is `OMP`, the steps detailed in point 6 are repeated for `omp-client.dll`.
 
 > [!TIP]
-> In complex debugging scenarios, tools like **Process Monitor (Sysinternals Suite)** or a debugger (such as **Visual Studio Debugger**, **WinDbg**, **OllyDbg**) can be invaluable. They can help observe **API** calls, check access errors, track **handle** states, and even inspect process memory, providing deep insight into what is happening under the hood.
+> The injection of `omp-client.dll` always occurs after the successful injection of `samp.dll`. This is because the Open Multiplayer client relies on the infrastructure provided by `samp.dll`.
+
+### 8. Activating the Game
+
+Finally, if all injections were completed successfully, the `process_info.Resume()` method is invoked. This call executes `ResumeThread` on the main thread of `gta_sa.exe`. At this moment, the game is activated and begins its normal execution, but with the SA-MP/OMP DLLs already loaded in its memory and with the connection parameters configured, allowing for an automated connection to the server.
+
+> [!WARNING]
+> If resuming the game's thread fails, a final error message is presented to the user.
+
+## Error and Failure Diagnostics
+
+The library is meticulously designed to clearly communicate any issues that may arise during the startup and injection process. At any point of failure, a `MessageBox` with a detailed description is presented to the user, often supplemented with operating system error messages.
+
+### Input Validation Failures
+
+These errors are detected in the initial phase (`validation.hpp`), before any low-level interaction with the system, and indicate problems with the data provided by the user or with the environment's configuration.
+
+#### Invalid Username
+
+- **Error Message (Example 1):** `"Nickname cannot be empty. Please provide a valid nickname."`
+- **Error Message (Example 2):** `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
+- **Reason:** The provided username (`nickname`) is empty or exceeds the maximum limit of 23 characters allowed by the SA-MP/OMP clients.
+- **Solution:** The user must enter a valid username that respects the length criteria.
+
+#### Invalid Connection Port
+
+- **Error Message (Example 1):** `"Invalid port format. The port must be a numeric value. Please provide a valid integer for the port."`
+- **Error Message (Example 2):** `"The specified port number (70000) is outside the valid range of 1 to 65535. Please provide a valid port."`
+- **Reason:** The value provided for the port is not an integer or is outside the valid range (1 to 65535).
+- **Solution:** The user needs to provide a valid port number within the specified range.
+
+#### Missing Essential Resources
+
+- **Error Message (Example 1):** `"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: C:\Games\GTA San Andreas\gta_sa.exe"`
+- **Error Message (Example 2):** `"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: C:\Games\GTA San Andreas\samp.dll"`
+- **Error Message (Example 3, for OMP):** `"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: C:\Games\GTA San Andreas\omp-client.dll"`
+- **Reason:** One or more crucial files (`gta_sa.exe`, `samp.dll`, `omp-client.dll`) were not found in the specified game directory.
+- **Solution:** Check the game folder path and ensure that all necessary files are present and accessible.
+
+### Process Management Failures
+
+These errors occur when the library attempts to start the game's executable (`gta_sa.exe`).
+
+#### Difficulty Starting the Game Process
+
+- **Error Message (Example):** `"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have sufficient permissions to execute the file. System Error: Access is denied."`
+- **Reason:**
+   - **Executable in Use:** `gta_sa.exe` may already be running, or there is an operating system lock that prevents the creation of a new instance.
+   - **Insufficient Permissions:** The application may not have the proper permissions to start `gta_sa.exe` or to access the file.
+   - **Corrupted Executable:** Although the basic validation checks for the file's existence, it might be corrupted or inaccessible.
+- **Solution:** Make sure no instance of `gta_sa.exe` is active. Try running your application as an administrator. Check the integrity of the `gta_sa.exe` file.
+
+### DLL Injection Problems
+
+These are the most critical and detailed errors, occurring during the attempt to inject `samp.dll` or `omp-client.dll` into the suspended game process. The error messages usually start with `"Failed to inject <DLL_NAME>:\n"` and are followed by a specific description and a system error code.
+
+#### Unable to Locate `LoadLibraryW`
+
+- **Error Message (Part):** `"Failed to find the address of LoadLibraryW in kernel32.dll."`
+- **Reason:** The `LoadLibraryW` function, a fundamental Windows API for dynamic DLL loading, could not be found in `kernel32.dll`. This is an extremely rare low-level problem that points to possible operating system corruption or a highly unusual execution environment.
+- **Solution:** A system reboot might resolve it. If it persists, it may indicate a more serious problem with the Windows installation.
+
+#### Failure in Remote Memory Reservation
+
+- **Error Message (Part):** `"Failed to allocate memory in the target process (VirtualAllocEx). System Error: Not enough storage is available to process this command."`
+- **Reason:** The library could not allocate a block of memory in the virtual address space of the `gta_sa.exe` process.
+   - **Permissions:** Your application may not have sufficient permissions to modify the memory space of another process.
+   - **Process Protection:** Operating system security mechanisms or anti-cheat software may be blocking memory allocation in external processes.
+- **Solution:** Run your application as an administrator. Check if security programs (antivirus, anti-cheat) are interfering and, if possible, temporarily disable them for testing.
+
+#### Inability to Write Data to the Process
+
+- **Error Message (Part):** `"Failed to write DLL path to process memory (WriteProcessMemory). System Error: Access is denied."`
+- **Reason:** Memory was allocated in the game process, but the library could not write the DLL path to that location.
+   - **Permissions/Protection:** Similar to the memory allocation failure, it could be a write permission issue or an active memory protection.
+- **Solution:** The same solutions for memory allocation failure apply.
+
+#### Failure to Create Injection Thread
+
+- **Error Message (Part):** `"Failed to create remote thread (CreateRemoteThread). System Error: The parameter is incorrect."`
+- **Reason:** The `CreateRemoteThread` API failed to start a new thread in the `gta_sa.exe` process to invoke `LoadLibraryW`.
+   - **Security:** Many anti-cheat systems and OS protections monitor and block the creation of remote threads, as it is a common injection technique.
+   - **Process State:** The game process may be in an unstable state that prevents thread creation.
+- **Solution:** Temporarily disable any anti-cheat or antivirus software. Try running the application as an administrator.
+
+#### Timeout Exceeded or Error While Waiting for Injection
+
+- **Error Message (Part):** `"Timeout or error waiting for remote thread (WaitForSingleObject). System Error: The wait operation timed out."`
+- **Reason:** The remote thread (which calls `LoadLibraryW`) did not complete its execution within the established timeout (10 seconds).
+   - **Freezing:** `LoadLibraryW` may have frozen, taken too long, or been intercepted/blocked.
+- **Solution:** This may indicate that the DLL is having trouble loading or that something is preventing it. Checking system or SA-MP/OMP logs (if available) may offer more clues.
+
+#### Internal DLL Injection Failure
+
+- **Error Message (Part):** `"LoadLibraryW call failed in the target process. The DLL might be corrupt, missing dependencies, or blocked by security software."`
+- **Reason:** The remote thread completed, but the return value of `LoadLibraryW` was `0` (or `NULL`), indicating that the DLL was not loaded successfully.
+   - **Corrupted/Non-existent DLL:** The DLL may have been moved, deleted, or corrupted after the initial validation.
+   - **Missing Dependencies:** `samp.dll` or `omp-client.dll` may have dependencies (other DLLs) that are not present in the game directory or in the system `PATH`.
+   - **Internal DLL Error:** The DLL itself may have an internal error that prevents it from loading.
+- **Solution:** Check the integrity of the `samp.dll`/`omp-client.dll` files. Make sure all their dependencies are present.
+
+### Difficulty Resuming Game Execution
+
+This is the last possible point of failure in the injection cycle.
+
+- **Error Message (Example):** `"Failed to resume the game process thread: Invalid handle."`
+- **Reason:** The `ResumeThread` API failed to reactivate the main thread of `gta_sa.exe`.
+   - **Invalid Handle:** The thread `handle` may have been invalidated by some unexpected event.
+   - **Permission:** The application may not have permission to change the thread's state.
+- **Solution:** Try running the application as an administrator. If the problem persists, it may indicate a deeper stability issue in the system or the game process.
 
 ## License
 

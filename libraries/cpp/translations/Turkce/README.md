@@ -1,14 +1,15 @@
 # SA-MP Injector C++
 
-![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)
-![C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg?style=flat&logo=cplusplus)
-![Platform](https://img.shields.io/badge/Platform-Windows-0078D6.svg?style=flat&logo=windows)
-[![SA-MP | OMP](https://img.shields.io/badge/Support-SA--MP%20%7C%20OMP-yellow)](https://github.com/spc-samp/samp-injector)
-![Code Quality](https://img.shields.io/badge/Code%20Quality-High-brightgreen.svg?style=flat)
+<div align="center">
 
-**SA-MP Injector C++**, basit bir **DLL enjeksiyon aracı** tanımını aşan bir araçtır. Bu, **Grand Theft Auto: San Andreas** (**GTA:SA**) oyununun programlı bir şekilde başlatılmasını ve özellikle **SA-MP (San Andreas Multiplayer)** ve **OMP (Open Multiplayer)** istemcileriyle birlikte çalışmasını sağlamak için titizlikle tasarlanmış bir **C++ kütüphanesidir**. Temel amacı, oyunun başlatılma sürecini basitleştirerek işletim sistemi süreçlerinin doğrudan manipülasyonu ve komut satırı argümanlarının geçirilmesiyle ilgili karmaşıklığı ortadan kaldırmaktır.
+![C++](https://img.shields.io/badge/C%2B%2B-14%2F17%2F20-00599C?style=for-the-badge&logo=cplusplus)
+![Platform](https://img.shields.io/badge/Platform-Windows-blue?style=for-the-badge&logo=windows&logoColor=white)
+![Architecture](https://img.shields.io/badge/Architecture-x86%20(32--bit)-lightgrey?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-Maksimum esneklik ve kolay entegrasyon sağlamak amacıyla geliştirilen bu `header-only` kütüphane, karmaşık ön derlemelere olan ihtiyacı ortadan kaldırır ve geliştiricilerin kütüphaneyi doğrudan **C++ projelerine** entegre etmesine olanak tanır. Kütüphane, yalnızca çok oyunculu istemci DLL'lerinin (**samp.dll** veya **omp-client.dll**) temel **enjeksiyonunu** yönetmekle kalmaz, aynı zamanda bağlantı için gerekli tüm parametreleri (**kullanıcı adı**, **IP adresi**, **port** ve **şifre**) akıllıca yönetir ve **Windows API**'sinin doğal özelliklerini kullanarak yerel bir başlatma işlemini simüle eder.
+**SA-MP ve OMP istemcilerinin DLL enjeksiyonu yoluyla sunuculara bağlantısını başlatmak ve otomatikleştirmek için bir C++ kütüphanesi.**
+
+</div>
 
 ## Diller
 
@@ -27,44 +28,53 @@ Maksimum esneklik ve kolay entegrasyon sağlamak amacıyla geliştirilen bu `hea
 - [SA-MP Injector C++](#sa-mp-injector-c)
   - [Diller](#diller)
   - [İçindekiler](#i̇çindekiler)
-  - [Temel Kavramlar ve Motivasyon](#temel-kavramlar-ve-motivasyon)
-    - [Neden DLL Enjeksiyonu?](#neden-dll-enjeksiyonu)
-    - [SA-MP ve OMP: Farklılıklar ve Benzerlikler](#sa-mp-ve-omp-farklılıklar-ve-benzerlikler)
-  - [Kütüphanenin İç Mimarisi: Derinlemesine Bir İnceleme](#kütüphanenin-i̇ç-mimarisi-derinlemesine-bir-i̇nceleme)
-    - [`constants.hpp`](#constantshpp)
-    - [`types.hpp`](#typeshpp)
-    - [`string_utils.hpp`](#string_utilshpp)
-    - [`error_utils.hpp`](#error_utilshpp)
-    - [`resource_handle.hpp`](#resource_handlehpp)
-    - [`validation.hpp`](#validationhpp)
-    - [`process.hpp`](#processhpp)
-    - [`injector_core.hpp`](#injector_corehpp)
-    - [`injector.hpp`](#injectorhpp)
-  - [Kapsamlı Kullanım Örnekleri](#kapsamlı-kullanım-örnekleri)
-    - [1. Geliştirme Ortamının Hazırlanması](#1-geliştirme-ortamının-hazırlanması)
-    - [2. Temel Senaryo: Bir SA-MP Sunucusuna Bağlanma](#2-temel-senaryo-bir-sa-mp-sunucusuna-bağlanma)
-    - [3. Gelişmiş Senaryo: Bir OMP Sunucusuna Bağlanma](#3-gelişmiş-senaryo-bir-omp-sunucusuna-bağlanma)
-  - [Yaygın Hataların ve Mesajların Ele Alınması](#yaygın-hataların-ve-mesajların-ele-alınması)
-    - [1. Geçersiz Enjeksiyon Türü](#1-geçersiz-enjeksiyon-türü)
-    - [2. Geçersiz Sunucu Portu (Format veya Aralık)](#2-geçersiz-sunucu-portu-format-veya-aralık)
-      - [2.1. Sayısal Olmayan Port Formatı](#21-sayısal-olmayan-port-formatı)
-      - [2.2. Geçerli Aralık Dışında Port](#22-geçerli-aralık-dışında-port)
-    - [3. Geçersiz Kullanıcı Adı (Boş veya Çok Uzun)](#3-geçersiz-kullanıcı-adı-boş-veya-çok-uzun)
-      - [3.1. Boş Kullanıcı Adı](#31-boş-kullanıcı-adı)
-      - [3.2. Çok Uzun Kullanıcı Adı](#32-çok-uzun-kullanıcı-adı)
-    - [4. Oyun veya DLL Dosyaları Bulunamadı](#4-oyun-veya-dll-dosyaları-bulunamadı)
-      - [4.1. Oyun Yürütülebilir Dosyası (`gta_sa.exe`) Bulunamadı](#41-oyun-yürütülebilir-dosyası-gta_saexe-bulunamadı)
-      - [4.2. SA-MP Kütüphanesi (`samp.dll`) Bulunamadı](#42-sa-mp-kütüphanesi-sampdll-bulunamadı)
-      - [4.3. OMP Kütüphanesi (`omp-client.dll`) Bulunamadı (yalnızca OMP enjeksiyonu için)](#43-omp-kütüphanesi-omp-clientdll-bulunamadı-yalnızca-omp-enjeksiyonu-için)
-    - [5. Oyun Sürecinin Oluşturulmasında Hata](#5-oyun-sürecinin-oluşturulmasında-hata)
-    - [6. Hedef Süreçte Bellek Ayırmada Hata](#6-hedef-süreçte-bellek-ayırmada-hata)
-    - [7. İşlem Belleğine DLL Yolunun Yazılmasında Hata](#7-i̇şlem-belleğine-dll-yolunun-yazılmasında-hata)
-    - [8. Temel Sistem Fonksiyonlarının Bulunmasında Hata](#8-temel-sistem-fonksiyonlarının-bulunmasında-hata)
-      - [8.1. `kernel32.dll` Bulunamadı](#81-kernel32dll-bulunamadı)
-      - [8.2. `LoadLibraryA` Bulunamadı](#82-loadlibrarya-bulunamadı)
-    - [9. Enjeksiyon için Uzak Thread Oluşturmada Hata](#9-enjeksiyon-için-uzak-thread-oluşturmada-hata)
-    - [10. Enjeksiyonun Tamamlanmasında Zaman Aşımı veya Hata](#10-enjeksiyonun-tamamlanmasında-zaman-aşımı-veya-hata)
-    - [11. Oyun İşlemi Thread'inin Devam Ettirilmesinde Hata](#11-oyun-i̇şlemi-threadinin-devam-ettirilmesinde-hata)
+  - [Genel Bakış ve Amaç](#genel-bakış-ve-amaç)
+  - [Tasarım İlkeleri](#tasarım-i̇lkeleri)
+    - [Tamamen `Header-Only`](#tamamen-header-only)
+    - [Güvenli Kaynak Yönetimi (RAII)](#güvenli-kaynak-yönetimi-raii)
+    - [Sağlamlık ve Hata Kontrolü](#sağlamlık-ve-hata-kontrolü)
+    - [C++ Standartları Esnekliği](#c-standartları-esnekliği)
+  - [Gerekli Ortam](#gerekli-ortam)
+    - [Geliştirme İçin](#geliştirme-i̇çin)
+    - [Çalıştırma İçin](#çalıştırma-i̇çin)
+  - [Hızlı Başlangıç](#hızlı-başlangıç)
+    - [Projeye Entegrasyon](#projeye-entegrasyon)
+    - [Basitleştirilmiş Kullanım Örneği](#basitleştirilmiş-kullanım-örneği)
+  - [Kütüphane Yapısı](#kütüphane-yapısı)
+    - [1. `constants.hpp`](#1-constantshpp)
+    - [2. `types.hpp`](#2-typeshpp)
+    - [3. `version.hpp`](#3-versionhpp)
+    - [4. `error_utils.hpp`](#4-error_utilshpp)
+    - [5. `validation.hpp`](#5-validationhpp)
+    - [6. `resource_handle.hpp`](#6-resource_handlehpp)
+    - [7. `privileges.hpp`](#7-privilegeshpp)
+    - [8. `process.hpp`](#8-processhpp)
+    - [9. `injector_core.hpp`](#9-injector_corehpp)
+    - [10. `injector.hpp`](#10-injectorhpp)
+  - [Detaylı Enjeksiyon Süreci](#detaylı-enjeksiyon-süreci)
+    - [1. Başlatma İsteği](#1-başlatma-i̇steği)
+    - [2. Ortam Hazırlığı](#2-ortam-hazırlığı)
+    - [3. Bütünlük ve Parametrelerin Kontrolü](#3-bütünlük-ve-parametrelerin-kontrolü)
+    - [4. Oyun İçin Argümanların Hazırlanması](#4-oyun-i̇çin-argümanların-hazırlanması)
+    - [5. Oyun Sürecinin Başlatılması (Askıya Alınmış)](#5-oyun-sürecinin-başlatılması-askıya-alınmış)
+    - [6. SA-MP Kütüphanesinin Enjeksiyonu (`samp.dll`)](#6-sa-mp-kütüphanesinin-enjeksiyonu-sampdll)
+    - [7. OMP Kütüphanesinin Enjeksiyonu (`omp-client.dll`) - Koşullu](#7-omp-kütüphanesinin-enjeksiyonu-omp-clientdll---koşullu)
+    - [8. Oyunun Etkinleştirilmesi](#8-oyunun-etkinleştirilmesi)
+  - [Hata ve Arıza Teşhisi](#hata-ve-arıza-teşhisi)
+    - [Giriş Doğrulama Hataları](#giriş-doğrulama-hataları)
+      - [Geçersiz Kullanıcı Adı](#geçersiz-kullanıcı-adı)
+      - [Geçersiz Bağlantı Portu](#geçersiz-bağlantı-portu)
+      - [Eksik Temel Kaynaklar](#eksik-temel-kaynaklar)
+    - [Süreç Yönetimi Hataları](#süreç-yönetimi-hataları)
+      - [Oyun Sürecini Başlatmada Zorluk](#oyun-sürecini-başlatmada-zorluk)
+    - [DLL Enjeksiyonu Sorunları](#dll-enjeksiyonu-sorunları)
+      - [`LoadLibraryW` Bulunamıyor](#loadlibraryw-bulunamıyor)
+      - [Uzak Bellek Ayırma Hatası](#uzak-bellek-ayırma-hatası)
+      - [Sürece Veri Yazılamaması](#sürece-veri-yazılamaması)
+      - [Enjeksiyon Thread'i Oluşturma Hatası](#enjeksiyon-threadi-oluşturma-hatası)
+      - [Enjeksiyon Beklenirken Zaman Aşımı veya Hata](#enjeksiyon-beklenirken-zaman-aşımı-veya-hata)
+      - [DLL Enjeksiyonunda Dahili Hata](#dll-enjeksiyonunda-dahili-hata)
+    - [Oyunun Yürütülmesine Devam Etmede Zorluk](#oyunun-yürütülmesine-devam-etmede-zorluk)
   - [Lisans](#lisans)
     - [Kullanım Şartları ve Koşulları](#kullanım-şartları-ve-koşulları)
       - [1. Verilen İzinler](#1-verilen-i̇zinler)
@@ -72,1047 +82,679 @@ Maksimum esneklik ve kolay entegrasyon sağlamak amacıyla geliştirilen bu `hea
       - [3. Telif Hakları](#3-telif-hakları)
       - [4. Garanti Reddi ve Sorumluluk Sınırlaması](#4-garanti-reddi-ve-sorumluluk-sınırlaması)
 
-## Temel Kavramlar ve Motivasyon
+## Genel Bakış ve Amaç
 
-### Neden DLL Enjeksiyonu?
+**SA-MP Injector C++**, San Andreas Multiplayer (SA-MP) ve Open Multiplayer (OMP) sunucularına başlatma ve bağlanma sürecini otomatikleştirmek için tasarlanmış, kompakt ve kolay entegre edilebilir bir C++ kütüphanesidir. `gta_sa.exe`'yi doğrudan başlatmaktan farklı olarak, bu çözüm `samp.dll` veya `omp-client.dll` kütüphanelerini programlı bir şekilde Grand Theft Auto: San Andreas oyun sürecine kontrollü bir biçimde yükler.
 
-> [!NOTE]
-> **DLL (Dynamic Link Library) enjeksiyonu**, **Microsoft Windows** işletim sistemlerinde başka bir çalışan sürecin bellek alanına kod çalıştırmayı sağlayan bir yöntemdir. Hata ayıklama ve program izlemeden, uygulamaların davranışlarını değiştirerek işlevselliklerini genişletmeye kadar birçok meşru uygulamaya sahip güçlü bir tekniktir.
+Ana amacı, C++ geliştiricilerinin özel `launcher`lar, topluluk yönetim araçları veya önceden tanımlanmış bağlantı parametreleriyle (kullanıcı adı, IP adresi, port ve şifre gibi) GTA:SA'yı başlatması gereken yardımcı programlar oluşturmalarını sağlamak, böylece akıcı ve otomatikleştirilmiş bir kullanıcı deneyimi sunmaktır.
 
-**GTA San Andreas** gibi orijinal olarak çok oyunculu işlevsellik için geliştirilmemiş oyunlar bağlamında, **DLL enjeksiyonu**, **SA-MP** ve **OMP** gibi çok oyunculu istemcilerin varlığının temelini oluşturur. Bu istemciler, `gta_sa.exe` sürecine enjekte edildiğinde kontrolü ele alan, oyunun işlevlerini kesen ve çok oyunculu sunucularla iletişim kuran **DLL'ler** olarak uygulanır.
+## Tasarım İlkeleri
 
-Dış bir başlatıcıya veya oyunun yürütülebilir dosyasını doğrudan değiştirmeye bağımlı olmak yerine, **DLL enjeksiyonu**, özellikle belirli sunuculara önceden tanımlanmış yapılandırmalarla bağlanmayı otomatikleştirmek istenen ortamlarda daha esnek ve programlanabilir bir başlatma sağlar.
+**SA-MP Injector C++**'ın mimarisi, güvenlik, verimlilik ve kullanım kolaylığına odaklanan modern tasarım ilkelerine dayanmaktadır.
 
-### SA-MP ve OMP: Farklılıklar ve Benzerlikler
+### Tamamen `Header-Only`
 
-**SA-MP** ve **OMP**, **GTA San Andreas** için iki ana çok oyunculu platformdur. Her ikisi de temel oyunu çok oyunculu bir çevrimiçi ortama dönüştüren modifikasyonlar olarak işlev görür.
+Bu kütüphane yalnızca başlık dosyaları (`.hpp`) aracılığıyla dağıtılır. Bu, ayrı kütüphaneleri derleme, `linker`ları yapılandırma veya ikili bağımlılıkları yönetme ihtiyacını ortadan kaldırarak C++ projelerine entegrasyonu büyük ölçüde basitleştirir.
+- **Anında Entegrasyon:** İlgili `header`ları dahil etmeniz yeterlidir.
+- **Derin Optimizasyon:** Derleyici, daha kompakt ve hızlı bir nihai kodla sonuçlanan agresif `inlining` ve `link-time` optimizasyonları yapabilir.
 
-- **SA-MP (San Andreas Multiplayer)**: Uzun yıllardır yaygın olarak kullanılan orijinal ve en köklü istemcidir. Çalışması için `samp.dll` gerekir.
-- **OMP (Open Multiplayer)**: Açık kaynaklı bir proje olup genellikle **SA-MP**'nin daha modern bir alternatifi veya halefi olarak görülür; performans, kararlılık ve ek özellikler açısından iyileştirmeler sunar. `omp-client.dll` gerektirir.
+### Güvenli Kaynak Yönetimi (RAII)
 
-Her ikisi de benzer şekilde çalışsa da (**GTA:SA** sürecine bir **DLL** enjekte ederek), **SA-MP Injector C++** kütüphanesi, her iki DLL'yi de desteklemek için özenle geliştirilmiştir ve dosya adlarındaki farklılıkları tanır. Bu, geliştiricinin bir yapılandırma parametresi aracılığıyla istenen çok oyunculu istemciyi seçmesine olanak tanır ve kütüphanenin çok çeşitli sunucular ve her iki platforma dayalı projelerle kullanılabilmesini sağlar.
+Kütüphane, **RAII (Resource Acquisition Is Initialization)** standardını kapsamlı bir şekilde kullanır. Windows'un süreç ve `thread` `handle`ları gibi kritik sistem kaynakları, özel `deleter`lara sahip `std::unique_ptr` ile sarmalanır. Bu, yürütme akışından veya istisnaların meydana gelmesinden bağımsız olarak, kaynakların her zaman doğru şekilde serbest bırakılmasını sağlar, sızıntıları önler ve uygulamanın kararlılığını artırır.
 
-## Kütüphanenin İç Mimarisi: Derinlemesine Bir İnceleme
+### Sağlamlık ve Hata Kontrolü
 
-**SA-MP Injector C++**, enjeksiyon sürecinin karmaşıklığını yönetmek için modüler ve nesne yönelimli (uygun olduğunda) bir yaklaşım benimser. Her başlık dosyası, genel işlevselliğin belirli bir parçasından sorumlu özel bir modüldür; bu, kodun netliğini, bakım kolaylığını ve genişletilebilirliğini teşvik eder.
+Enjeksiyonun her kritik adımı, katı doğrulamalardan önce gelir ve Windows API hata kontrolleri ile takip edilir. Detaylı hata mesajları, mümkün olduğunda sistem açıklamaları (`GetLastError()`) ile birlikte diyalog kutuları aracılığıyla son kullanıcıya sunulur. Bu yaklaşım, tanımsız davranış olasılığını en aza indirir ve bir arıza durumunda net bir teşhis sunar.
 
-### `constants.hpp`
+### C++ Standartları Esnekliği
 
-Bu dosya, kütüphanenin tüm sabit yapılandırmalarının temelini oluşturur. Tüm sabitleri kapsüllemek için bir `Constants` ad alanı tanımlar ve küresel kapsam kirliliğini önler. `inline constexpr` kullanımı burada çok önemlidir: `constexpr`, değerlerin derleme zamanında değerlendirildiğini ve performansı optimize ederek değişmezliği garanti ettiğini belirtir; `inline` ise dosyanın birden fazla derleme biriminde dahil edilmesi durumunda yeniden tanımlama sorunlarını önler.
+Kütüphane, C++14'ten C++20'ye kadar farklı C++ standartlarıyla uyumlu olacak şekilde oluşturulmuştur. Bu, mevcut olduğunda modern özellikleri (C++17+'dan `std::string_view`, `std::filesystem` ve `std::optional` gibi) kullanmaya izin veren, aynı zamanda C++14'teki eşdeğer yapılar için bir `fallback` sağlayan koşullu makrolar aracılığıyla başarılır. Bu yaklaşım, modernlikten ödün vermeden geniş uyumluluk sağlar.
+
+## Gerekli Ortam
+
+### Geliştirme İçin
+
+- **C++ Derleyicisi:** **C++14 veya üstü** ile uyumlu.
+   - Microsoft Visual C++ (Visual Studio 2015, 2017, 2019, 2022)
+   - GCC (sürüm 5 veya daha yeni)
+   - Clang (sürüm 3.6 veya daha yeni)
+- **İşletim Sistemi:** **Windows**.
+- **Windows SDK:** İşletim sistemi API'lerine erişim için gereklidir.
+- **Derleme Mimarisi:** **x86 (32-bit)**. Bu, `gta_sa.exe` ve SA-MP/OMP DLL'lerinin yalnızca bu mimaride çalışması nedeniyle katı bir gerekliliktir.
+
+### Çalıştırma İçin
+
+- **İşletim Sistemi:** Derlenmiş ikili ile uyumlu herhangi bir modern **Windows** sürümü.
+- **Grand Theft Auto: San Andreas (GTA:SA):** Oyunun geçerli bir kurulumu zorunludur.
+- **SA-MP veya OMP İstemci DLL'leri:** `samp.dll` veya `omp-client.dll` dosyaları, istenen enjeksiyon türüne karşılık gelecek şekilde oyunun kök dizininde bulunmalıdır.
+
+## Hızlı Başlangıç
+
+Kütüphanenin `header-only` doğası, herhangi bir C++ projesine dahil edilmesini kolaylaştırır.
+
+### Projeye Entegrasyon
+
+1.  **Header'ları İndirin:** Kütüphanenin `.hpp` dosyalarını edinin (depoyu klonlayarak veya doğrudan indirerek).
+2.  **Dosyaları Düzenleyin:** Projenizde kütüphane `header`ları için bir alt klasör oluşturmanız önerilir, örneğin, `Projem/libraries/samp-injector/`.
+3.  **Mimarisi Tanımlayın:** Projenizi **x86 (32-bit)** mimarisi için derlenecek şekilde yapılandırın.
 
 ```cpp
-#pragma once
+// Dizin yapısı örneği
+Projem/
+├── src/
+│   └── main.cpp
+├── libraries/
+│   └── samp-injector/
+│       ├── constants.hpp
+│       ├── error_utils.hpp
+│       ├── injector.hpp // Dahil edilecek ana başlık
+│       └── ... (diğer başlıklar)
+└── built/ (çıkış dizininiz)
+```
 
-namespace Constants {
-    // Game related constants
-    inline constexpr int MIN_PORT = 1;
-    inline constexpr int MAX_PORT = 65535;
-    inline constexpr int MAX_NICKNAME_LENGTH = 23;
-    
-    // File names
-    inline constexpr const wchar_t* SAMP_DLL_NAME = L"samp.dll";
-    inline constexpr const wchar_t* OMP_DLL_NAME = L"omp-client.dll";
-    inline constexpr const wchar_t* GAME_EXE_NAME = L"gta_sa.exe";
-    
-    // System libraries and functions
-    inline constexpr const char* KERNEL32_DLL = "kernel32.dll";
-    inline constexpr const char* LOAD_LIBRARY_FUNC = "LoadLibraryA"; // 'A' için ANSI/8-bit sürümü
-    
-    // Command line arguments used by SA-MP/OMP clients
-    inline constexpr const char* CMD_ARG_CONFIG = "-c";
-    inline constexpr const char* CMD_ARG_NICKNAME = "-n";
-    inline constexpr const char* CMD_ARG_HOST = "-h";
-    inline constexpr const char* CMD_ARG_PORT = "-p";
-    inline constexpr const char* CMD_ARG_PASSWORD = "-z";
-    
-    // Injection types as strings (wide-character)
-    inline constexpr const wchar_t* INJECT_TYPE_SAMP = L"samp";
-    inline constexpr const wchar_t* INJECT_TYPE_OMP = L"omp";
-    
-    // Error message titles for MessageBoxW
-    inline constexpr const wchar_t* ERROR_TITLE_SAMP = L"SA-MP Injector Error - SPC";
-    inline constexpr const wchar_t* ERROR_TITLE_OMP = L"OMP Injector Error - SPC";
-    
-    // Process creation flags for CreateProcessA
-    inline constexpr DWORD PROCESS_CREATION_FLAGS = CREATE_SUSPENDED | DETACHED_PROCESS;
-    
-    // Timeouts for WaitForSingleObject (e.g., waiting for DLL injection)
-    inline constexpr DWORD DLL_INJECTION_TIMEOUT_MS = 10000; // 10 saniye
-    
-    // Memory allocation flags for VirtualAllocEx
-    inline constexpr DWORD MEMORY_ALLOCATION_TYPE = MEM_COMMIT | MEM_RESERVE;
-    inline constexpr DWORD MEMORY_PROTECTION = PAGE_READWRITE; // DLL yolunu yazmak için gerekli
+### Basitleştirilmiş Kullanım Örneği
+
+Bir sunucuya bağlantıyı otomatikleştirmek için, sadece `Initialize_Game` fonksiyonunu çağırın ve ayrıntıları sağlayın.
+
+```cpp
+#include <iostream>
+#include <string>
+//
+#include "samp-launcher/injector.hpp" // Ana başlığı dahil edin
+
+int main() {
+    // Oyun başlatma ve bağlantı için parametreler
+    std::wstring inject_type = L"samp"; // Veya Open Multiplayer için L"omp"
+    std::wstring game_folder = L"C:\\Games\\GTA San Andreas"; // GTA:SA klasörünün tam yolu
+    std::wstring nickname = L"İsim";
+    std::wstring ip = L"127.0.0.1";
+    std::wstring port = L"7777";
+    std::wstring password = L""; // Şifre yoksa boş bırakın
+
+    // Oyunu başlatmak ve DLL'i enjekte etmek için ana çağrı
+    Initialize_Game(inject_type, game_folder, nickname, ip, port, password);
+
+    // Başarısızlık durumunda, bir Windows hata mesajı kutusu otomatik olarak görüntülenir.
+
+    return 0;
 }
 ```
 
-> [!TIP]
-> **Windows geliştirme** ortamında dosya adları ve hata mesajı başlıkları için `wchar_t` kullanımı önerilen bir uygulamadır. Bu, tüm diller ve karakter setleriyle uyumluluğu garanti eder, özellikle **Unicode karakterler** içeren dosya yolları için kullanışlıdır. `LoadLibraryA` gibi `char` bekleyen **API'ler** için dönüşüm `string_utils.hpp` içinde açıkça yapılır.
+## Kütüphane Yapısı
 
-### `types.hpp`
+Kütüphane, her biri iyi tanımlanmış sorumluluklara sahip, organizasyonu, bakımı ve yeniden kullanılabilirliği kolaylaştıran birkaç başlık dosyasına dikkatlice modülerleştirilmiştir.
 
-Desteklenen enjeksiyon türlerini kategorize eden bir numaralandırma tanımlayan kısa ama temel bir modüldür. Bu, kodun okunabilirliğini ve tür güvenliğini artırır, dize veya sihirli sayı hatalarını önler.
+### 1. `constants.hpp`
+
+Bu dosya, **SA-MP Injector C++**'ın davranışını ve birlikte çalışabilirliğini belirleyen tüm sabit ve değişmez değerlerin merkezi bir deposu olarak hizmet veren kütüphanenin **merkezi deposudur**. Mantıksal kategorilere göre organizasyonu, sadece kodun açıklığını ve okunabilirliğini artırmakla kalmaz, aynı zamanda bakımı kolaylaştırır ve kütüphane ekosistemi boyunca sıkı bir tutarlılık sağlar.
+
+Her sabit, `CONSTEXPR_VAR` ile tanımlanır, bu da `inline constexpr` (C++17+ için) veya `static constexpr` (C++14 için) olarak genişler, bu değerlerin derleme zamanında değerlendirilmesini sağlar, performansı ve tür güvenliğini optimize eder.
+
+Sabitlerin kategoriye göre düzenlenmesi, amaçlarının anlaşılmasını kolaylaştırır:
+
+- **Oyunla İlgili Sabitler (`Game Related Constants`)**
+   - `MIN_PORT`: Bir sunucuya bağlanmak için geçerli en düşük port numarasını tanımlayan bir `int` (değer: `1`).
+   - `MAX_PORT`: Bir sunucuya bağlanmak için geçerli en yüksek port numarasını belirleyen bir `int` (değer: `65535`).
+   - `MAX_NICKNAME_LENGTH`: Oyuncunun takma adı için izin verilen maksimum uzunluğu belirten bir `int` (değer: `23` karakter), SA-MP/OMP istemci özelliklerinin getirdiği bir sınırdır.
+
+- **Temel Dosya Adları (`File Names`)**
+   - `SAMP_DLL_NAME`: SA-MP istemcisinin ana kütüphane dosyasının adını içeren bir `const wchar_t*` (değer: `L"samp.dll"`). Klasik istemcinin enjeksiyonu için esastır.
+   - `OMP_DLL_NAME`: Open Multiplayer istemci kütüphanesinin dosya adını içeren bir `const wchar_t*` (değer: `L"omp-client.dll"`). Özellikle OMP türü enjeksiyonlarda kullanılır.
+   - `GAME_EXE_NAME`: Temel Grand Theft Auto: San Andreas oyununun çalıştırılabilir dosyasının adını saklayan bir `const wchar_t*` (değer: `L"gta_sa.exe"`). Enjeksiyonun ana hedefi.
+
+- **Sistem API'leri ve Fonksiyonları (`System Libraries and Functions`)**
+   - `KERNEL32_DLL`: Windows sistem kütüphanesinin adını tanımlayan bir `const wchar_t*` (değer: `L"kernel32.dll"`). Bu DLL, enjektörün kullandığı süreç ve bellek işleme fonksiyonlarını barındırdığı için hayati önem taşır. `wchar_t` kullanımı, `GetModuleHandleW` gibi geniş karakterleri işleyen API fonksiyonlarıyla uyumluluğu garanti eder.
+   - `LOAD_LIBRARY_FUNC`: Bir DLL'i dinamik olarak yüklemek için fonksiyonun adını içeren bir `const char*` (değer: `"LoadLibraryW"`). Kütüphane öncelikle geniş karakterlerle çalışsa da, Windows API'sinin `GetProcAddress` fonksiyonu ANSI formatında (`char*`) bir fonksiyon adı gerektirir.
+
+- **Komut Satırı Argümanları (`Command Line Arguments`)**
+   - Bu sabitler, istemci bağlantısını yapılandırmak için `gta_sa.exe`'ye geçirilen argümanların öneklerini tanımlar. `CreateProcessW` ile uyumluluk için `Wide Character` (`const wchar_t*`) olarak sağlanırlar.
+      - `CMD_ARG_CONFIG`: Genel ayarlar için argüman (değer: `L"-c"`).
+      - `CMD_ARG_NICKNAME`: Oyuncu takma adı için argüman (değer: `L"-n"`).
+      - `CMD_ARG_HOST`: Sunucu IP adresi için argüman (değer: `L"-h"`).
+      - `CMD_ARG_PORT`: Sunucu portu için argüman (değer: `L"-p"`).
+      - `CMD_ARG_PASSWORD`: Sunucu şifresi için argüman (değer: `L"-z"`). Yalnızca bir şifre sağlandığında kullanılır.
+
+- **Enjeksiyon Türü Tanımlayıcıları (`Injection types as strings`)**
+   - `INJECT_TYPE_SAMP`: SA-MP enjeksiyon türünün string temsilcisi için bir `const wchar_t*` (değer: `L"samp"`).
+   - `INJECT_TYPE_OMP`: OMP enjeksiyon türünün string temsilcisi için bir `const wchar_t*` (değer: `L"omp"`).
+
+- **Hata Mesajı Başlıkları (`Error message titles`)**
+   - `ERROR_TITLE_SAMP`: SA-MP hatalarıyla ilgili hata diyalog kutuları için varsayılan başlığı tanımlayan bir `const wchar_t*` (değer: `L"SA-MP Injector Error - SPC"`).
+   - `ERROR_TITLE_OMP`: OMP hatalarıyla ilgili hata diyalog kutuları için varsayılan başlığı tanımlayan bir `const wchar_t*` (değer: `L"OMP Injector Error - SPC"`).
+
+- **Süreç Oluşturma Bayrakları (`Process creation`)**
+   - `PROCESS_CREATION_FLAGS`: `CreateProcessW`'e geçirilen bayrakları kapsayan bir `DWORD`. Özellikle, oyun sürecini duraklatılmış bir durumda başlatan `CREATE_SUSPENDED` (`0x00000004`) ve yeni süreci ana sürecin konsolundan ayıran `DETACHED_PROCESS` (`0x00000008`) içerir.
+
+- **Zaman Aşımları (`Timeouts`)**
+   - `DLL_INJECTION_TIMEOUT_MS`: Kütüphanenin, DLL enjeksiyonundan sorumlu uzak `thread`in tamamlanmasını bekleyeceği maksimum süreyi (milisaniye cinsinden) belirten bir `DWORD` (değer: `10000ms` veya 10 saniye).
+
+- **Bellek Ayırma Bayrakları (`Memory allocation`)**
+   - Bu sabitler, `VirtualAllocEx` ve `VirtualProtect` gibi bellek işleme API çağrıları için kullanılır.
+      - `MEM_COMMIT`: Sanal bellekte sayfaları ayırır ve onları "commitle" (fiziksel bellek ayırır) (değer: `0x1000`).
+      - `MEM_RESERVE`: Yalnızca daha sonra kullanılmak üzere bir sanal adres alanı aralığını ayırır (değer: `0x2000`).
+      - `MEM_RELEASE`: Bir sayfa bölgesini "decommit" eder ve serbest bırakır (değer: `0x8000`).
+      - `MEMORY_ALLOCATION_TYPE`: Uzak süreçteki DLL yolu için başlangıç belleğini ayırmak için kullanılan `MEM_COMMIT` ve `MEM_RESERVE` kombinasyonu.
+      - `MEMORY_PROTECTION`: Bellek koruma izinlerini tanımlayan bir `DWORD` (değer: `PAGE_READWRITE` veya Windows API'de `0x04`), ayrılan bellekte okuma ve yazmaya izin verir.
+
+### 2. `types.hpp`
+
+Bu kısa dosya, farklı enjeksiyon yöntemlerini tipleştirmek için bir `enum class` sunar. String sabitleri yerine numaralandırılmış bir türün kullanılması, kod güvenliğini artırır, yazım hatalarını önler ve okunabilirliği iyileştirir.
+
+- **`Inject_Type`:** `SAMP` ve `OMP` olmak üzere iki üyeli bir `enum class`, enjekte edilecek istemci türlerini temsil eder.
 
 ```cpp
-#pragma once
-
+// types.hpp örneği
 namespace Types {
-    // Desteklenen enjeksiyon türleri için numaralandırmalar
     enum class Inject_Type {
-        SAMP, // San Andreas Multiplayer
-        OMP // Open Multiplayer
+        SAMP, // SA-MP istemcisi için enjeksiyonu belirtir
+        OMP // Open Multiplayer istemcisi için enjeksiyonu belirtir
     };
 }
 ```
 
-### `string_utils.hpp`
+### 3. `version.hpp`
 
-**Windows API** ile çalışmak genellikle farklı dize kodlamaları arasında dönüşüm yapmayı gerektirir. Bu dosya, kütüphanenin girişlerinde kullanılan **geniş karakter** dizilerinden (`std::wstring_view`) **ANSI/8-bit** dizilere (`std::string`) dönüşüm yapmak için hayati bir yardımcı işlev sağlar; bu, `CreateProcessA` veya `GetProcAddress` gibi `char*` bekleyen **WinAPI** işlevleri için gereklidir.
+Bir uyumluluk adaptörü olarak hareket eden bu başlık, derleyici tarafından kullanılan C++ standardını dinamik olarak algılar. Kütüphaneyi, mevcut olduğunda en gelişmiş C++ özelliklerini (örneğin `std::string_view` veya `std::filesystem`) kullanmaya yönlendiren koşullu makrolar (`SAMP_INJECTOR_CXX_14`, `SAMP_INJECTOR_CXX_MODERN`) tanımlarken, C++14 ortamlarında tam işlevsellik sağlar.
+
+- **`SAMP_INJECTOR_CXX_14`:** C++ standardı C++14 ise tanımlanır.
+- **`SAMP_INJECTOR_CXX_MODERN`:** C++17 veya üstü için tanımlanır, daha yeni dil özelliklerini etkinleştirir.
+- **`SAMP_INJECTOR_NODISCARD`:** `[[nodiscard]]` özniteliğini destekleyen C++ sürümlerine uyarlar, dönüş değerlerinin kontrol edilmesini teşvik eder.
 
 ```cpp
-#pragma once
+// version.hpp'den ilgili bölüm örneği
+#if (defined(_MSC_VER) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L
+    #define SAMP_INJECTOR_CXX_MODERN // C++17+ modern özelliklerini etkinleştirir
+#endif
 
-#include <string>
-#include <string_view>
-#include <windows.h> // WideCharToMultiByte için gerekli
-
-namespace Utils {
-    inline std::string Wide_To_Local_8Bit(std::wstring_view wstr) {
-        if (wstr.empty())
-            return "";
-        
-        // Sonuç dizesi için gereken tampon boyutunu belirler
-        int size = WideCharToMultiByte(CP_ACP, // ANSI Kod Sayfası (yerel sisteme bağlı)
-            0, // Ek bayrak yok
-            wstr.data(), 
-            static_cast<int>(wstr.size()), 
-            nullptr, // Boyut hesaplanır, tampon doldurulmaz
-            0, // Boyut 0, sadece hesaplama için
-            nullptr, // Temsil edilemeyen karakterler için varsayılan karakter
-            nullptr); // Varsayılan karakterin kullanıldığını belirten bool işaretçisi
-
-        if (size <= 0) // Hata veya geçersiz boyut durumunda boş dize döndür
-            return "";
-
-        std::string result(size, 0); // Belirlenen boyutta dize ayır
-        // Gerçek dönüşümü gerçekleştir ve 'result' tamponunu doldur
-        WideCharToMultiByte(CP_ACP, 
-            0, 
-            wstr.data(), 
-            static_cast<int>(wstr.size()), 
-            result.data(), // Hedef tampon
-            size, // Hedef tamponun boyutu
-            nullptr, 
-            nullptr);
-
-        return result;
-    }
-}
+#if defined(SAMP_INJECTOR_CXX_MODERN)
+    #define SAMP_INJECTOR_NODISCARD [[nodiscard]] // C++17'nin nodiscard özniteliğini kullanır
+#elif defined(SAMP_INJECTOR_CXX_14)
+    #define SAMP_INJECTOR_NODISCARD // C++14 için öznitelik devre dışı bırakılır
+#endif
 ```
 
-> [!IMPORTANT]
-> `WideCharToMultiByte` içinde kullanılan `CP_ACP` **(ANSI Kod Sayfası)**, **Windows** sisteminin varsayılan kod sayfasıdır. Bu, dönüşümün kullanıcının sistem dil ayarlarına bağlı olarak değişebileceği anlamına gelir. **SA-MP**/**OMP**'nin dosya adları ve komut satırı argümanları için (tarihsel olarak **ANSI** dizelerle iyi çalışır) bu yaklaşım genellikle yeterlidir. Ancak, harici sistemler veya küresel girişlerle tam **Unicode** uyumluluğu gerektiren senaryolarda, **UTF-8** (`CP_UTF8`) veya diğer kod sayfalarına dönüşüm gerekli olabilir. Bu projenin kapsamı için `CP_ACP`, işlevsel varsayılandır.
+### 4. `error_utils.hpp`
 
-### `error_utils.hpp`
+Bu yardımcı program, hata geri bildiriminin yönetimine ve sunumuna adanmıştır. Sistem hata mesajlarını kurtarmak için Windows mekanizmalarını soyutlar ve kullanıcıyı sorunlar hakkında bilgilendirmek için birleşik bir arayüz sunar.
 
-Kütüphanenin kullanılabilirliği için temel bir bileşen olan bu dosya, sistem hata mesajlarını alma ve diyalog kutuları görüntüleme mantığını merkezileştirir.
+- **`Get_System_Error_Message`:** Bir Windows hata kodunu (`GetLastError()`) okunabilir bir `std::wstring`'e çevirir, bu da doğru teşhis için çok önemlidir.
+- **`Show_Error`:** SA-MP veya OMP için özel bir başlıkla sağlanan hata mesajını içeren bir diyalog kutusu (`MessageBoxW`) sunar, kullanıcıyla net bir iletişim sağlar.
 
 ```cpp
-#pragma once
-
-#include <string>
-#include <string_view>
-#include <windows.h> // FormatMessageW ve MessageBoxW için
-//
-#include "types.hpp"
-#include "constants.hpp"
-
-namespace Utils {
-    // Belirli bir hata kodu için Windows sistem hata mesajını döndürür
+// error_utils.hpp'den ilgili bölüm örneği
+namespace Error_Utils {
+    SAMP_INJECTOR_NODISCARD
     inline std::wstring Get_System_Error_Message(DWORD error_code) {
-        wchar_t buffer[512] = {0}; // Mesaj için tampon
-        // FormatMessageW, sistemin hata açıklamasıyla tamponu doldurur
-        DWORD result = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, 
-            nullptr, // Mesaj kaynağı (sistemden)
-            error_code, 
-            0, // Dil (varsayılan kullan)
-            buffer, 
-            512, // Tampon boyutu
-            nullptr);
+        if (error_code == 0)
+            return L"No error occurred.";
         
-        // İşlev başarılı olursa tampon dizesini döndür; aksi takdirde genel bir mesaj
-        return result ? std::wstring(buffer) : L"Unknown error (Code: " + std::to_wstring(error_code) + L")";
+        // ... Sistem mesajını biçimlendirme mantığı ...
     }
 
-    // Kullanıcıya hata mesajı kutusu gösterir
-    inline void Show_Error(std::wstring_view message, Types::Inject_Type injectType) {
-        // Enjeksiyon türüne bağlı olarak diyalog kutusu başlığını seç
-        std::wstring title = (injectType == Types::Inject_Type::SAMP) ? Constants::ERROR_TITLE_SAMP : Constants::ERROR_TITLE_OMP;
-        MessageBoxW(nullptr, // Üst pencere tutamacı (nullptr masaüstü için)
-            message.data(), 
-            title.c_str(), 
-            MB_OK | MB_ICONERROR); // Tamam düğmesi ve hata simgesi
+    inline void Show_Error(std::wstring_view message, Types::Inject_Type inject_type) {
+        const std::wstring title = (inject_type == Types::Inject_Type::SAMP) ? Constants::ERROR_TITLE_SAMP : Constants::ERROR_TITLE_OMP;
+        MessageBoxW(nullptr, message.data(), title.c_str(), MB_OK | MB_ICONERROR);
     }
 }
 ```
 
-> [!NOTE]
-> `FormatMessageW`, sistem hata kodunun metinsel açıklamasını alan güçlü bir **Windows API**'sidir. Etkili **tanılama** için net mesajlar sağlar ve `DWORD` gibi `ERROR_FILE_NOT_FOUND` (2) kodunu `L"Sistem belirtilen dosyayı bulamıyor."` gibi bir mesaja dönüştürür.
+### 5. `validation.hpp`
 
-### `resource_handle.hpp`
+Kütüphanenin sağlamlığının ön saflarında yer alan bu başlık, giriş verilerinin geçerliliğini ve gerekli dosyaların varlığını kontrol etmek için sıkı rutinler sağlar. Bu kontroller, sistemle herhangi bir alt düzey etkileşimden önce gerçekleştirilir, `runtime` risklerini azaltır ve proaktif geri bildirim sağlar.
 
-**Windows** **tutamaçlarının** (`HANDLE`) güvenli yönetimi, kaynak sızıntılarını ve tanımsız davranışları önlemek için kritik öneme sahiptir. Bu dosya, `CloseHandle` için özel bir işlevle `std::unique_ptr` kullanan bir `UniqueResource` tanımlar. Bu, **RAII (Resource Acquisition Is Initialization)** ilkesini takip eder ve **tutamaçların** nesne kapsam dışına çıktığında otomatik olarak kapatılmasını sağlar, hatta istisnalar durumunda bile.
+- **`Validate_Port`:** Port dizesinin bir tamsayıyı temsil edip etmediğini ve yapılandırılmış aralıkta (`MIN_PORT` ile `MAX_PORT` arasında) olup olmadığını doğrular.
+- **`Validate_Nickname`:** Takma adın boş olmadığını ve uzunluğunun `MAX_NICKNAME_LENGTH`'ı aşmadığını kontrol eder.
+- **`Validate_Files`:** `gta_sa.exe`, `samp.dll` ve koşullu olarak OMP enjeksiyonu için `omp-client.dll`'nin fiziksel varlığını doğrular. Uygulama, `std::filesystem` (C++17+) veya `GetFileAttributesW` (C++14) 'e uyum sağlar.
 
 ```cpp
-#pragma once
+// validation.hpp'den ilgili bölüm örneği
+namespace Validation {
+    inline bool Validate_Nickname(std::wstring_view nickname_str, std::wstring& error_message) {
+        if (nickname_str.empty())
+            return (error_message = L"Nickname cannot be empty. Please provide a valid nickname.", false);
+        
+        if (nickname_str.length() > Constants::MAX_NICKNAME_LENGTH)
+            return (error_message = L"Nickname length exceeds the maximum allowed of " + std::to_wstring(Constants::MAX_NICKNAME_LENGTH) + L" characters. Please use a shorter nickname.", false);
+        
+        return true;
+    }
 
-#include <memory> // std::unique_ptr için
-#include <functional> // std::function için
-#include <windows.h> // HANDLE ve CloseHandle için
+    inline bool Validate_Files(const std::filesystem::path& game_path, const std::filesystem::path& samp_DLL_path, const std::filesystem::path& omp_DLL_path, Types::Inject_Type inject_type) {
+        if (!std::filesystem::exists(game_path))
+            return (Error_Utils::Show_Error(L"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: " + game_path.wstring(), inject_type), false);
+        
+        // ... Diğer dosya kontrolleri ...
+        return true;
+    }
+}
+```
 
-namespace Utils {
-    // HANDLE veya işaretçi yöneten std::unique_ptr için tür takma adı
-    // T: Yönetilecek kaynak türü (ör: HANDLE, LPVOID)
-    // Deleter: Kaynağı nasıl serbest bırakacağını bilen bir sınıf veya lambda
+### 6. `resource_handle.hpp`
+
+Windows'un `HANDLE`'ları gibi işletim sistemi kaynaklarının yönetimi için zarif ve güvenli bir strateji uygular. RAII ilkesini kullanarak, ayrılan tüm kaynakların uygun şekilde serbest bırakılmasını sağlar, sızıntıları önler ve uygulamanın kararlılığını güçlendirir.
+
+- **`Unique_Resource`:** `std::unique_ptr`'ı özel `deleter`larla çalışacak şekilde uyarlayan bir `alias template`, belirli bir serbest bırakma fonksiyonu gerektiren her türlü kaynağın yönetilmesine olanak tanır.
+- **`Make_Unique_Handle`:** Windows `HANDLE`'ları için önceden yapılandırılmış bir `Unique_Resource` oluşturan ve döndüren kullanışlı bir `factory` fonksiyonu. İlişkili `deleter`, `Unique_Resource` kapsam dışına çıktığında otomatik olarak `CloseHandle`'ı çağırır, kaynağın anında boşaltılmasını sağlar.
+
+```cpp
+// resource_handle.hpp'den ilgili bölüm örneği
+namespace Resource_Handle {
+    // Sistem kaynaklarını yönetmek için özel bir std::unique_ptr.
     template<typename T, typename Deleter>
-    using UniqueResource = std::unique_ptr<std::remove_pointer_t<T>, Deleter>;
+    using Unique_Resource = std::unique_ptr<std::remove_pointer_t<T>, Deleter>;
 
-    // HANDLE'lar için UniqueResource örneği oluşturan yardımcı işlev
-    // T'nin bir tutamaç türü olduğunu varsayar ve CloseHandle'ı deleter olarak kullanır.
+    // Bir HANDLE için CloseHandle çağıran bir deleter ile Unique_Resource oluşturur.
     template<typename T>
     inline auto Make_Unique_Handle(T handle) {
-        return UniqueResource<T, std::function<void(T)>>(handle, [](T h) {
-            // Tutamacın geçerli olduğunu kontrol eden koşul
-            // Çoğu tutamaç için 0 ve INVALID_HANDLE_VALUE geçersizdir
-            if (h && h != INVALID_HANDLE_VALUE)
-                CloseHandle(h); // İşletim sistemi tutamacını serbest bırakır
+        return Unique_Resource<T, std::function<void(T)>>(handle, [](T h) {
+            if (h && h != INVALID_HANDLE_VALUE) // Kapatmadan önce handle'ın geçerli olduğundan emin olur
+                CloseHandle(h);
         });
     }
 }
 ```
 
-> [!IMPORTANT]
-> `UniqueResource` kullanımı, **modern C++** ve güvenli **Windows** geliştirmedeki iyi uygulamaları gösterir. **Tutamaçların** yaşam döngüsünü büyük ölçüde basitleştirir; düzgün kapatılmadığında sistem kararlılığını uzun vadede etkileyebilecek **bellek** veya **çekirdek kaynak** sızıntılarına yol açabilir.
+### 7. `privileges.hpp`
 
-### `validation.hpp`
+Bu bileşen, uygulamanın süreç güvenlik ortamını yapılandırmaktan sorumludur. Kütüphanenin Windows'un harici süreçlerinde DLL enjeksiyonu işlemleri gerçekleştirebilmesi için temel bir gereklilik olan hata ayıklama ayrıcalığını (`SE_DEBUG_NAME`) etkinleştirerek ayrıcalıkları yükseltme işlevselliğini içerir.
 
-Enjeksiyonun sağlamlığı, kullanıcı girişlerinin doğrulanması ve dosya bağımlılıklarının kontrol edilmesiyle başlar. Bu modül, enjeksiyon sürecine başlamadan önce tüm ön koşullar ve parametrelerin doğru olduğunu garanti eden işlevler içerir ve daha karmaşık hataları önler.
+- **`Enable_Debug_Privilege`:** Bu fonksiyon, çalışan süreç için `SE_DEBUG_NAME` ayrıcalığını edinmeye ve etkinleştirmeye çalışır. Uygulamaya, bellek ayırma ve uzaktan `thread` oluşturma gibi diğer süreçleri işlemek için gerekli izinleri vermek için çok önemli bir başlangıç adımıdır. Başarılı olursa `true` döner.
 
 ```cpp
-#pragma once
+// privileges.hpp'den ilgili bölüm örneği
+namespace Privileges {
+    inline bool Enable_Debug_Privilege() {
+        HANDLE token_handle;
 
-#include <string>
-#include <string_view>
-#include <filesystem> // std::filesystem::exists için
-//
-#include "constants.hpp"
-#include "types.hpp"
-#include "string_utils.hpp" // Wide_To_Local_8Bit için
-#include "error_utils.hpp" // Show_Error için
+        // Ayrıcalıkları ayarlamak için mevcut sürecin token'ını açmaya çalışır
+        if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token_handle))
+            return false;
 
-namespace Utils {
-    // Port dizesinin geçerli bir sayı olup olmadığını ve izin verilen aralıkta olup olmadığını doğrular
-    inline bool Validate_Port(std::wstring_view port_str, std::wstring& error_message) {
-        try {
-            // Geniş karakter dizesini std::string'e ve ardından int'e dönüştürmeyi dener
-            int port_num = std::stoi(Wide_To_Local_8Bit(port_str));
+        auto handle_guard = Resource_Handle::Make_Unique_Handle(token_handle); // Handle'ın güvenli yönetimi
 
-            // Portun geçerli aralıkta (1-65535) olup olmadığını kontrol eder
-            if (port_num < Constants::MIN_PORT || port_num > Constants::MAX_PORT)
-                return (error_message = L"Belirtilen port numarası (" + std::wstring(port_str) + 
-                L") geçerli aralığın dışında: " +  std::to_wstring(Constants::MIN_PORT) + 
-                L" ile " + std::to_wstring(Constants::MAX_PORT) + 
-                L". Lütfen geçerli bir port sağlayın.", false);
+        TOKEN_PRIVILEGES tp;
+        LUID luid;
 
-            return true;
-        }
-        catch (...) { // Herhangi bir istisna yakalar (örneğin sayısal olmayan için std::invalid_argument)
-            return (error_message = L"Geçersiz port formatı. Port sayısal bir değer olmalıdır. Lütfen port için geçerli bir tamsayı sağlayın.", false);
-        }
-    }
-
-    // Kullanıcı adının boş olmadığını ve kabul edilebilir uzunlukta olduğunu doğrular
-    inline bool Validate_Nickname(std::wstring_view nickname_str, std::wstring& error_message) {
-        if (nickname_str.empty())
-            return (error_message = L"Kullanıcı adı boş olamaz. Lütfen geçerli bir kullanıcı adı sağlayın.", false);
+        // SE_DEBUG_NAME ayrıcalığı için LUID değerini arar
+        if (!LookupPrivilegeValue(nullptr, SE_DEBUG_NAME, &luid))
+            return false;
         
-        if (nickname_str.size() > Constants::MAX_NICKNAME_LENGTH)
-            return (error_message = L"Kullanıcı adı uzunluğu, izin verilen maksimum " + 
-                std::to_wstring(Constants::MAX_NICKNAME_LENGTH) + 
-                L" karakteri aşıyor. Lütfen daha kısa bir kullanıcı adı kullanın.", false);
+        tp.PrivilegeCount = 1;
+        tp.Privileges[0].Luid = luid;
+        tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; // Ayrıcalığı etkinleştirir
 
-        return true;
-    }
-
-    // Kritik dosyaların (gta_sa.exe, samp.dll, omp-client.dll) varlığını doğrular
-    inline bool Validate_Files(const std::filesystem::path& game_path, 
-        const std::filesystem::path& samp_DLL_path, 
-        const std::filesystem::path& omp_DLL_path, 
-        Types::Inject_Type inject_type) {
-        std::wstring error_message_local; // Show_Error'a geçmeden önce yerel bir değişken kullanır
-        
-        // Oyun yürütülebilir dosyasının varlığını kontrol eder
-        if (!std::filesystem::exists(game_path)) {
-            error_message_local = L"Oyun yürütülebilir dosyası bulunamadı. Lütfen 'gta_sa.exe' dosyasının belirtilen yolda mevcut olduğundan emin olun: " + game_path.wstring();
-            Show_Error(error_message_local, inject_type);
-            
+        // Sürecin ayrıcalıklarını ayarlar
+        if (!AdjustTokenPrivileges(token_handle, FALSE, &tp, sizeof(TOKEN_PRIVILEGES), nullptr, nullptr))
             return false;
-        }
 
-        // samp.dll dosyasının varlığını kontrol eder (her iki enjeksiyon türü için gerekli)
-        if (!std::filesystem::exists(samp_DLL_path)) {
-            error_message_local = L"SA-MP kütüphanesi bulunamadı. Lütfen 'samp.dll' dosyasının belirtilen yolda mevcut olduğundan emin olun: " + samp_DLL_path.wstring();
-            Show_Error(error_message_local, inject_type);
-
-            return false;
-        }
-
-        // Enjeksiyon türü OMP ise omp-client.dll dosyasının varlığını kontrol eder
-        if (inject_type == Types::Inject_Type::OMP && !std::filesystem::exists(omp_DLL_path)) {
-            error_message_local = L"OMP kütüphanesi bulunamadı. OMP enjeksiyonu için lütfen 'omp-client.dll' dosyasının belirtilen yolda mevcut olduğundan emin olun: " + omp_DLL_path.wstring();
-            Show_Error(error_message_local, inject_type);
-
-            return false;
-        }
-
-        return true; // Gerekli tüm dosyalar bulundu
+        return GetLastError() == ERROR_SUCCESS; // İşlem başarılıysa (bekleyen hata yoksa) true döner
     }
 }
 ```
 
-> [!NOTE]
-> `std::filesystem`, **C++17**'nin güçlü ve platformdan bağımsız bir şekilde dosya sistemiyle etkileşim kurmayı sağlayan modern bir ekidir. **Windows** için bu proje bağlamında, eski **WinAPI**'lere kıyasla dosya yollarının işlenmesini ve dosya varlığının kontrolünü basitleştirir.
->
-> `std::filesystem`'i kullanmak için derleyicinizin **C++17**'yi desteklediğinden emin olun. Projenizi **C++17** standardını kullanacak şekilde yapılandırmanız gerekir (**Visual Studio**'da `/std:c++17`).
+### 8. `process.hpp`
 
-### `process.hpp`
+Bu, kütüphanenin en kritik bileşenlerinden biridir ve Windows süreçleriyle etkileşim için alt düzey uygulamayı içerir. Oyun sürecini oluşturma, bellek ayırma, veri yazma ve uzaktan `thread` oluşturma yoluyla DLL enjeksiyon tekniği gibi karmaşık işlemleri kapsar.
 
-Bu, düşük seviyeli **Windows API**'leriyle doğrudan etkileşim kurarak süreçleri manipüle etmekten sorumlu ana modüldür. Süreç oluşturma ve **DLL enjeksiyonu** için kritik işlemleri kapsar; **tutamaçlar**, **bellek** ve **iş parçacıkları** ile ilgilenir.
+- **`Process_Info` struct:** Oyunun süreç `HANDLE`'ı (`process_handle`) ve ana `thread`'in `HANDLE`'ı (`thread_handle`) için `Unique_Resource`'ları saklayan bir iç yapı. Enjeksiyon tamamlandığında oyunun ana `thread`ini yeniden etkinleştirmek için bir `Resume()` metodu içerir.
+- **`Injection_Status` enum class:** DLL enjeksiyon işlemi için olası sonuçların ayrıntılı bir listesini tanımlar, arızaların hassas bir şekilde teşhis edilmesini sağlar.
+- **`Create_Game_Process`:**
+   - `gta_sa.exe` çalıştırılabilir dosyasını başlatmak için Windows API'sinin `CreateProcessW` fonksiyonunu kullanır.
+   - Sürecin `CREATE_SUSPENDED` bayrağıyla (`Constants::PROCESS_CREATION_FLAGS` içinde bulunur) oluşturulması esastır. Bu, oyunun oluşturulduktan hemen sonra, herhangi bir kod çalıştırılmadan önce duraklatılmasını sağlar, böylece DLL enjeksiyonunun güvenli bir durumda gerçekleşmesine olanak tanır.
+   - Süreç ve `thread`'in kapsüllenmiş `handle`'larını içeren bir `std::optional<Process_Info>` (C++17+ için) veya bir `std::unique_ptr<Process_Info>` (C++14 için) döndürür.
+- **`Inject_DLL`:**
+   - `CreateRemoteThread` aracılığıyla standart DLL enjeksiyon tekniğini uygular:
+      1.  **Adres Alımı:** `constants.hpp`'deki sabitleri kullanarak, Windows'un dinamik kütüphaneleri yüklemek için kullandığı `LoadLibraryW` fonksiyonunun (`kernel32.dll`'den) adresini bulur.
+      2.  **Bellek Ayırma:** `VirtualAllocEx`, oyun süreci (`gta_sa.exe`) içinde sanal bir bellek bloğu ayırmak için kullanılır. Bu blok, enjekte edilecek DLL'nin tam yolunu içerecek şekilde boyutlandırılır.
+      3.  **Yolun Yazılması:** DLL'nin yolu (örneğin, `L"C:\\yol\\için\\samp.dll"`) daha sonra `WriteProcessMemory` aracılığıyla oyun sürecinde uzaktan ayrılan belleğe kopyalanır.
+      4.  **Uzak Thread Oluşturma:** `CreateRemoteThread`, oyun sürecinin bağlamında yeni bir `thread` başlatır. Bu `thread`'in giriş noktası `LoadLibraryW`'nin adresidir ve geçirilen argüman, az önce yazdığımız DLL yolu dizesinin adresidir.
+      5.  **İzleme:** Uzak `thread`'in yürütülmesi, tamamlanana veya `DLL_INJECTION_TIMEOUT_MS`'e ulaşılana kadar `WaitForSingleObject` tarafından izlenir.
+      6.  **Başarı Kontrolü:** `GetExitCodeThread`, uzak `thread`'in dönüş değerini kontrol etmek için kullanılır. Eğer `LoadLibraryW` başarılı olduysa, yüklenen DLL'nin taban adresini (sıfırdan farklı bir değer) döndürür.
+      7.  **Temizlik:** Uzak süreçte ayrılan bellek `VirtualFreeEx` tarafından serbest bırakılır.
+   - Enjeksiyonun başarısını veya belirli bir arıza türünü belirten bir `Injection_Status` döndürür.
 
 ```cpp
-#pragma once
-
-#include <string_view>
-#include <optional> // std::optional için
-#include <functional> // std::function için (UniqueResource'da kullanılır)
-#include <windows.h> // Windows API'leri
-#include <memory> // std::unique_ptr için
-#include <vector> // std::vector için (argüman tamponu)
-//
-#include "resource_handle.hpp" // Tutamaçlar için sarmalayıcımız
-#include "error_utils.hpp" // Get_System_Error_Message ve Show_Error için
-#include "constants.hpp" // Genel sabitler
-#include "types.hpp" // Enjeksiyon türleri
-
+// process.hpp'den ilgili bölüm örneği
 class Process {
-    public:
-        // Yapıcılar/Yıkıcılar ve atama operatörleri
-        // Değer semantiği ve yalnızca hareket semantiği için açıkça varsayılan ve silinmiş.
-        Process() = default;
-        Process(const Process&) = delete; // Kopyalama yok
-        Process& operator=(const Process&) = delete; // Kopya atama yok
-        Process(Process&&) = default; // Hareket semantiği
-        Process& operator=(Process&&) = default; // Hareket atama
-        ~Process() = default;
+public:
+    struct Process_Info {
+        Resource_Handle::Unique_Resource<HANDLE, std::function<void(HANDLE)>> process_handle; // RAII yönetimi ile süreç handle'ı
+        Resource_Handle::Unique_Resource<HANDLE, std::function<void(HANDLE)>> thread_handle; // RAII yönetimi ile thread handle'ı
 
-        // Süreç ve iş parçacığı tutamaçlarını UniqueResource ile yönetilen bir yapıda saklar
-        struct Process_Info {
-            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> process_handle;
-            Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>> thread_handle;
-        };
-
-        // GTA:SA oyun sürecini askıya alınmış durumda oluşturur
-        std::optional<Process_Info> Create_Game_Process(std::string_view game_path, std::string_view command_args, std::string_view working_dir) {
-            STARTUPINFOA startup_info{}; // Süreç başlatma bilgileri için yapı
-            startup_info.cb = sizeof(STARTUPINFOA); // Yapının boyutunu belirler
-
-            PROCESS_INFORMATION process_info{}; // Yeni süreç hakkında bilgi alacak yapı
-
-            // Komut satırı argümanları için değiştirilebilir bir tampon oluşturur.
-            // CreateProcessA, komut satırı tamponunu değiştirir, bu yüzden doğrudan std::string_view kullanılamaz.
-            std::vector<char> args_buffer(command_args.size() + 1); // +1 sıfır sonlandırıcı için
-
-            if (!command_args.empty()) {
-                std::memcpy(args_buffer.data(), command_args.data(), command_args.size());
-                args_buffer[command_args.size()] = '\0'; // Sıfır sonlandırıcıyı garanti eder
-            }
-
-            // Süreci oluştur
-            bool success = CreateProcessA(game_path.data(), // Yürütülebilir modül adı
-                args_buffer.empty() ? nullptr : args_buffer.data(), // Komut satırı argümanları
-                nullptr, // Süreç güvenlik öznitelikleri
-                nullptr, // İş parçacığı güvenlik öznitelikleri
-                FALSE, // Tutamaçları devralma
-                Constants::PROCESS_CREATION_FLAGS, // CREATE_SUSPENDED | DETACHED_PROCESS
-                nullptr, // Yeni sürecin ortamı
-                working_dir.empty() ? nullptr : working_dir.data(), // Çalışma dizini
-                &startup_info, // Başlatma bilgileri
-                &process_info); // Oluşturulan süreç bilgileri
-
-            if (!success) {
-                // Başarısız olursa, sistem hata mesajını al ve göster
-                std::wstring error_msg = Error_Utils::Get_System_Error_Message(GetLastError());
-                Error_Utils::Show_Error(L"Oyun süreci oluşturulamadı. 'gta_sa.exe' dosyasının çalışmadığından ve dosyayı yürütmek için yeterli izniniz olduğundan emin olun. Sistem Hatası: " + error_msg, Types::Inject_Type::SAMP); // Başlık için SAMP varsayılan olarak kullanılır
-                
-                return std::nullopt; // Boş bir optional döndür
-            }
-
-            Process_Info result;
-            // Süreç ve iş parçacığı tutamaçlarını otomatik yönetim için UniqueResource'a depolar
-            result.process_handle = Resource_Handle::Make_Unique_Handle(process_info.hProcess);
-            result.thread_handle = Resource_Handle::Make_Unique_Handle(process_info.hThread);
-
-            return result; // Yönetilen tutamaçlarla yapıyı döndür
+        bool Resume() { // Oyunun ana thread'inin yürütülmesine devam eder
+            return thread_handle && ResumeThread(thread_handle.get()) != static_cast<DWORD>(-1);
         }
+    };
+    
+    enum class Injection_Status { // DLL enjeksiyonu için ayrıntılı durum kodları
+        SUCCESS,
+        ALLOCATION_FAILED,
+        WRITE_FAILED,
+        KERNEL32_HANDLE_FAILED,
+        LOADLIBRARY_ADDRESS_FAILED,
+        THREAD_CREATION_FAILED,
+        THREAD_WAIT_FAILED,
+        GET_EXIT_CODE_FAILED,
+        INJECTION_RETURNED_ERROR
+    };
 
-        // Uzak sürece bir DLL enjekte eder
-        bool Inject_DLL(HANDLE process, std::string_view DLL_path, std::wstring& error_message) {
-            // DLL yolu için uzak süreçte bellek ayır
-            LPVOID remote_memory = VirtualAllocEx(process, // Hedef süreç tutamacı
-            nullptr, // Tercih edilen adres (nullptr sistemin seçmesine izin verir)
-            DLL_path.size() + 1, // Yol boyutu + sıfır sonlandırıcı
-            Constants::MEMORY_ALLOCATION_TYPE, // MEM_COMMIT | MEM_RESERVE
-            Constants::MEMORY_PROTECTION); // PAGE_READWRITE
+    // Oyun sürecini askıya alınmış durumda oluşturur
+    std::optional<Process_Info> Create_Game_Process(const std::wstring& game_path, std::wstring& command_args, const std::wstring& working_dir) {
+        // ... CREATE_SUSPENDED ile CreateProcessW mantığı ...
+    }
+    
+    SAMP_INJECTOR_NODISCARD // Dönüş değerinin kullanılmasını sağlar
+    Injection_Status Inject_DLL(HANDLE process, const std::wstring& DLL_path) {
+        static const LPVOID load_library_addr = reinterpret_cast<LPVOID>(GetProcAddress(GetModuleHandleW(Constants::KERNEL32_DLL), Constants::LOAD_LIBRARY_FUNC));
 
-            if (!remote_memory)
-                return (error_message = L"Hedef süreçte bellek ayırma başarısız oldu. Bu, yetersiz izinler veya süreç koruma mekanizmaları nedeniyle olabilir.", false);
+        if (!load_library_addr)
+            return Injection_Status::LOADLIBRARY_ADDRESS_FAILED;
 
-            // Uzakta ayrılan bellek için kaynak yönetimi.
-            // Kapsam dışına çıktığında otomatik olarak serbest bırakılır.
-            auto memory_guard = Resource_Handle::UniqueResource<LPVOID, std::function<void(LPVOID)>>(remote_memory, 
-                [process](LPVOID ptr) { // Deleter olarak lambda
-                    if (ptr)
-                        VirtualFreeEx(process, ptr, 0, MEM_RELEASE); // Ayrılan belleği serbest bırak
-                }
-            );
+        LPVOID remote_memory = VirtualAllocEx(process, nullptr, (DLL_path.length() + 1) * sizeof(wchar_t), Constants::MEMORY_ALLOCATION_TYPE, Constants::MEMORY_PROTECTION);
 
-            // DLL yolunu uzak ayrılan belleğe yazar
-            if (!WriteProcessMemory(process, remote_memory, DLL_path.data(), DLL_path.size() + 1, nullptr))
-                return (error_message = L"DLL yolu hedef süreç belleğine yazılamadı. Süreç izinlerini doğrulayın ve DLL yolunun erişilebilir olduğundan emin olun.", false);
+        if (!remote_memory)
+            return Injection_Status::ALLOCATION_FAILED;
 
-            // Enjektör sürecinde zaten yüklü olan kernel32.dll için tutamaç alır
-            HMODULE kernel32 = GetModuleHandleA(Constants::KERNEL32_DLL);
-            
-            if (!kernel32)
-                return (error_message = L"kernel32.dll için tutamaç alınamadı. Bu temel bir sistem kütüphanesidir ve bu hata ciddi bir sistem sorununu işaret eder.", false);
+        auto memory_guard = Resource_Handle::Unique_Resource<LPVOID, std::function<void(LPVOID)>>(remote_memory, [process](LPVOID ptr) {
+            if (ptr)
+                VirtualFreeEx(process, ptr, 0, MEM_RELEASE); // Uzak süreçteki belleği serbest bırakır
+        });
 
-            // kernel32.dll içinde LoadLibraryA işlevinin adresini alır.
-            // Bu adres, aynı işletim sisteminde süreçler arasında tutarlıdır ve enjeksiyonun anahtarıdır.
-            LPVOID load_library_addr = reinterpret_cast<LPVOID>(GetProcAddress(kernel32, Constants::LOAD_LIBRARY_FUNC));
+        if (!WriteProcessMemory(process, remote_memory, DLL_path.c_str(), (DLL_path.length() + 1) * sizeof(wchar_t), nullptr))
+            return Injection_Status::WRITE_FAILED;
 
-            if (!load_library_addr)
-                return (error_message = L"kernel32.dll içinde LoadLibraryA işlevinin adresi bulunamadı. Bu, DLL enjeksiyonu için kritik öneme sahiptir.", false);
+        HANDLE remote_thread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(load_library_addr), remote_memory, 0, nullptr);
 
-            // LoadLibraryA'yı yürütmek için hedef süreçte uzak bir iş parçacığı oluşturur
-            // LoadLibraryA için argüman, DLL yolunun uzak adresi olacaktır
-            HANDLE remote_thread = CreateRemoteThread(process, // Hedef süreç tutamacı
-                nullptr, // İş parçacığı güvenlik öznitelikleri
-                0, // Yığın boyutu (0 varsayılan için)
-                reinterpret_cast<LPTHREAD_START_ROUTINE>(load_library_addr), // LoadLibraryA adresi
-                remote_memory, // LoadLibraryA için argüman (DLL yolu)
-                0, // Oluşturma bayrakları (hemen başlatmak için 0)
-                nullptr); // İş parçacığı kimliği (dönmemesi için nullptr)
+        if (!remote_thread)
+            return Injection_Status::THREAD_CREATION_FAILED;
 
-            if (!remote_thread)
-                return (error_message = L"DLL enjeksiyonunu yürütmek için hedef süreçte uzak iş parçacığı oluşturulamadı. Bu, güvenlik kısıtlamaları veya süreç durumu nedeniyle olabilir. Sistem Hatası: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
+        auto thread_guard = Resource_Handle::Make_Unique_Handle(remote_thread); // Uzak thread handle'ının güvenli yönetimi
 
-            // Uzak iş parçacığı tutamacı için kaynak yönetimi
-            auto thread_guard = Resource_Handle::Make_Unique_Handle(remote_thread);
+        if (WaitForSingleObject(remote_thread, Constants::DLL_INJECTION_TIMEOUT_MS) != WAIT_OBJECT_0)
+            return Injection_Status::THREAD_WAIT_FAILED;
 
-            // Uzak iş parçacığının (DLL enjeksiyonu) tamamlanmasını veya zaman aşımına uğramasını bekler
-            DWORD wait_result = WaitForSingleObject(remote_thread, Constants::DLL_INJECTION_TIMEOUT_MS);
+        DWORD exit_code = 0;
 
-            if (wait_result != WAIT_OBJECT_0) {
-                return (error_message = L"DLL enjeksiyonunun tamamlanması için beklerken zaman aşımı veya hata oluştu. Sistem Hatası: " + Error_Utils::Get_System_Error_Message(GetLastError()), false);
+        if (!GetExitCodeThread(remote_thread, &exit_code))
+            return Injection_Status::GET_EXIT_CODE_FAILED;
 
-            // Uzak iş parçacığının çıkış kodunu alır.
-            // LoadLibraryA için 0 çıkış kodu başarısızlık anlamına gelir (DLL yüklenemedi).
-            DWORD exit_code = 0;
+        if (exit_code == 0)
+            return Injection_Status::INJECTION_RETURNED_ERROR;
 
-            if (!GetExitCodeThread(remote_thread, &exit_code) || exit_code == 0)
-                return (error_message = L"DLL enjeksiyonu başarısız oldu veya bir hata döndürdü. Hedef süreçte LoadLibrary çağrısı başarısız olmuş olabilir.", false);
-
-            return true; // Enjeksiyon başarılı
-        }
+        return Injection_Status::SUCCESS;
+    }
 };
 ```
 
-> [!NOTE]
-> `process.hpp` modülü, sağlam ve güvenli bir tasarımı sergiler. `Create_Game_Process` işlevi, bir `std::optional<Process_Info>` döndürür. Bu, işlevin süreç oluşturma başarısızlıklarını açık ve zarif bir şekilde (bir `std::nullopt` döndürerek) sinyalize etmesini sağlar, istisnalar veya belirsiz hata kodlarına başvurmadan.
->
-> Daha da önemlisi, `Process_Info` yapısı, **süreç** ve **iş parçacığı** tutamaçlarını kapsüllemek için `Resource_Handle::UniqueResource<HANDLE, std::function<void(HANDLE)>>` kullanır. Bu, **RAII (Resource Acquisition Is Initialization)** deseninin bir örneğidir ve `hProcess` ve `hThread` gibi işletim sistemi **tutamaçlarının** `Process_Info` nesnesi kapsam dışına çıktığında otomatik olarak `CloseHandle` ile kapatılmasını sağlar. Bu, **Windows uygulamalarında** uzun süre çalışan uygulamalarda kaynak tüketimi ve kararsızlığa yol açabilecek **tutamaç sızıntılarını** ortadan kaldırır.
->
-> Benzer şekilde, `Inject_DLL` işlevinde, `UniqueResource`, uzaktan ayrılan belleği (`VirtualAllocEx`) yönetir ve artık ihtiyaç duyulmadığında veya başarısızlık durumunda `VirtualFreeEx` ile serbest bırakılmasını sağlar. Bu titiz kaynak yönetimi, **SA-MP Injector C++**'nin güvenilirliğine ve kararlılığına önemli ölçüde katkıda bulunur.
+### 9. `injector_core.hpp`
 
-### `injector_core.hpp`
+Bu başlık, kütüphanenin komuta merkezi olarak hizmet veren `Injector_Core` sınıfını tanımlar. Giriş doğrulama, ayrıcalık yönetimi ve süreç işleme modüllerini birbirine bağlayarak enjeksiyon işlemlerinin mantıksal sırasını düzenler. Enjeksiyonun tam iş akışı burada tanımlanır.
 
-Bu, önceki modüllerin tüm işlevselliklerini bir araya getiren orkestratör sınıftır. Doğrulama, komut satırı argümanlarının oluşturulması, süreç oluşturma ve **DLL enjeksiyonu** çağrılarını koordine eder.
+- **`Injector_Core`:** Bu sınıfın yapıcısı, `Privileges::Enable_Debug_Privilege()`'in çağrıldığı noktadır. Bu, uygulamanın sürecinin, başka herhangi bir kritik mantık yürütülmeden önce DLL enjeksiyon işlemleri gerçekleştirmek için gerekli ayrıcalıklara sahip olmasını sağlar.
+- **`Initialize_Game`:**
+   1.  **Kapsamlı Doğrulama:** Tüm parametrelerin ve temel kaynakların düzenli olduğundan emin olmak için doğrulama fonksiyonlarını (`Validation::Validate_Port`, `Validation::Validate_Nickname`, `Validation::Validate_Files`) çağırarak başlar. Herhangi bir doğrulama başarısız olursa, bir hata hemen bildirilir.
+   2.  **Argümanların Hazırlanması:** Sağlanan takma ad, IP, port ve şifreyi içeren `gta_sa.exe`'ye geçirilecek tam komut satırını (`std::wstring`) oluşturur.
+   3.  **Askıya Alınmış Süreç Oluşturma:** `gta_sa.exe`'yi askıya alınmış bir durumda başlatmak için `Process::Create_Game_Process`'i çağırır, süreç ve ana `thread`'in `handle`'larını alır.
+   4.  **`samp.dll` Enjeksiyonu:** `samp.dll`'yi oyun sürecine enjekte etmek için `Inject_DLL_With_Status_Check`'i çağırır. Bu sarmalayıcı fonksiyon aynı zamanda döndürülen `Injection_Status`'ı yorumlamaktan ve bilgilendirici hata mesajları göstermekten sorumludur.
+   5.  **`omp-client.dll` Koşullu Enjeksiyonu:** `inject_type` `Types::Inject_Type::OMP` ise, `omp-client.dll` de `samp.dll` ile aynı şekilde enjekte edilir.
+   6.  **Oyunun Devam Ettirilmesi:** Tüm enjeksiyonlar başarılı olduktan sonra, oyunun ana `thread`'inin yürütülmesine devam etmesine izin vermek için `process_info.Resume()` çağrılır.
+   7.  **Döngüde Hata İşleme:** Bu kritik adımlardan herhangi birinde meydana gelen herhangi bir arıza, `Error_Utils::Show_Error`'a bir çağrı ile sonuçlanır, kullanıcıya net geri bildirim sağlar ve sürecin doğru şekilde sonlandırılmasını garanti eder (`handle`'lar `Unique_Resource`'lar tarafından otomatik olarak serbest bırakılır).
+- **`Build_Command_Args`:** Boşluk içeren parametreler için gerektiğinde tırnak işaretleri ekleyerek komut satırı argümanlarını düzenleyen ve birleştiren bir yardımcı fonksiyon.
+- **`Inject_DLL_With_Status_Check`:** `Process::Inject_DLL` için bir sarmalayıcı görevi gören özel bir fonksiyon. Farklı `Injection_Status`'ları anlaşılır hata mesajlarına eşler, hata işlemeyi ve kullanıcıyla iletişimi kolaylaştırır.
 
 ```cpp
-#pragma once
-
-#include <string_view>
-#include <sstream> // stringstream ile dizeler oluşturmak için
-#include <filesystem> // Yol manipülasyonu için
-//
-#include "process.hpp" // Süreç oluşturma/enjeksiyon işlevleri
-#include "validation.hpp" // Giriş doğrulama işlevleri
-#include "string_utils.hpp" // Dize dönüşüm işlevleri
-#include "error_utils.hpp" // Hata işleme işlevleri
-#include "constants.hpp" // Kütüphane sabitleri
-#include "types.hpp" // Enjeksiyon türleri
-
+// injector_core.hpp'den ilgili bölüm örneği
 namespace Injector {
     class Injector_Core {
-        public:
-            // Hareket semantiği için yapıcılar/yıkıcılar
-            Injector_Core() = default;
-            Injector_Core(const Injector_Core&) = delete; // Kopyalama devre dışı
-            Injector_Core& operator=(const Injector_Core&) = delete; // Kopya atama devre dışı
-            Injector_Core(Injector_Core&&) = default; // Hareket etkin
-            Injector_Core& operator=(Injector_Core&&) = default; // Hareket atama etkin
-            ~Injector_Core() = default;
+    public:
+        Injector_Core() { // Yapıcı, hata ayıklama ayrıcalığını etkinleştirir
+            Privileges::Enable_Debug_Privilege();
+        }
 
-            // Oyunu başlatma ve enjeksiyonu orkestre eden ana işlev
-            bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
-                namespace fs = std::filesystem; // std::filesystem için takma ad
+        bool Initialize_Game(Types::Inject_Type inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
+            std::wstring error_message;
 
-                // Temel dosyalar için tam yolları oluştur
-                fs::path game_path = fs::path(folder) / Constants::GAME_EXE_NAME; // Ör: C:\GTA\gta_sa.exe
-                fs::path samp_DLL_path = fs::path(folder) / Constants::SAMP_DLL_NAME; // Ör: C:\GTA\samp.dll
-                fs::path omp_DLL_path = fs::path(folder) / Constants::OMP_DLL_NAME; // Ör: C:\GTA\omp-client.dll
+            // Giriş doğrulamaları dizisi
+            if (!Validation::Validate_Port(port, error_message))
+                return (Error_Utils::Show_Error(error_message, inject_type), false);
+            // ... diğer doğrulamalar ...
 
-                // 1. Dosya Doğrulama
-                if (!Validation::Validate_Files(game_path, samp_DLL_path, omp_DLL_path, inject_type))
-                    return false; // Hata zaten doğrulama işlevi tarafından gösterildi
-                
-                std::wstring error_message_local; // Doğrulama hata mesajlarını almak için
+            // Komut satırı argümanlarını oluşturur
+            std::wstring args = Build_Command_Args({
+                Command_Arg{Constants::CMD_ARG_NICKNAME, std::wstring(nickname)},
+                // ... diğer argümanlar ...
+            });
 
-                // 2. Port Doğrulama
-                if (!Validation::Validate_Port(port, error_message_local))
-                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
+            Process process_core;
+            // Oyun sürecini askıya alınmış durumda oluşturur
+            auto process_info_opt = process_core.Create_Game_Process(game_path, args, std::wstring(folder));
 
-                // 3. Kullanıcı Adı Doğrulama
-                if (!Validation::Validate_Nickname(nickname, error_message_local))
-                    return (Error_Utils::Show_Error(error_message_local, inject_type), false);
+            if (!process_info_opt)
+                return false;
 
-                // 4. Geniş karakterden yerel 8-bit'e dönüşüm (ANSI API'leri için gerekli)
-                std::string nickname_str = String_Utils::Wide_To_Local_8Bit(nickname);
-                std::string ip_str = String_Utils::Wide_To_Local_8Bit(ip);
-                std::string port_str = String_Utils::Wide_To_Local_8Bit(port);
-                std::string password_str = String_Utils::Wide_To_Local_8Bit(password);
-                // Yollar da CreateProcessA için char* gerektirdiğinden std::string'e dönüştürülür
-                std::string game_path_str = String_Utils::Wide_To_Local_8Bit(game_path.wstring());
-                std::string folder_str = String_Utils::Wide_To_Local_8Bit(folder);
-                std::string samp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(samp_DLL_path.wstring());
-                std::string omp_DLL_path_str = String_Utils::Wide_To_Local_8Bit(omp_DLL_path.wstring());
+            auto& process_info = *process_info_opt;
 
-                // 5. Komut Satırı Argümanlarının Oluşturulması
-                std::string args = Build_Command_Args(nickname_str, ip_str, port_str, password_str);
-
-                // Süreç işlemlerini yönetmek için Process sınıfını başlat
-                Process process_core;
-                
-                // 6. Oyun Sürecinin Oluşturulması (Askıya Alınmış)
-                auto process_info_opt = process_core.Create_Game_Process(game_path_str, args, folder_str);
-
-                if (!process_info_opt)
-                    return false; // Hata zaten süreç oluşturma işlevi tarafından gösterildi
-
-                // Optional'ı çözümleyerek Process_Info yapısını elde et
-                auto& process_info = *process_info_opt; 
-                std::wstring inject_error_message; // Enjeksiyon hata mesajlarını almak için
-
-                // 7. samp.dll Enjeksiyonu
-                if (!process_core.Inject_DLL(process_info.process_handle.get(), samp_DLL_path_str, inject_error_message))
-                    return (Error_Utils::Show_Error(L"samp.dll enjeksiyonu başarısız: " + inject_error_message, inject_type), false);
-
-                // 8. omp-client.dll Koşullu Enjeksiyonu (yalnızca OMP için)
-                if (inject_type == Types::Inject_Type::OMP) {
-                    if (!process_core.Inject_DLL(process_info.process_handle.get(), omp_DLL_path_str, inject_error_message))
-                        return (Error_Utils::Show_Error(L"omp-client.dll enjeksiyonu başarısız: " + inject_error_message, inject_type), false);
-                }
-
-                // 9. Oyun Sürecini Sürdürme
-                // Süreç, enjeksiyona izin vermek için askıya alınmış durumda oluşturuldu.
-                // DLL'ler enjekte edildiğine göre süreç devam ettirilebilir.
-                if (ResumeThread(process_info.thread_handle.get()) == static_cast<DWORD>(-1))
-                    return (Error_Utils::Show_Error(L"Oyun süreci iş parçacığını sürdürme başarısız: " + Error_Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
-
-                return true; // Tüm adımlarda başarı!
+            // samp.dll'i ve koşullu olarak omp-client.dll'i enjekte eder
+            if (!Inject_DLL_With_Status_Check(process_core, process_info.process_handle.get(), Constants::SAMP_DLL_NAME, samp_DLL_path.wstring(), inject_type))
+                return false;
+            
+            if (inject_type == Types::Inject_Type::OMP) {
+                if (!Inject_DLL_With_Status_Check(process_core, process_info.process_handle.get(), Constants::OMP_DLL_NAME, omp_DLL_path.wstring(), inject_type))
+                    return false;
             }
-        private:
-            // Oyun yürütülebilir dosyası için komut satırı argüman dizesini oluşturur
-            std::string Build_Command_Args(const std::string& nickname, const std::string& ip, const std::string& port, const std::string& password) {
-                std::stringstream command_args_stream; // Verimli oluşturma için stringstream kullan
+            
+            // Oyunun ana thread'ini devam ettirir
+            if (!process_info.Resume())
+                return (Error_Utils::Show_Error(L"Failed to resume the game process thread: " + Error_Utils::Get_System_Error_Message(GetLastError()), inject_type), false);
 
-                // SA-MP ve OMP, "-c -n [kullanıcı adı] -h [ip] -p [port]" argümanlarını bekler
-                command_args_stream << Constants::CMD_ARG_CONFIG << " " 
-                    << Constants::CMD_ARG_NICKNAME << " " << nickname << " " 
-                    << Constants::CMD_ARG_HOST << " " << ip << " " 
-                    << Constants::CMD_ARG_PORT << " " << port;
-
-                // Şifre boş değilse eklenir
-                if (!password.empty())
-                    command_args_stream << " " << Constants::CMD_ARG_PASSWORD << " " << password;
-
-                return command_args_stream.str();
-            }
+            return true;
+        }
     };
 }
 ```
 
-> [!CAUTION]
-> **OMP** için süreç, `samp.dll`'ye ek olarak `omp-client.dll`'yi enjekte etmeyi içerir; bu, **OMP**'nin genellikle çalışma şekline uygundur. **OMP** istemcisi, bazı işlevsellikler için genellikle `samp.dll`'yi **temel** veya **vekil** olarak kullanır, `omp-client.dll` ise davranışları genişletir veya üzerine yazar.
->
-> **OMP enjeksiyonunun** başarılı olması için her iki **DLL**'nin de oyun dizininde mevcut ve işlevsel olması çok önemlidir. Biri başarısız olursa, oyun düzgün başlatılamayabilir veya çok oyunculu istemci yüklenmeyebilir.
+### 10. `injector.hpp`
 
-### `injector.hpp`
+Bu başlık, kütüphanenin ana cephesi (`Facade`) olarak işlev görür ve enjeksiyon işlevselliğini kullanmak isteyen herhangi bir uygulama için basitleştirilmiş bir giriş noktası sunar. `Injector_Core`'un iç karmaşıklığını tek ve kullanışlı bir fonksiyonda soyutlar.
 
-Bu, kütüphanenin arabirim dosyasıdır. Kullanıcıların **SA-MP Injector C++**'yi kullanmak için yalnızca bu dosyayı dahil etmesi gerekir. `Injector::Injector_Core` sınıfı için bir sarmalayıcı görevi görerek arabirimi tek bir global işlev olan `Initialize_Game` ile basitleştirir.
+- **`Initialize_Game`:**
+   - Bu statik fonksiyon, kütüphanenin genel arayüzüdür.
+   - Öncelikle, `inject_type_str`'ı doğrular (`L"samp"` veya `L"omp"` olup olmadığını) ve `enum class Types::Inject_Type`'a dönüştürür. Geçersiz bir dize durumunda, bir hata görüntüler ve sonlanır.
+   - Ardından, `Injector::Injector_Core`'un bir örneğini oluşturur.
+   - Son olarak, tüm doğrulama, süreç oluşturma ve DLL enjeksiyon sürecinin düzenlendiği `Injector_Core::Initialize_Game`'e ana mantığın yürütülmesini devreder.
 
 ```cpp
-#pragma once
+// injector.hpp'den ilgili bölüm örneği
+// Oyunu başlatmak için genel arayüz
+#if defined(SAMP_INJECTOR_CXX_MODERN)
+inline bool Initialize_Game(std::wstring_view inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
+#elif defined(SAMP_INJECTOR_CXX_14)
+inline bool Initialize_Game(const std::wstring& inject_type, const std::wstring& folder, const std::wstring& nickname, const std::wstring& ip, const std::wstring& port, const std::wstring& password) {
+#endif
+    Types::Inject_Type type;
 
-#include <string_view>
-//
-#include "injector_core.hpp" // Ana mantığı içeren sınıf
-#include "error_utils.hpp" // Hata gösterimi için (geçersiz enjeksiyon türü durumunda)
-#include "types.hpp" // Tür numaralandırması
-#include "constants.hpp" // Sabitler (enjeksiyon türü adları için)
-
-// Kütüphane için üst düzey arabirim.
-// Kullanımı basitleştirmek için yalnızca bu global işlevi sunar.
-inline bool Initialize_Game(std::wstring_view inject_type_str, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
-    Types::Inject_Type type; // Enjeksiyon türünü saklamak için değişken
-
-    // Enjeksiyon türü dizesini Inject_Type numaralandırmasına dönüştür
-    if (inject_type_str == Constants::INJECT_TYPE_SAMP)
+    // Enjeksiyon türü dizesini ilgili enum'a dönüştürür
+    if (inject_type == Constants::INJECT_TYPE_SAMP)
         type = Types::Inject_Type::SAMP;
-    
-    else if (inject_type_str == Constants::INJECT_TYPE_OMP)
+    else if (inject_type == Constants::INJECT_TYPE_OMP)
         type = Types::Inject_Type::OMP;
-    
     else
-        // Geçersiz enjeksiyon türü dizesi durumunda hata göster ve false döndür
-        return (Error_Utils::Show_Error(L"Geçersiz enjeksiyon modu belirtildi. Lütfen 'samp' veya 'omp' kullanın.", Types::Inject_Type::SAMP), false); // Başlık için SAMP varsayılan olarak kullanılır
+        // Enjeksiyon türü geçersizse hata gösterir
+        return (Error_Utils::Show_Error(L"Geçersiz enjeksiyon modu. 'samp' veya 'omp' kullanın.", Types::Inject_Type::SAMP), false);
 
-    Injector::Injector_Core injector; // Merkezi mantığı içeren nesneyi başlat
-    
-    // Injector_Core sınıfının Initialize_Game işlevine çağrıyı devret
+    Injector::Injector_Core injector; // Enjektör çekirdeğinin örneğini oluşturur
+
+    // Ana mantığı Injector_Core'a devreder
     return injector.Initialize_Game(type, folder, nickname, ip, port, password);
 }
 ```
 
-> [!NOTE]
-> Bu dosyadaki ve diğer yardımcı işlevlerdeki tüm işlevler için `inline` anahtar kelimesinin kullanımı, kütüphanenin `header-only` olmasını sağlar. `inline`, işlev gövdesinin çağrı noktalarına doğrudan eklenmesini önerir, ancak buradaki asıl etkisi, **One Definition Rule (ODR)**'yi gevşeterek işlevin birden çok `.obj` dosyasında tanımlanabilmesini sağlamaktır (birden çok `.cpp` dosyası `injector.hpp`'yi dahil ederse). **Bağlama** aşaması, yürütülebilir dosyada yalnızca tek bir nihai sürümün bulunmasını sağlar.
+## Detaylı Enjeksiyon Süreci
 
-## Kapsamlı Kullanım Örnekleri
+Bu kütüphanenin temel işlevselliği, SA-MP veya OMP istemci DLL'lerini GTA:SA sürecine enjekte etmek için hassas bir işlem sırasını düzenlemektir. Bu döngü, kararlılık ve uyumluluk sağlamak için dikkatlice planlanmıştır.
 
-**SA-MP Injector C++**'yi projenize entegre etmek için aşağıdaki talimatları ve senaryoları izleyin.
+### 1. Başlatma İsteği
 
-### 1. Geliştirme Ortamının Hazırlanması
+Süreç, kütüphaneyi kullanan uygulama için ana temas noktası olarak işlev gören genel `Initialize_Game` (`injector.hpp`) fonksiyonuna yapılan çağrı ile başlar. Bu fonksiyon, istenen enjeksiyon türü (SA-MP veya OMP), oyun dizini ve sunucu bağlantı verileri (takma ad, IP, port, şifre) gibi tüm önemli parametreleri alır.
 
-- **C++ Derleyicisi**: **C++17**'yi destekleyen bir derleyici önerilir. `vcpkg` ile **Visual Studio** (dosya sistemi için `std::filesystem`) veya **GCC/Clang (sürüm 17+)** uygun seçeneklerdir.
-- **Proje Yapılandırması**:
-  - Yeni bir **C++ projesi** oluşturun (örneğin, bir konsol projesi).
-  - **SA-MP Injector C++**'nin tüm `.hpp` dosyalarını projenizin erişebileceği bir klasöre kopyalayın (örneğin, **başlık** klasörüne).
-  - **C++ standardının** **C++17** olarak ayarlandığından emin olun. **SA-MP** ve **OMP** kütüphaneleriyle maksimum uyumluluk için bu sürüm kritik öneme sahiptir. **Visual Studio**'da: `Project Properties > Configuration Properties > C/C++ > Language > C++ Language Standard -> "ISO C++17 Standard (/std:c++17)"`
-- **İzinler**: Yürütülebilir dosyanız, süreç oluşturmak ve **DLL enjeksiyonu** yapmak için muhtemelen **Yönetici** olarak çalıştırılmalıdır (zorunlu değildir). **Visual Studio**'da bu, şu şekilde yapılabilir: `Project Properties > Configuration Properties > Linker > Manifest File > UAC Execution Level -> "requireAdministrator (/LEVEL='requireAdministrator')"`
+### 2. Ortam Hazırlığı
 
-### 2. Temel Senaryo: Bir SA-MP Sunucusuna Bağlanma
-
-Bu, **GTA:SA**'yı başlatıp belirli bir **kullanıcı adı** ve **IP**/**port** ile bir **SA-MP** sunucusuna bağlanmanın en yaygın kullanım durumudur.
-
-```cpp
-// main.cpp
-#include <iostream>
-#include <string>
-#include <codecvt> // std::wstring_convert için (eski ama bu durumda işlevsel)
-#include <locale> // std::codecvt_utf8_to_utf16 için
-//
-#include "injector.hpp" // Kütüphaneden gereken tek dahil etme!
-
-int Main(int argc, char* argv[]) {
-    // Yapılandırma değişkenlerini tanımla
-    // Yerel yapılandırmanıza uygun yolları ve sunucu detaylarını değiştirin
-    std::wstring folder = L"C:\\Oyunlar\\GTA San Andreas"; // gta_sa.exe, samp.dll'nin bulunduğu yer
-    std::wstring nickname = L"İsim";
-    std::wstring ip = L"127.0.0.1"; // Örnek: yerel sunucunuz
-    std::wstring port = L"7777";
-    std::wstring password = L""; // Şifre yoksa boş bırakın
-
-    // İsteğe bağlı: Kullanıcının komut satırı üzerinden yapılandırma sağlamasına izin ver (basitleştirilmiş)
-    // Daha sağlam argüman ayrıştırma için bir argüman ayrıştırma kütüphanesi kullanın.
-    if (argc > 1) {
-        // Örnek: ilk argüman bir yol ise
-        if (argc > 1)
-            folder = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[1]);
-        
-        if (argc > 2)
-            nickname = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[2]);
-
-        if (argc > 3)
-            ip = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[3]);
-
-        if (argc > 4)
-            port = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[4]);
-        
-        if (argc > 5)
-            password = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[5]);
-    }
-
-    std::wcout << L"SA-MP başlatılıyor..." << std::endl;
-    std::wcout << L"Oyun klasörü: " << folder << std::endl;
-    std::wcout << L"Kullanıcı adı: " << nickname << std::endl;
-    std::wcout << L"Sunucu: " << ip << L":" << port << std::endl;
-
-    // Oyunu başlatmak için kütüphane işlevini çağır
-    if (Initialize_Game(L"samp", // Enjeksiyon türü: SA-MP
-        folder, // Oyun klasörünün yolu
-        nickname, // İstenen kullanıcı adı
-        ip, // Sunucu IP'si
-        port, // Sunucu portu (dize)
-        password)) { // Sunucu şifresi (dize, boş olabilir)
-        std::wcout << L"\n--- SA-MP başarıyla başlatıldı! ---" << std::endl;
-        std::wcout << L"Oyun ayrı bir süreçte başlatıldı." << std::endl;
-    }
-    else {
-        std::wcout << L"\n--- SA-MP başlatılamadı! ---" << std::endl;
-        std::wcout << L"Görüntülenen hata mesajlarını kontrol edin." << std::endl;
-    }
-
-    // Çıkış mesajlarını görmek için konsolu açık tut
-    std::wcout << L"\nProgramı kapatmak için Enter'a basın." << std::endl;
-    std::wcin.ignore();
-
-    return 0;
-}
-```
-
-**Derleme ve çalıştırma için:**
-
-```bash
-# g++ ile örnek (Linux/MinGW/MSYS2) - dosya sistemi için libstdc++fs gerekir
-# Derleyici zincirinizin, enjeksiyon sürecinde uyumsuzluklar yaratabilecek bir C++ sürümü kullanmadığından emin olun.
-# İkili uyumluluk (ABI) için derleyicinizin belgelerine bakın.
-g++ main.cpp -o my_launcher -std=c++17 -Wall -lstdc++fs -municode -lkernel32
-
-# MSVC ile örnek (Visual Studio Geliştirici Komut İstemi)
-# '/std:c++17' bayrağı, C++17 uyumluluğunu sağlar.
-cl /EHsc /std:c++17 /permissive- /FS /utf-8 main.cpp /link /OUT:my_launcher.exe
-```
+Çağrıldığında, `Initialize_Game` fonksiyonu bir `Injector::Injector_Core` örneği oluşturur. Bu sınıfın yapıcısında (`injector_core.hpp`), ortam yapılandırmasının ilk ve temel adımı yürütülür: ayrıcalıkların yükseltilmesi.
 
 > [!NOTE]
-> **SA-MP** ve **OMP**, belirli araçlarla derlenen eski projelerdir ve **Application Binary Interface (ABI)**'lerini tanımlar. Bu kütüphane **C++17** kullanırken, **oyun DLL'leriyle** etkileşimde bulunan **SA-MP** ve **OMP** DLL'lerinin, derleyicinizin ve kullandığı C++ çalışma zamanı (CRT) sürümüyle uyumlu olması çok önemlidir.
->
-> **DLL'lerin** oluşturulduğu derleyici veya **C++** sürümünden çok farklı bir derleyici kullanmak, **bellek ayırma** veya **parametre geçişinde** kolayca teşhis edilemeyen ince sorunlara yol açabilir ve enjektörden açık bir hata çıkmayabilir. Bu nedenle, **C++17** maksimum önerilen sürümdür, çünkü daha yeni sürümler **ABI** veya **CRT**'de eski oyun modüllerinin tolere edemeyeceği değişiklikler getirebilir.
+> `Privileges::Enable_Debug_Privilege()`: Bu çağrı (`privileges.hpp`), uygulama sürecine `SE_DEBUG_NAME` ayrıcalığını verir. Bu ayrıcalık hayati önem taşır, çünkü uygulamanın Windows'un diğer süreçlerinde bellek okuma ve yazma, uzaktan `thread` oluşturma gibi alt düzey işlemler yapmasına olanak tanır - bu eylemler DLL enjeksiyon tekniği için temeldir.
 
-### 3. Gelişmiş Senaryo: Bir OMP Sunucusuna Bağlanma
+### 3. Bütünlük ve Parametrelerin Kontrolü
 
-**OMP** için mantık, **SA-MP** ile aynıdır, ancak `inject_type` olarak `L"omp"` belirtilir ve oyun dizininde `omp-client.dll`'nin mevcut olduğundan emin olunur.
+Ayrıcalıklar ayarlandıktan sonra, `Injector_Core::Initialize_Game` metodu bir dizi sıkı doğrulama ile devam eder. Bu, sonraki adımlarda meydana gelebilecek arıza olasılığını en aza indiren ve kullanıcıya anında geri bildirim sağlayan önleyici bir aşamadır.
 
-```cpp
-// main.cpp
-#include <iostream>
-#include <string>
-#include <codecvt> // std::wstring_convert için (eski ama bu durumda işlevsel)
-#include <locale> // std::codecvt_utf8_to_utf16 için
-//
-#include "injector.hpp" // Kütüphaneden gereken tek dahil etme!
+- **Port Doğrulaması:** `Validation::Validate_Port`, bağlantı port numarasının doğru biçimlendirilip biçimlendirilmediğini ve `1` ile `65535` aralığında olup olmadığını kontrol eder (`constants.hpp`).
+- **Takma Ad Doğrulaması:** `Validation::Validate_Nickname`, oyuncu takma adının boş olmadığını ve `23` karakter sınırını aşmadığını garanti eder.
+- **Temel Dosyaların Kontrolü:** `Validation::Validate_Files`, oyun dizinini `gta_sa.exe`, `samp.dll` ve enjeksiyon OMP türündeyse `omp-client.dll`'nin varlığını doğrulamak için denetler.
 
-int Main(int argc, char* argv[]) {
-    // Yapılandırma değişkenlerini tanımla
-    // Yerel yapılandırmanıza uygun yolları ve sunucu detaylarını değiştirin
-    std::wstring folder = L"C:\\Oyunlar\\GTA San Andreas"; // gta_sa.exe, samp.dll ve omp-client.dll'nin bulunduğu yer
-    std::wstring nickname = L"İsim";
-    std::wstring ip = L"127.0.0.1"; // Örnek: yerel sunucunuz
-    std::wstring port = L"7777";
-    std::wstring password = L""; // Şifre yoksa boş bırakın
+> [!WARNING]
+> Bu aşamadaki herhangi bir arıza, ayrıntılı bir hata mesajı içeren bir `MessageBox`'ın (`error_utils.hpp`) anında görüntülenmesine ve enjeksiyon sürecinin kesilmesine neden olur. Bu, geçersiz bir yapılandırmayla devam etme girişimlerini önler.
 
-    // İsteğe bağlı: Kullanıcının komut satırı üzerinden yapılandırma sağlamasına izin ver (basitleştirilmiş)
-    // Daha sağlam argüman ayrıştırma için bir argüman ayrıştırma kütüphanesi kullanın.
-    if (argc > 1) {
-        // Örnek: ilk argüman bir yol ise
-        if (argc > 1)
-            folder = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[1]);
-        
-        if (argc > 2)
-            nickname = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[2]);
+### 4. Oyun İçin Argümanların Hazırlanması
 
-        if (argc > 3)
-            ip = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[3]);
+Başarılı doğrulamadan sonra, `Injector_Core::Build_Command_Args` fonksiyonu, `gta_sa.exe`'ye geçirilecek biçimlendirilmiş komut satırını oluşturmaktan sorumludur. Bu komut satırı, SA-MP/OMP istemcisinin bir sunucuya otomatik olarak bağlanması için gereken tüm parametreleri içerir, örneğin `-n "takma ad" -h "IP" -p "Port" -z "Şifre"`.
 
-        if (argc > 4)
-            port = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[4]);
-        
-        if (argc > 5)
-            password = std::wstring_convert<std::codecvt_utf8_to_utf16>().from_bytes(argv[5]);
-    }
+### 5. Oyun Sürecinin Başlatılması (Askıya Alınmış)
 
-    std::wcout << L"OMP başlatılıyor..." << std::endl;
-    std::wcout << L"Oyun klasörü: " << folder << std::endl;
-    std::wcout << L"Kullanıcı adı: " << nickname << std::endl;
-    std::wcout << L"Sunucu: " << ip << L":" << port << std::endl;
+Daha sonra `Process` (`process.hpp`) bileşeni, GTA:SA çalıştırılabilir dosyasını başlatmakla görevlendirilir.
 
-    // Oyunu başlatmak için kütüphane işlevini çağır
-    if (Initialize_Game(L"omp", // Enjeksiyon türü: OMP
-        folder, // Oyun klasörünün yolu
-        nickname, // İstenen kullanıcı adı
-        ip, // Sunucu IP'si
-        port, // Sunucu portu (dize)
-        password)) { // Sunucu şifresi (dize, boş olabilir)
-        std::wcout << L"\n--- OMP başarıyla başlatıldı! ---" << std::endl;
-        std::wcout << L"Oyun ayrı bir süreçte başlatıldı." << std::endl;
-    }
-    else {
-        std::wcout << L"\n--- OMP başlatılamadı! ---" << std::endl;
-        std::wcout << L"Görüntülenen hata mesajlarını kontrol edin." << std::endl;
-    }
+> [!IMPORTANT]
+> `Process::Create_Game_Process` fonksiyonu, Windows'un `CreateProcessW` API'sini çağırırken `CREATE_SUSPENDED` (`constants.hpp`) bayrağını kullanır. Bu, kritik bir tasarım önlemidir: oyun belleğe yüklenir ve ana `thread`'i oluşturulur, ancak yürütülmesi **duraklatılır**. Bu, oyunun kendi savunmalarını veya iç mantığını başlatmasından önce, DLL'lerin enjeksiyonu için ideal olan kontrollü ve kararlı bir ortam yaratır. Süreç ve `thread` `handle`'ları alınır ve `Resource_Handle::Unique_Resource` aracılığıyla güvenli bir şekilde yönetilir.
 
-    // Çıkış mesajlarını görmek için konsolu açık tut
-    std::wcout << L"\nProgramı kapatmak için Enter'a basın." << std::endl;
-    std::wcin.ignore();
+### 6. SA-MP Kütüphanesinin Enjeksiyonu (`samp.dll`)
 
-    return 0;
-}
-```
+Oyun süreci askıya alınmış durumdayken, `samp.dll` enjeksiyonu güvenli bir şekilde gerçekleştirilebilir. `Injector_Core::Inject_DLL_With_Status_Check` metodu bu görevi, `remote thread injection` tekniğinin aşağıdaki adımlarını yürüten `Process::Inject_DLL`'e devreder:
 
-## Yaygın Hataların ve Mesajların Ele Alınması
+1.  **`LoadLibraryW` Fonksiyonunun Yerini Bulma:** `LoadLibraryW` fonksiyonunun adresi belirlenir. Bu işlem, `kernel32.dll` için bir `handle` almak ve ardından dinamik kütüphane yükleme fonksiyonunun adresini bulmak için `Constants::KERNEL32_DLL` ve `Constants::LOAD_LIBRARY_FUNC` sabitlerini kullanır.
+2.  **Uzak Bellek Ayırma:** `VirtualAllocEx`, askıya alınmış olan `gta_sa.exe` sürecinin sanal adres alanında bir bellek bloğu ayırmak için kullanılır. Bu bloğun boyutu, `samp.dll`'nin tam yolunu saklamak için yeterlidir.
+3.  **DLL Yolunun Yazılması:** `samp.dll` dosyasının tam yolu, `WriteProcessMemory` tarafından bu yeni ayrılan uzak belleğe yazılır.
+4.  **Uzak Thread Oluşturma:** `CreateRemoteThread`, `gta_sa.exe` süreci içinde yeni bir `thread` oluşturmak için çağrılır. Bu yeni `thread`'in giriş noktası `LoadLibraryW`'nin adresidir ve aldığı argüman, az önce yazdığımız DLL yoluna işaret eden bir işaretçidir.
+5.  **Enjeksiyonun İzlenmesi:** Uzak `thread`'in yürütülmesi, `Constants::DLL_INJECTION_TIMEOUT_MS` tarafından belirlenen bir süre boyunca `WaitForSingleObject` tarafından izlenir.
+6.  **Sonucun Kontrol Edilmesi:** Uzak `thread`'in çıkış kodu `GetExitCodeThread` aracılığıyla alınır. Sıfırdan farklı bir dönüş değeri, `LoadLibraryW`'nin `samp.dll`'yi başarıyla yüklediğini gösterir.
 
-**SA-MP Injector C++**, kullanılabilirliği önceliklendirir ve bunun temel bir parçası, başarısızlık durumunda kullanıcıya net **geri bildirim** sağlamaktır. Hata mesajları, **Windows diyalog kutuları** (`MessageBoxW`) aracılığıyla sunulur ve daha fazla bağlam için enjeksiyon türüne (**SA-MP** veya **OMP**) göre kategorize edilir. Bu, neyin yanlış gittiğini ve nasıl çözüleceğini tam olarak bilmenizi sağlar.
+> [!WARNING]
+> `samp.dll` enjeksiyonu sırasında herhangi bir arıza durumunda, belirli bir hata mesajı (`error_utils.hpp`) görüntülenir, enjeksiyon süreci iptal edilir ve kaynaklar serbest bırakılır.
 
-Karşılaşabileceğiniz bazı yaygın hatalar, olası nedenleri ve çözümleri, bu diyalog kutularının son kullanıcı için nasıl göründüğüne dair görsel örneklerle birlikte aşağıda listelenmiştir:
+### 7. OMP Kütüphanesinin Enjeksiyonu (`omp-client.dll`) - Koşullu
 
-### 1. Geçersiz Enjeksiyon Türü
-
-`Initialize_Game` işlevine sağlanan `inject_type` `L"samp"` veya `L"omp"` değilse, kütüphane hangi çok oyunculu istemciyi başlatmak istediğinizi bilemez.
-
-![Error 1](../../screenshots/error_1.png)
-
-- **Görüntülenen Hata Mesajı**: `"Invalid injection mode specified. Please use 'samp' or 'omp'."`
-- **Neden**: `Initialize_Game` işlevinin ilk argümanı (`std::wstring_view inject_type`) beklenen `L"samp"` veya `L"omp"` değerleriyle eşleşmiyor. Bu, bir yazım hatası, boş bir dize veya tanınmayan bir değer olabilir.
-- **Çözüm**: `std::wstring_view inject_type_str` öğesinin `L"samp"` veya `L"omp"` olarak doğru şekilde ayarlandığından emin olun. Kütüphane sabitleriyle uyumluluk için **geniş karakter** (wide-character) literalleri için `L` önekini kullanmak çok önemlidir.
-    ```cpp
-    // Doğru:
-    Initialize_Game(L"samp", /* diğer parametreler */);
-    Initialize_Game(L"omp", /* diğer parametreler */);
-
-    // Yanlış (hataya neden olur):
-    // Initialize_Game(L"invalid", /* diğer parametreler */);
-    // Initialize_Game(L"", /* diğer parametreler */);
-    ```
-
-### 2. Geçersiz Sunucu Portu (Format veya Aralık)
-
-Port, sunucuya bağlantı için gerekli bir sayısal parametredir. Bu hata, değer geçerli bir sayı olarak yorumlanamazsa veya kabul edilebilir aralığın (**1 ila 65535**) dışında ise oluşur.
-
-#### 2.1. Sayısal Olmayan Port Formatı
-
-![Error 2](../../screenshots/error_2.png)
-
-- **Görüntülenen Hata Mesajı**: `"Invalid port format. The port must be a numeric value. Please provide a valid integer for the port."`
-- **Neden**: `port` argümanı (`std::wstring_view`) sayısal olmayan karakterler içeriyor veya tamsayıya dönüştürülemiyor.
-- **Çözüm**: Yalnızca rakamlardan oluşan ve geçerli bir tamsayıyı temsil eden bir dize sağlayın.
-    ```cpp
-    // Doğru:
-    Initialize_Game(/* diğer parametreler */, L"7777", /* diğer parametreler */);
-
-    // Yanlış (geçersiz format):
-    // Initialize_Game(/* diğer parametreler */, L"port7777", /* diğer parametreler */);
-
-    // Yanlış (geçersiz):
-    // Initialize_Game(/* diğer parametreler */, L"invalid", /* diğer parametreler */);
-    ```
-
-#### 2.2. Geçerli Aralık Dışında Port
-
-![Error 3](../../screenshots/error_3.png)
-
-- **Görüntülenen Hata Mesajı**: `"The specified port number (XXXX) is outside the valid range of 1 to 65535. Please provide a valid port."` (**XXXX**, kullanmaya çalıştığınız değer olacaktır).
-- **Neden**: Sağlanan port geçerli bir sayıdır ancak `1` altında (rezerve veya kullanılamaz) veya `65535` üzerinde (**TCP/UDP portları** için maksimum sınır).
-- **Çözüm**: `1` ile `65535` aralığında bir port sağlayın. **SA-MP**/**OMP** için yaygın portlar `7777` veya `7778`'dir.
-    ```cpp
-    // Doğru:
-    Initialize_Game(/* diğer parametreler */, L"7777", /* diğer parametreler */);
-
-    // Yanlış (aralık dışında):
-    // Initialize_Game(/* diğer parametreler */, L"0", /* diğer parametreler */); // Çok düşük
-    // Initialize_Game(/* diğer parametreler */, L"65536", /* diğer parametreler */); // Çok yüksek
-    // Initialize_Game(/* diğer parametreler */, L"-1", /* diğer parametreler */); // Negatif değer
-    ```
-
-### 3. Geçersiz Kullanıcı Adı (Boş veya Çok Uzun)
-
-Oyuncunun **kullanıcı adı**, istemci tarafından kabul edilebilir olduğundan emin olmak için doğrulanır.
-
-#### 3.1. Boş Kullanıcı Adı
-
-![Error 4](../../screenshots/error_4.png)
-
-- **Görüntülenen Hata Mesajı**: `"Nickname cannot be empty. Please provide a valid nickname."`
-- **Neden**: `nickname` argümanı (`std::wstring_view`) boş bir dize olarak sağlandı.
-- **Çözüm**: Kullanıcı adının boş olmadığından emin olun.
-    ```cpp
-    // Doğru:
-    Initialize_Game(/* diğer parametreler */, L"İsim", /* diğer parametreler */);
-
-    // Yanlış (boş):
-    // Initialize_Game(/* diğer parametreler */, L"", /* diğer parametreler */);
-    ```
-
-#### 3.2. Çok Uzun Kullanıcı Adı
-
-![Error 5](../../screenshots/error_5.png)
-
-- **Görüntülenen Hata Mesajı**: `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
-- **Neden**: Sağlanan **kullanıcı adının** uzunluğu `Constants::MAX_NICKNAME_LENGTH` olan `23` karakteri aşıyor.
-- **Çözüm**: En fazla `23` karakterden oluşan bir **kullanıcı adı** kullanın.
-    ```cpp
-    // Doğru:
-    Initialize_Game(/* diğer parametreler */, L"İsim", /* diğer parametreler */);
-
-    // Yanlış (çok uzun):
-    // Initialize_Game(/* diğer parametreler */, L"BuKullanıcıAdıÇokUzunVeYirmiKarakteriAşıyor", /* diğer parametreler */);
-    ```
-
-### 4. Oyun veya DLL Dosyaları Bulunamadı
-
-Bu, en yaygın başarısızlık nedenlerinden biridir. Kütüphane, `gta_sa.exe`, `samp.dll` ve **OMP** için `omp-client.dll` dosyalarının beklenen konumlarda olmasını gerektirir.
-
-#### 4.1. Oyun Yürütülebilir Dosyası (`gta_sa.exe`) Bulunamadı
-
-![Error 6](../../screenshots/error_6.png)
-
-- **Görüntülenen Hata Mesajı**: `"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: [tam yol]"`. `[tam yol]`, klasör ve dosya adını içerecektir.
-- **Neden**: `folder` argümanında belirtilen klasörde `gta_sa.exe` dosyası bulunamadı.
-- **Çözüm**:
-  1. `folder` (`std::wstring_view`) öğesinin **GTA San Andreas**'ın doğru kurulum dizinine işaret ettiğinden emin olun.
-  2. `gta_sa.exe` dosyasının bu klasörde mevcut olduğunu ve adının değiştirilmediğini doğrulayın.
-
-#### 4.2. SA-MP Kütüphanesi (`samp.dll`) Bulunamadı
-
-![Error 7](../../screenshots/error_7.png)
-
-- **Görüntülenen Hata Mesajı**: `"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: [tam yol]"`.
-- **Neden**: `folder` argümanında belirtilen klasörde `samp.dll` dosyası bulunamadı. Bu **DLL**, hem `samp` hem de `omp` enjeksiyon türleri için bir gerekliliktir.
-- **Çözüm**: **GTA San Andreas** kurulum klasöründe `samp.dll` dosyasının mevcut olduğundan emin olun.
-
-#### 4.3. OMP Kütüphanesi (`omp-client.dll`) Bulunamadı (yalnızca OMP enjeksiyonu için)
-
-![Error 8](../../screenshots/error_8.png)
-
-- **Görüntülenen Hata Mesajı**: `"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: [tam yol]"`.
-- **Neden**: `L"omp"` enjeksiyon türü olarak belirtildi, ancak `folder` argümanında belirtilen klasörde `omp-client.dll` dosyası bulunamadı.
-- **Çözüm**: En son **OMP** istemcisini indirin ve `omp-client.dll` (ve `samp.dll`) dosyasının **GTA San Andreas** kurulum klasöründe mevcut olduğundan emin olun.
-
-### 5. Oyun Sürecinin Oluşturulmasında Hata
-
-Bu, **işletim sistemi izinleri** ve `gta_sa.exe`'nin mevcut durumuyla ilgili daha karmaşık bir hatadır.
-
-![Error 9](../../screenshots/error_9.png)
-
-- **Görüntülenen Hata Mesajı**: `"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have sufficient permissions to execute the file. System Error: [işletim sistemi hata mesajı]"`. Sistem mesajı `GetLastError()` tarafından eklenir (örneğin, `Access is denied.` veya `The requested operation requires elevation.`).
-- **Neden**: `gta_sa.exe`'yi başlatmak için `CreateProcessA` çağrısı başarısız oldu. Yaygın nedenler şunlardır:
-  - **Süreç zaten çalışıyor**: `gta_sa.exe`'nin bir örneği zaten aktif ve yeni bir yürütmeyi engelliyor.
-  - **Yetersiz izinler**: Uygulamanız, belirli sistem yapılandırmalarında (**UAC** etkin, korumalı klasörler vb.) süreç oluşturmak için gerekli ayrıcalıklara sahip değil.
-  - **Yürütülebilir dosya sorunları**: `gta_sa.exe` bozulmuş veya başka bir program tarafından engelleniyor olabilir (örneğin, yanlış yapılandırılmış bir antivirüs).
-- **Çözüm**:
-  1. Görev Yöneticisi'ni kontrol edin ve `gta_sa.exe`'nin çalışan bir örneği olmadığından emin olun. Varsa, bunu sonlandırın.
-  2. Kütüphaneyi kullanan uygulamanızı **Yönetici** ayrıcalıklarıyla çalıştırın. Yürütülebilir dosyaya sağ tıklayın ve **"Yönetici olarak çalıştır"** seçeneğini seçin.
-  3. Bir **antivirüs** veya **güvenlik yazılımı** müdahale ediyorsa, uygulamanızı ve/veya **GTA:SA** klasörünü antivirüs istisnalarına ekleyin (dosyalarınızın bütünlüğünden emin olarak dikkatli bir şekilde yapın).
-
-### 6. Hedef Süreçte Bellek Ayırmada Hata
-
-Kütüphane, **DLL yolunu** kopyalamak için `gta_sa.exe` içinde küçük bir bellek alanı ayırmaya çalışır.
-
-![Error 10](../../screenshots/error_10.png)
-
-- **Görüntülenen Hata Mesajı**: `"Failed to allocate memory in the target process. This might be due to insufficient permissions or process protection mechanisms."`
-- **Neden**: Uzak süreçte bellek ayırmak için kullanılan `VirtualAllocEx` işlevi başarısız oldu. Bu, aşağıdakilerden kaynaklanabilir:
-  - **GTA:SA** süreci (askıya alınmış durumda olsa bile), dış süreçler tarafından bellek ayırmayı engelleyen güvenlik savunmalarına veya **enjeksiyon karşıtı yamalar**a sahip.
-  - Uygulamanız, başka bir sürecin belleğini manipüle etmek için gerekli yükseltilmiş izinlere sahip değil.
-  - (Daha az yaygın) Sistemde aşırı sanal bellek kıtlığı var.
-- **Çözüm**:
-  1. Uygulamanızı **Yönetici** ayrıcalıklarıyla çalıştırın.
-  2. Oyunun, enjeksiyon veya bellek manipülasyonu girişimlerini engelleyebilecek herhangi bir modifikasyon veya **güvenlik yaması** olmadığından emin olun (bu, değiştirilmiş ortamlar veya bazı üçüncü taraf hile önleme araçlarında daha yaygındır).
-
-### 7. İşlem Belleğine DLL Yolunun Yazılmasında Hata
-
-Bellek ayrıldıktan sonra, kütüphane **DLL yolunu** buraya kopyalamaya çalışır.
-
-![Error 11](../../screenshots/error_11.png)
-
-- **Görüntülenen Hata Mesajı**: `"Failed to write DLL path to the target process memory. Verify process permissions and ensure the DLL path is accessible."`
-- **Neden**: `WriteProcessMemory` fonksiyonu, **DLL yolunun baytlarını** `gta_sa.exe` içinde ayrılan uzak belleğe kopyalamaya çalışırken başarısız oldu. Bu genellikle şu durumlara işaret eder:
-  - **Yazma İzinleri**: Uygulamanız, bu bellek bölgesine veya **GTA:SA** işlemine yazma iznine sahip değil.
-  - **Geçersiz Handle**: İşlemin **handle**'ı (`process_handle`), ayırma ve yazma arasında bir şekilde geçersiz hale geldi; bu, `UniqueResource` kullanımı nedeniyle çok nadirdir ancak sistemin aşırı koşullarında gerçekleşebilir.
-  - **Bellek Koruma Sorunları**: İşletim sistemi (**SO**) veya oyunun modifikasyonlarından kaynaklanan bir bellek koruma mekanizması yazmayı engelledi.
-- **Çözüm**: Uygulamayı **Yönetici** olarak çalıştırın. `gta_sa.exe` ve ortamının, bellek işlemlerini engelleyebilecek araçlardan "temiz" olduğundan emin olun.
-
-### 8. Temel Sistem Fonksiyonlarının Bulunmasında Hata
-
-Bunlar, **Windows**'un kritik **API**'leridir; buradaki hatalar, işletim sistemi veya yürütme ortamıyla ilgili temel bir sorunu işaret eder.
-
-#### 8.1. `kernel32.dll` Bulunamadı
-
-![Error 12](../../screenshots/error_12.png)
-
-- **Görüntülenen Hata Mesajı**: `"Failed to obtain a handle to kernel32.dll. This is an essential system library and this error indicates a severe system issue."`
-- **Neden**: `kernel32.dll`, **Windows**'un en temel **DLL**'lerinden biridir ve `CreateProcess`, `VirtualAllocEx` gibi temel fonksiyonları içerir. Eğer `GetModuleHandleA`, bu DLL için bir **handle** elde edemezse, işletim sistemi çok ciddi sorunlarla karşı karşıyadır.
-- **Çözüm**: Bu, kütüphane veya uygulamanızdan kaynaklanan bir hata olmaktan ziyade **kritik** bir hatadır. Sistem dosyalarında bozulma, **Windows** ile ilgili ciddi sorunlar veya oldukça alışılmadık bir **SO** kurulumu olduğunu gösterir. Sistem bütünlüğünü kontrol etmek için (**Komut İstemi**'nde **Yönetici** olarak `sfc /scannow` komutunu çalıştırmak) veya son çare olarak **Windows**'u yeniden yüklemek önerilir.
-
-#### 8.2. `LoadLibraryA` Bulunamadı
-
-![Error 13](../../screenshots/error_13.png)
-
-- **Görüntülenen Hata Mesajı**: `"Failed to find the address of the LoadLibraryA function in kernel32.dll. This is critical for injecting the DLL."`
-- **Neden**: `kernel32.dll` bulunmuş olsa da, `LoadLibraryA` fonksiyonu `GetProcAddress` ile çözülemedi. Bu, son derece nadir olsa da, `kernel32.dll` **DLL dosyasının** bozulması veya oldukça standart dışı bir yürütme ortamından kaynaklanabilir.
-- **Çözüm**: Yukarıdaki `kernel32.dll` hatasına benzer şekilde, bu da işletim sisteminde ciddi bir sorunu işaret eder.
-
-### 9. Enjeksiyon için Uzak Thread Oluşturmada Hata
-
-Uzak ortam hazırlandıktan ve **DLL yolu** kopyalandıktan sonra, `LoadLibraryA`'yı "çağırmak" için oyunun işleminde yeni bir **thread** oluşturulur.
-
-![Error 14](../../screenshots/error_14.png)
-
-- **Görüntülenen Hata Mesajı**: `"Failed to create a remote thread in the target process to execute the DLL injection. This could be due to security restrictions or process state. System Error: [İşletim sistemi hata mesajı]"`.
-- **Neden**: `CreateRemoteThread` çağrısı başarısız oldu. Bu hata, güçlü **enjeksiyon karşıtı** savunmalara sahip sistemlerde veya bir programın işlemin davranışını yoğun bir şekilde izlediği durumlarda yaygın olabilir:
-  - **Güvenlik Mekanizmaları**: **Hile karşıtı** araçlar, **güvenlik yazılımları** veya belirli **Windows** politikaları, üçüncü taraf işlemlerinde **thread** oluşturma girişimlerini tespit edip engelleyebilir.
-  - **Hedef İşlem Tutarsızlığı**: **GTA:SA** işlemi, `CREATE_SUSPENDED` durumunda başlatılmış olsa da beklenmedik veya kararsız bir durumda olabilir, bu da **thread** oluşturma yeteneğini etkileyebilir.
-- **Çözüm**:
-  1. Uygulamanızı **Yönetici** ayrıcalıklarıyla çalıştırın.
-  2. **Hile karşıtı araçlar**, **agresif antivirüsler** veya işlem manipülasyonunu denetleyen ve engelleyen **güvenlik duvarlarının** olup olmadığını kontrol edin. Uygulamanızı ve `gta_sa.exe`'yi, varsa istisnalara ekleyin (dikkatli bir şekilde).
-  3. Sistem hata mesajı (`GetLastError()`) belirli bir neden hakkında ek bilgiler sağlayabilir (örneğin: **"Bir işlem, diğer işlemler için thread oluşturma erişimine reddedildi."**).
-
-### 10. Enjeksiyonun Tamamlanmasında Zaman Aşımı veya Hata
-
-Uzak **thread** oluşturulduktan sonra, enjektör, **DLL yüklemesinin** tamamlanmasını bekler.
-
-![Error 15](../../screenshots/error_15.png)
-
-- **Görüntülenen Hata Mesajı**: `"Timeout or error waiting for DLL injection to complete. System Error: [İşletim sistemi hata mesajı]"`.
-- **Neden**: `LoadLibraryA`'yı çalıştıran uzak **thread**, `Constants::DLL_INJECTION_TIMEOUT_MS` (10 saniye) süresinden fazla zaman aldı veya başarısız oldu ve `GetExitCodeThread` 0 döndürdü. Olası nedenler şunlardır:
-  - **Enjekte Edilen DLL'deki Sorunlar**: `samp.dll` veya `omp-client.dll` içindeki `DllMain`, çok uzun sürüyor, bir **sonsuz döngü**, **çökme** içeriyor veya **DLL'nin** düzgün yüklenmesini engelleyen bir hata var (örneğin: eksik **DLL bağımlılıkları**).
-  - **Sessiz Engelleme**: Bir güvenlik mekanizması, `LoadLibraryA`'yı engellemiş olabilir ancak açık bir **thread** oluşturma hatası bildirmedi.
-- **Çözüm**:
-  1. `samp.dll` ve `omp-client.dll` dosyalarının bütünlüğünü kontrol edin. Bunlar bozulmuş veya `gta_sa.exe` ile uyumsuz bir sürüm olabilir.
-  2. **Enjekte edilen DLL**'nin, sistemde eksik veya erişilemeyen **diğer DLL'lere** bağımlı olmadığından emin olun.
-
-### 11. Oyun İşlemi Thread'inin Devam Ettirilmesinde Hata
-
-Bu, **DLL'ler** enjekte edildikten sonra oyunu başlatmak için son adımdır.
-
-![Error 16](../../screenshots/error_16.png)
-
-- **Görüntülenen Hata Mesajı**: `"Failed to resume the game process thread: [İşletim sistemi hata mesajı]"`.
-- **Neden**: `ResumeThread` çağrısı başarısız oldu, yani `gta_sa.exe`'nin ana **thread**'i, oyunun yürütülmesini başlatmak için etkinleştirilemedi. Bu nadir bir hatadır, ancak şu durumlarda gerçekleşebilir:
-  - İşlemin **thread handle**'ı geçersiz hale geldi.
-  - İşletim sistemi, güvenlik kesintisi veya işlemin tutarsız durumu nedeniyle devam etmeyi engelledi.
-  - İşlem, **DLL enjeksiyonu** ile ana **thread**'in devam ettirilmesi girişimi arasında harici olarak sonlandırılmış olabilir.
-- **Çözüm**: Eğer önceki tüm adımlar başarılı olduysa ve yalnızca `ResumeThread` başarısız olduysa, bu, işletim sistemi, **GTA:SA** kurulumu veya aşırı katı bir başka **güvenlik yazılımı** ile ilgili bir sorun olabilir. Hata öncesi ve sonrası `gta_sa.exe`'nin durumunu **Görev Yöneticisi** ile yeniden inceleyin. Bilgisayarı yeniden başlatmak, geçici sistem durumu sorunlarını çözebilir.
+Belirtilen enjeksiyon türü `OMP` ise, 6. noktada ayrıntıları verilen adımlar `omp-client.dll` için tekrarlanır.
 
 > [!TIP]
-> Karmaşık hata ayıklama senaryolarında, **Process Monitor (Sysinternals Suite)** veya bir hata ayıklayıcı (örneğin **Visual Studio Debugger**, **WinDbg**, **OllyDbg**) gibi araçlar çok değerli olabilir. Bunlar, **API** çağrılarını gözlemlemeye, erişim hatalarını kontrol etmeye, **handle** durumlarını izlemeye ve hatta işlem belleğini incelemeye yardımcı olarak, perde arkasında neler olup bittiğine dair derinlemesine bir görüş sağlar.
+> `omp-client.dll` enjeksiyonu her zaman `samp.dll`'nin başarılı enjeksiyonundan sonra gerçekleşir. Bunun nedeni, Open Multiplayer istemcisinin `samp.dll` tarafından sağlanan altyapıya dayanmasıdır.
+
+### 8. Oyunun Etkinleştirilmesi
+
+Son olarak, tüm enjeksiyonlar başarıyla tamamlandıysa, `process_info.Resume()` metodu çağrılır. Bu çağrı, `gta_sa.exe`'nin ana `thread`'inde `ResumeThread`'i çalıştırır. Bu noktada, oyun etkinleştirilir ve normal yürütülmesine başlar, ancak SA-MP/OMP DLL'leri belleğine zaten yüklenmiş ve bağlantı parametreleri yapılandırılmış durumdadır, bu da sunucuya otomatik bir bağlantı sağlar.
+
+> [!WARNING]
+> Oyun `thread`'inin devam ettirilmesi başarısız olursa, kullanıcıya son bir hata mesajı sunulur.
+
+## Hata ve Arıza Teşhisi
+
+Kütüphane, başlatma ve enjeksiyon süreci sırasında ortaya çıkabilecek herhangi bir sorunu net bir şekilde bildirmek için titizlikle tasarlanmıştır. Herhangi bir arıza noktasında, kullanıcıya ayrıntılı bir açıklama içeren bir `MessageBox` sunulur, bu genellikle işletim sisteminden gelen hata mesajlarıyla tamamlanır.
+
+### Giriş Doğrulama Hataları
+
+Bu hatalar, sistemle herhangi bir alt düzey etkileşimden önce, ilk aşamada (`validation.hpp`) tespit edilir ve kullanıcı tarafından sağlanan verilerle veya ortam yapılandırmasıyla ilgili sorunları gösterir.
+
+#### Geçersiz Kullanıcı Adı
+
+- **Hata Mesajı (Örnek 1):** `"Nickname cannot be empty. Please provide a valid nickname."`
+- **Hata Mesajı (Örnek 2):** `"Nickname length exceeds the maximum allowed of 23 characters. Please use a shorter nickname."`
+- **Neden:** Sağlanan kullanıcı adı (`nickname`) boş veya SA-MP/OMP istemcilerinin izin verdiği maksimum 23 karakter sınırını aşıyor.
+- **Çözüm:** Kullanıcı, uzunluk kriterlerine uyan geçerli bir kullanıcı adı girmelidir.
+
+#### Geçersiz Bağlantı Portu
+
+- **Hata Mesajı (Örnek 1):** `"Invalid port format. The port must be a numeric value. Please provide a valid integer for the port."`
+- **Hata Mesajı (Örnek 2):** `"The specified port number (70000) is outside the valid range of 1 to 65535. Please provide a valid port."`
+- **Neden:** Port için sağlanan değer bir tamsayı değil veya geçerli aralığın (1 ila 65535) dışında.
+- **Çözüm:** Kullanıcının geçerli ve belirtilen aralıkta bir port numarası sağlaması gerekir.
+
+#### Eksik Temel Kaynaklar
+
+- **Hata Mesajı (Örnek 1):** `"Game executable not found. Please ensure 'gta_sa.exe' exists at the specified path: C:\Games\GTA San Andreas\gta_sa.exe"`
+- **Hata Mesajı (Örnek 2):** `"SA-MP library not found. Please ensure 'samp.dll' exists at the specified path: C:\Games\GTA San Andreas\samp.dll"`
+- **Hata Mesajı (Örnek 3, OMP için):** `"OMP library not found. Please ensure 'omp-client.dll' exists at the specified path for OMP injection: C:\Games\GTA San Andreas\omp-client.dll"`
+- **Neden:** Belirtilen oyun dizininde bir veya daha fazla önemli dosya (`gta_sa.exe`, `samp.dll`, `omp-client.dll`) bulunamadı.
+- **Çözüm:** Oyun klasörünün yolunu kontrol edin ve gerekli tüm dosyaların mevcut ve erişilebilir olduğundan emin olun.
+
+### Süreç Yönetimi Hataları
+
+Bu hatalar, kütüphane oyunun çalıştırılabilir dosyasını (`gta_sa.exe`) başlatmaya çalıştığında meydana gelir.
+
+#### Oyun Sürecini Başlatmada Zorluk
+
+- **Hata Mesajı (Örnek):** `"Failed to create game process. Ensure 'gta_sa.exe' is not running and you have sufficient permissions to execute the file. System Error: Access is denied."`
+- **Neden:**
+   - **Çalıştırılabilir Dosya Kullanımda:** `gta_sa.exe` zaten çalışıyor olabilir veya işletim sisteminin yeni bir örnek oluşturmasını engelleyen bir kilit olabilir.
+   - **Yetersiz İzinler:** Uygulamanın `gta_sa.exe`'yi başlatmak veya dosyaya erişmek için uygun izinleri olmayabilir.
+   - **Bozuk Çalıştırılabilir Dosya:** Temel doğrulama dosyanın varlığını kontrol etse de, bozuk veya erişilemez olabilir.
+- **Çözüm:** Hiçbir `gta_sa.exe` örneğinin aktif olmadığından emin olun. Uygulamanızı yönetici olarak çalıştırmayı deneyin. `gta_sa.exe` dosyasının bütünlüğünü kontrol edin.
+
+### DLL Enjeksiyonu Sorunları
+
+Bunlar, oyunun askıya alınmış sürecine `samp.dll` veya `omp-client.dll` enjekte etme girişimi sırasında meydana gelen en kritik ve ayrıntılı hatalardır. Hata mesajları genellikle `"Failed to inject <DLL_NAME>:\n"` ile başlar ve ardından belirli bir açıklama ve bir sistem hata kodu gelir.
+
+#### `LoadLibraryW` Bulunamıyor
+
+- **Hata Mesajı (Bölüm):** `"Failed to find the address of LoadLibraryW in kernel32.dll."`
+- **Neden:** DLL'lerin dinamik olarak yüklenmesi için temel bir Windows API'si olan `LoadLibraryW` fonksiyonu, `kernel32.dll`'de bulunamadı. Bu, işletim sisteminde olası bir bozulmaya veya son derece alışılmadık bir yürütme ortamına işaret eden son derece nadir bir alt düzey sorundur.
+- **Çözüm:** Sistemin yeniden başlatılması sorunu çözebilir. Devam ederse, Windows kurulumunda daha ciddi bir soruna işaret edebilir.
+
+#### Uzak Bellek Ayırma Hatası
+
+- **Hata Mesajı (Bölüm):** `"Failed to allocate memory in the target process (VirtualAllocEx). System Error: Not enough storage is available to process this command."`
+- **Neden:** Kütüphane, `gta_sa.exe` sürecinin sanal adres alanında bir bellek bloğu ayıramadı.
+   - **İzinler:** Uygulamanızın başka bir sürecin bellek alanını değiştirme izni olmayabilir.
+   - **Süreç Koruması:** İşletim sistemi güvenlik mekanizmaları veya anti-cheat yazılımları, harici süreçlerde bellek ayrılmasını engelliyor olabilir.
+- **Çözüm:** Uygulamanızı yönetici olarak çalıştırın. Güvenlik programlarının (antivirüs, anti-cheat) müdahale edip etmediğini kontrol edin ve mümkünse test etmek için geçici olarak devre dışı bırakın.
+
+#### Sürece Veri Yazılamaması
+
+- **Hata Mesajı (Bölüm):** `"Failed to write DLL path to process memory (WriteProcessMemory). System Error: Access is denied."`
+- **Neden:** Oyun sürecinde bellek ayrıldı, ancak kütüphane DLL yolunu bu konuma yazamadı.
+   - **İzinler/Koruma:** Bellek ayırma hatasına benzer şekilde, bu bir yazma izni sorunu veya aktif bir bellek koruması olabilir.
+- **Çözüm:** Bellek ayırma hatası için geçerli olan aynı çözümler burada da geçerlidir.
+
+#### Enjeksiyon Thread'i Oluşturma Hatası
+
+- **Hata Mesajı (Bölüm):** `"Failed to create remote thread (CreateRemoteThread). System Error: The parameter is incorrect."`
+- **Neden:** `CreateRemoteThread` API'si, `LoadLibraryW`'yi çağırmak için `gta_sa.exe` sürecinde yeni bir `thread` başlatamadı.
+   - **Güvenlik:** Birçok anti-cheat sistemi ve işletim sistemi koruması, yaygın bir enjeksiyon tekniği olduğu için uzaktan `thread` oluşturulmasını izler ve engeller.
+   - **Süreç Durumu:** Oyun süreci, `thread` oluşturulmasını engelleyen kararsız bir durumda olabilir.
+- **Çözüm:** Herhangi bir anti-cheat veya antivirüs yazılımını geçici olarak devre dışı bırakın. Uygulamayı yönetici olarak çalıştırmayı deneyin.
+
+#### Enjeksiyon Beklenirken Zaman Aşımı veya Hata
+
+- **Hata Mesajı (Bölüm):** `"Timeout or error waiting for remote thread (WaitForSingleObject). System Error: The wait operation timed out."`
+- **Neden:** Uzak `thread` (`LoadLibraryW`'yi çağıran), belirlenen zaman aşımı süresi içinde (10 saniye) yürütülmesini tamamlamadı.
+   - **Donma:** `LoadLibraryW` donmuş, aşırı uzun sürmüş veya engellenmiş/durdurulmuş olabilir.
+- **Çözüm:** Bu, DLL'nin yüklenmekte zorlandığını veya bir şeyin onu engellediğini gösterebilir. Sistem veya SA-MP/OMP'nin kendi günlüklerini (varsa) kontrol etmek daha fazla ipucu sunabilir.
+
+#### DLL Enjeksiyonunda Dahili Hata
+
+- **Hata Mesajı (Bölüm):** `"LoadLibraryW call failed in the target process. The DLL might be corrupt, missing dependencies, or blocked by security software."`
+- **Neden:** Uzak `thread` tamamlandı, ancak `LoadLibraryW`'nin dönüş değeri `0` (veya `NULL`) oldu, bu da DLL'nin başarıyla yüklenmediğini gösterir.
+   - **Bozuk/Eksik DLL:** DLL, ilk doğrulamadan sonra taşınmış, silinmiş veya bozulmuş olabilir.
+   - **Eksik Bağımlılıklar:** `samp.dll` veya `omp-client.dll`, oyun dizininde veya sistemin `PATH`'inde bulunmayan bağımlılıklara (diğer DLL'ler) sahip olabilir.
+   - **DLL Dahili Hatası:** DLL'nin kendisi, yüklenmesini engelleyen bir dahili hataya sahip olabilir.
+- **Çözüm:** `samp.dll`/`omp-client.dll` dosyalarının bütünlüğünü kontrol edin. Tüm bağımlılıklarının mevcut olduğundan emin olun.
+
+### Oyunun Yürütülmesine Devam Etmede Zorluk
+
+Bu, enjeksiyon döngüsündeki son olası arıza noktasıdır.
+
+- **Hata Mesajı (Örnek):** `"Failed to resume the game process thread: Invalid handle."`
+- **Neden:** `ResumeThread` API'si, `gta_sa.exe`'nin ana `thread`'ini yeniden etkinleştiremedi.
+   - **Geçersiz Handle:** `thread`'in `handle`'ı beklenmedik bir olay nedeniyle geçersiz kılınmış olabilir.
+   - **İzin:** Uygulamanın `thread`'in durumunu değiştirme izni olmayabilir.
+- **Çözüm:** Uygulamayı yönetici olarak çalıştırmayı deneyin. Sorun devam ederse, sistemde veya oyun sürecinde daha derin bir kararlılık sorununa işaret edebilir.
 
 ## Lisans
 
