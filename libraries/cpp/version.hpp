@@ -31,7 +31,7 @@
 
 #if defined(__cplusplus)
 
-#if (defined(_MSC_VER) && _MSVC_LANG >= 201402L) || __cplusplus >= 201402L
+#if (defined(_MSC_VER) && _MSVC_LANG == 201402L) || __cplusplus == 201402L
     #define SAMP_INJECTOR_CXX_14
 #endif
 
@@ -45,4 +45,5 @@
     #define SAMP_INJECTOR_NODISCARD [[nodiscard]]
 #elif defined(SAMP_INJECTOR_CXX_14)
     #define SAMP_INJECTOR_NODISCARD
+
 #endif
