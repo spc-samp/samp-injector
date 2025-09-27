@@ -29,24 +29,31 @@
 
 #pragma once
 
-#include <string_view>
-//
-#include "injector_core.hpp"
-#include "error_utils.hpp"
-#include "types.hpp"
 #include "constants.hpp"
+#include "error_utils.hpp"
+#include "injector_core.hpp"
+#include "types.hpp"
+#include "version.hpp"
+//
+#if defined(SAMP_INJECTOR_CXX_MODERN)
+#include <string_view>
 
 inline bool Initialize_Game(std::wstring_view inject_type, std::wstring_view folder, std::wstring_view nickname, std::wstring_view ip, std::wstring_view port, std::wstring_view password) {
+#elif defined(SAMP_INJECTOR_CXX_14)
+#include <string>
+
+inline bool Initialize_Game(const std::wstring& inject_type, const std::wstring& folder, const std::wstring& nickname, const std::wstring& ip, const std::wstring& port, const std::wstring& password) {
+#endif
     Types::Inject_Type type;
-    
+
     if (inject_type == Constants::INJECT_TYPE_SAMP)
         type = Types::Inject_Type::SAMP;
     else if (inject_type == Constants::INJECT_TYPE_OMP)
         type = Types::Inject_Type::OMP;
     else
-        return (Error_Utils::Show_Error(L"Invalid injection mode specified. Please use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false);
+        return (Error_Utils::Show_Error(L"Invalid injection mode. Use 'samp' or 'omp'.", Types::Inject_Type::SAMP), false);
 
     Injector::Injector_Core injector;
-    
+
     return injector.Initialize_Game(type, folder, nickname, ip, port, password);
 }

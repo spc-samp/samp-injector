@@ -31,53 +31,30 @@
 
 #include <windows.h>
 //
-#include "version.hpp"
+#include "resource_handle.hpp"
 
-namespace Constants {
-#if defined(SAMP_INJECTOR_CXX_MODERN)
-    #define CONSTEXPR_VAR inline constexpr
-#elif defined(SAMP_INJECTOR_CXX_14)
-    #define CONSTEXPR_VAR static constexpr
-#endif
+namespace Privileges {
+    inline bool Enable_Debug_Privilege() {
+        HANDLE token_handle;
+        
+        if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token_handle))
+            return false;
 
-    // Game related constants
-    CONSTEXPR_VAR int MIN_PORT = 1;
-    CONSTEXPR_VAR int MAX_PORT = 65535;
-    CONSTEXPR_VAR int MAX_NICKNAME_LENGTH = 23;
-    
-    // File names
-    CONSTEXPR_VAR const wchar_t* SAMP_DLL_NAME = L"samp.dll";
-    CONSTEXPR_VAR const wchar_t* OMP_DLL_NAME = L"omp-client.dll";
-    CONSTEXPR_VAR const wchar_t* GAME_EXE_NAME = L"gta_sa.exe";
-    
-    // System libraries and functions
-    CONSTEXPR_VAR const wchar_t* KERNEL32_DLL = L"kernel32.dll";
-    CONSTEXPR_VAR const char* LOAD_LIBRARY_FUNC = "LoadLibraryW";
-    
-    // Command line arguments
-    CONSTEXPR_VAR const wchar_t* CMD_ARG_CONFIG = L"-c";
-    CONSTEXPR_VAR const wchar_t* CMD_ARG_NICKNAME = L"-n";
-    CONSTEXPR_VAR const wchar_t* CMD_ARG_HOST = L"-h";
-    CONSTEXPR_VAR const wchar_t* CMD_ARG_PORT = L"-p";
-    CONSTEXPR_VAR const wchar_t* CMD_ARG_PASSWORD = L"-z";
+        auto handle_guard = Resource_Handle::Make_Unique_Handle(token_handle);
 
-    // Injection types as strings
-    CONSTEXPR_VAR const wchar_t* INJECT_TYPE_SAMP = L"samp";
-    CONSTEXPR_VAR const wchar_t* INJECT_TYPE_OMP = L"omp";
-    
-    // Error message titles
-    CONSTEXPR_VAR const wchar_t* ERROR_TITLE_SAMP = L"SA-MP Injector Error - SPC";
-    CONSTEXPR_VAR const wchar_t* ERROR_TITLE_OMP = L"OMP Injector Error - SPC";
-    
-    // Process creation
-    CONSTEXPR_VAR DWORD PROCESS_CREATION_FLAGS = CREATE_SUSPENDED | DETACHED_PROCESS;
-    
-    // Timeouts
-    CONSTEXPR_VAR DWORD DLL_INJECTION_TIMEOUT_MS = 10000;
-    
-    // Memory allocation
-    CONSTEXPR_VAR DWORD MEMORY_ALLOCATION_TYPE = MEM_COMMIT | MEM_RESERVE;
-    CONSTEXPR_VAR DWORD MEMORY_PROTECTION = PAGE_READWRITE;
+        TOKEN_PRIVILEGES tp;
+        LUID luid;
 
-#undef CONSTEXPR_VAR
+        if (!LookupPrivilegeValue(nullptr, SE_DEBUG_NAME, &luid))
+            return false;
+        
+        tp.PrivilegeCount = 1;
+        tp.Privileges[0].Luid = luid;
+        tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+        if (!AdjustTokenPrivileges(token_handle, FALSE, &tp, sizeof(TOKEN_PRIVILEGES), nullptr, nullptr))
+            return false;
+
+        return GetLastError() == ERROR_SUCCESS;
+    }
 }

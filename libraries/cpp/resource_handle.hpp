@@ -35,11 +35,11 @@
 
 namespace Resource_Handle {
     template<typename T, typename Deleter>
-    using UniqueResource = std::unique_ptr<std::remove_pointer_t<T>, Deleter>;
+    using Unique_Resource = std::unique_ptr<std::remove_pointer_t<T>, Deleter>;
 
     template<typename T>
     inline auto Make_Unique_Handle(T handle) {
-        return UniqueResource<T, std::function<void(T)>>(handle, [](T h) {
+        return Unique_Resource<T, std::function<void(T)>>(handle, [](T h) {
             if (h && h != INVALID_HANDLE_VALUE)
                 CloseHandle(h);
         });
